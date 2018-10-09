@@ -5,9 +5,15 @@ import java.util.Iterator;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
@@ -16,13 +22,15 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer {
 
-	public static final int ALOAD = 0x19;
-	public static final int INVOKESTATIC = 0xB8;
-	public static final int GETFIELD = 0xB4;
-	public static final int FLOAD = 0x17;
-	public static final int INVOKEVIRTUAL = 0xB6;
-	public static final int IFEQ = 0x99;
-	public static final int RETURN = 0xB1;
+	public static final int ALOAD = Opcodes.ALOAD;
+	public static final int INVOKESTATIC = Opcodes.INVOKESTATIC;
+	public static final int GETFIELD = Opcodes.GETFIELD;
+	public static final int FLOAD = Opcodes.FLOAD;
+	public static final int INVOKEVIRTUAL = Opcodes.INVOKEVIRTUAL;
+	public static final int IFEQ = Opcodes.IFEQ;
+	public static final int RETURN = Opcodes.RETURN;
+	public static final int F_SAME = Opcodes.F_SAME;
+	public static final int GETSTATIC = Opcodes.GETSTATIC;
 
 	@Override
 	public byte[] transform(final String name, final String transformedName, final byte[] basicClass) {
@@ -61,8 +69,25 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			System.out.println("********* Inside target method! " + targetMethodName + " | " + methodRebuildChunk.name);
 
-			final AbstractInsnNode currentNode = null;
-			final AbstractInsnNode targetNode = null;
+			AbstractInsnNode targetNode = null;
+
+			// Loop over the instruction set and find the instruction FDIV which does the division of 1/explosionSize
+			final Iterator<AbstractInsnNode> iter = methodRebuildChunk.instructions.iterator();
+			iter.next();
+			iter.next();
+			iter.next();
+			iter.next();
+			iter.next();
+			iter.next();
+			while (iter.hasNext()) {
+				final AbstractInsnNode currentNode = iter.next();
+
+				// Found it! save the index location of instruction FDIV and the node for this instruction
+				if (currentNode.getOpcode() == Opcodes.NEW) {
+					targetNode = currentNode.getPrevious().getPrevious();
+					break;
+				}
+			}
 
 			// RENDER CHUNK METHOD ->
 			// LINE - CODE
@@ -97,25 +122,43 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //		   L17
 			//@formatter:on
 
-			final Label l16 = new Label();
-			methodRebuildChunk.visitLabel(l16);
-			methodRebuildChunk.visitLineNumber(145, l16);
-			methodRebuildChunk.visitVarInsn(ALOAD, 0);
-			methodRebuildChunk.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;");
-			methodRebuildChunk.visitVarInsn(ALOAD, 0);
-			methodRebuildChunk.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
-			methodRebuildChunk.visitVarInsn(ALOAD, 4);
-			methodRebuildChunk.visitVarInsn(ALOAD, 5);
-			methodRebuildChunk.visitVarInsn(ALOAD, 0);
-			methodRebuildChunk.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
-			methodRebuildChunk.visitVarInsn(FLOAD, 1);
-			methodRebuildChunk.visitVarInsn(FLOAD, 2);
-			methodRebuildChunk.visitVarInsn(FLOAD, 3);
-			methodRebuildChunk.visitMethodInsn(INVOKESTATIC, "net/minecraftforge/client/ForgeHooksClient", "onRebuildChunkEvent", "(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Lnet/minecraftforge/client/event/RebuildChunkEvent;", false);
-			methodRebuildChunk.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/client/event/RebuildChunkEvent", "isCanceled", "()Z", false);
+			System.out.println("********* PATCHING");
+
+			final InsnList toInject = new InsnList();
+
+			// final Label l16 = new Label();
+			// toInject.add(new Label(l16));
+			// toInject.add(new LineNumberNode(145 + 3, l16));
+			// toInject.add(new VarInsnNode(ALOAD, 0);
+			// toInject.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;");
+			// toInject.add(new VarInsnNode(ALOAD, 0);
+			// toInject.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
+			// toInject.add(new VarInsnNode(ALOAD, 4);
+			// toInject.add(new VarInsnNode(ALOAD, 5);
+			// toInject.add(new VarInsnNode(ALOAD, 0);
+			// toInject.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
+			// toInject.add(new VarInsnNode(FLOAD, 1);
+			// toInject.add(new VarInsnNode(FLOAD, 2);
+			// toInject.add(new VarInsnNode(FLOAD, 3);
+			// toInject.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkEvent", "(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Lnet/minecraftforge/client/event/RebuildChunkEvent;", false);
+			// toInject.add(new MethodInsnNode(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent", "isCanceled", "()Z", false);
+			// final Label l17 = new Label();
+			// toInject.add(new JumpInsnNode(IFEQ, l17);
+			// toInject.add(new InsnNode(RETURN);
+
 			final Label l17 = new Label();
-			methodRebuildChunk.visitJumpInsn(IFEQ, l17);
-			methodRebuildChunk.visitInsn(RETURN);
+			final LabelNode l17node = new LabelNode(l17);
+			toInject.add(l17node);
+			toInject.add(new LineNumberNode(148, l17node));
+			toInject.add(new FrameNode(F_SAME, 0, null, 0, null));
+			toInject.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+			toInject.add(new LdcInsnNode("fuk"));
+			toInject.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+
+			// inject new instruction list into method instruction list
+			methodRebuildChunk.instructions.insertBefore(targetNode, toInject);
+
+			System.out.println("********* FINISHED PATCHING");
 
 			// in this section, i'll just illustrate how to inject a call to a static method if your instruction is a little more advanced than just removing a couple of instruction:
 
@@ -129,10 +172,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			 * // add the added code to the nstruction list // You can also choose if you want to add the code before or after the target node, check the ASM Javadoc (insertBefore) m.instructions.insert(targetNode, toInject);
 			 */
 
-			final InsnList toInject = new InsnList();
-			toInject.add(new VarInsnNode(ALOAD, 0));
-			toInject.add(new MethodInsnNode(INVOKESTATIC, "mod/culegooner/MyStaticClass", "myStaticMethod", "()V"));
+			// final InsnList toInject = new InsnList();
+			// toInject.add(new VarInsnNode(ALOAD, 0));
+			// toInject.add(new MethodInsnNode(INVOKESTATIC, "mod/culegooner/MyStaticClass", "myStaticMethod", "()V"));
 
+			break;
 		}
 		return bytes;
 	}
@@ -209,7 +253,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 					index++;
 					currentNode = iter.next();
 
-					final int FDIV = 12213123;
+					final int FDIV = Opcodes.FDIV;
 					// Found it! save the index location of instruction FDIV and the node for this instruction
 					if (currentNode.getOpcode() == FDIV) {
 						targetNode = currentNode;
