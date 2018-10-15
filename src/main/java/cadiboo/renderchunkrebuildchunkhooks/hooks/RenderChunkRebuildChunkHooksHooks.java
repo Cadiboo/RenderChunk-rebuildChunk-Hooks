@@ -20,7 +20,9 @@
 package cadiboo.renderchunkrebuildchunkhooks.hooks;
 
 import java.util.HashSet;
+import java.util.logging.Logger;
 
+import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksDummyContainer;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlocksEvent;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -34,6 +36,12 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class RenderChunkRebuildChunkHooksHooks {
 
+	public static void dummyEvent() {
+		final Logger logger = Logger.getLogger(RenderChunkRebuildChunkHooksDummyContainer.MOD_ID);
+		logger.info("dummyEvent");
+	}
+	
+	
 	// public static RenderBlockRenderLayerEvent onRenderBlockRenderLayerEvent(final RenderGlobal renderGlobal, final BlockRenderLayer blockRenderLayer, final double partialTicks, final int pass, final Entity entity, final int chunksRendered) {
 	// final RenderBlockRenderLayerEvent event = new RenderBlockRenderLayerEvent(renderGlobal, blockRenderLayer, partialTicks, pass, entity, chunksRendered);
 	// MinecraftForge.EVENT_BUS.post(event);

@@ -1,9 +1,12 @@
 package cadiboo.renderchunkrebuildchunkhooks.loadingplugin;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksDummyContainer;
 import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
+import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksRenderChunkClassTransformer2;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 //import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.*;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
@@ -13,9 +16,20 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.Name;
 @MCVersion("1.12")
 public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadingPlugin {
 
+	public static final String CORE_MARKER = "RenderChunkRebuildChunkHooksLoaded";
+
+	public RenderChunkRebuildChunkHooksLoadingPlugin1_12() {
+		Logger.getLogger(RenderChunkRebuildChunkHooksDummyContainer.MOD_ID).info("RenderChunkRebuildChunkHooksLoadingPlugin at version " + this.getVersion());
+		Launch.blackboard.put(CORE_MARKER, this.getVersion());
+	}
+
+	public String getVersion() {
+		return this.getClass().getSimpleName().replace("RenderChunkRebuildChunkHooksLoadingPlugin", "").replace("_", ".");
+	}
+
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName()};
+		return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName(), RenderChunkRebuildChunkHooksRenderChunkClassTransformer2.class.getName(),};
 	}
 
 	@Override
@@ -28,6 +42,9 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadin
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	// @Override
+	// public String getSetupClass() { return "com.landofminecraft.landofminecraftcore.core.LandofMinecraftHook"; }
 
 	@Override
 	public void injectData(final Map<String, Object> data) {

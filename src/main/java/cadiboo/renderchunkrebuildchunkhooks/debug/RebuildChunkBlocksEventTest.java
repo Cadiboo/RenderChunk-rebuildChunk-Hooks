@@ -1,4 +1,4 @@
-package cadiboo.renderchunkrebuildchunkhooks;
+package cadiboo.renderchunkrebuildchunkhooks.debug;
 
 import java.util.ArrayList;
 import java.util.Arrays;
