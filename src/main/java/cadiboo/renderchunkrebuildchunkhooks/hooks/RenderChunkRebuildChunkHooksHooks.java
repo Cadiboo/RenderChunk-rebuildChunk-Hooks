@@ -34,6 +34,9 @@ public class RenderChunkRebuildChunkHooksHooks {
 	// return event;
 	// }
 
+	/**
+	 * @return if vanilla rendering should be stopped
+	 */
 	public static boolean onRebuildChunkEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos position, final float x, final float y, final float z) {
 		final RebuildChunkEvent event = new RebuildChunkEvent(renderGlobal, worldView, generator, compiledChunk, position, x, y, z);
 		MinecraftForge.EVENT_BUS.post(event);

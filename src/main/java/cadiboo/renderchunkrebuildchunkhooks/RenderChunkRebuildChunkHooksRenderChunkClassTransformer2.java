@@ -83,79 +83,51 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer2 implements
 			super(Opcodes.ASM5, mv);
 		}
 
-		// problem, because its in a finally block getLock().unlock() exists once in the source code & multiple times in the bytecode
-//		mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/concurrent/locks/ReentrantLock", "unlock", "()V", false);
-//		Label l16 = new Label();
-//		mv.visitLabel(l16);
-//		mv.visitLineNumber(145, l16);
+//		mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/world/ChunkCache", "isEmpty", "()Z", false);
+//		Label l20 = new Label();
+//		mv.visitJumpInsn(IFNE, l20);
+//		Label l21 = new Label();
+//		mv.visitLabel(l21);
+//		mv.visitLineNumber(154, l21);
 //		mv.visitVarInsn(ALOAD, 0);
 //		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;");
 //		mv.visitVarInsn(ALOAD, 0);
 //		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
 //		mv.visitVarInsn(ALOAD, 4);
 //		mv.visitVarInsn(ALOAD, 5);
+//		mv.visitVarInsn(ALOAD, 7);
+//		mv.visitVarInsn(ALOAD, 8);
+//		mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/util/math/BlockPos", "getAllInBoxMutable", "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;", false);
+//		mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false);
+//		mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false);
 //		mv.visitVarInsn(ALOAD, 0);
 //		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
 //		mv.visitVarInsn(FLOAD, 1);
 //		mv.visitVarInsn(FLOAD, 2);
 //		mv.visitVarInsn(FLOAD, 3);
-//		mv.visitMethodInsn(INVOKESTATIC, "net/minecraftforge/client/ForgeHooksClient", "onRebuildChunkEvent", "(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Z", false);
-//		Label l17 = new Label();
-//		mv.visitJumpInsn(IFNE, l17);
-//		mv.visitInsn(RETURN);
-//		mv.visitLabel(l17);
-//		mv.visitLineNumber(147, l17);
-//		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-//		mv.visitTypeInsn(NEW, "net/minecraft/client/renderer/chunk/VisGraph");<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//		mv.visitInsn(DUP);
-
-		// problem, because its in a finally block getLock().unlock() exists once in the source code & multiple times in the bytecode
-//		mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/concurrent/locks/ReentrantLock", "unlock", "()V", false);
-//		Label l16 = new Label();
-//		mv.visitLabel(l16);
-//		mv.visitLineNumber(146, l16);
-//		mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "dummyEventBoolean", "()Z", false);
-//		Label l17 = new Label();
-//		mv.visitJumpInsn(IFNE, l17);
-//		mv.visitInsn(RETURN);
-//		mv.visitLabel(l17);
-//		mv.visitLineNumber(148, l17);
-//		mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-//		mv.visitTypeInsn(NEW, "net/minecraft/client/renderer/chunk/VisGraph");<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//		mv.visitInsn(DUP);
-
-		// problem, because its in a finally block getLock().unlock() exists once in the source code & multiple times in the bytecode
-//		mv.visitMethodInsn(INVOKEVIRTUAL, "java/util/concurrent/locks/ReentrantLock", "unlock", "()V", false);
-//		Label l16 = new Label();
-//		mv.visitLabel(l16);
-//		mv.visitLineNumber(147, l16);
-//		mv.visitTypeInsn(NEW, "net/minecraft/client/renderer/chunk/VisGraph");<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-//		mv.visitInsn(DUP);
+//		mv.visitVarInsn(ALOAD, 10);
+//		mv.visitVarInsn(ALOAD, 9);
+//		mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkBlocksEvent", "(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Ljava/lang/Iterable;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Lcadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent;", false);
+//		mv.visitVarInsn(ASTORE, 11);
+//		Label l22 = new Label();
+//		mv.visitLabel(l22);
+//		mv.visitLineNumber(155, l22);
+//		mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I"); <<<<<<<<<<<<<<<<<<<<<<<
+//		mv.visitInsn(ICONST_1);
 
 		@Override
-		public void visitMethodInsn(final int opcode, final String owner, final String name, final String desc, final boolean intf) {
-			super.visitMethodInsn(opcode, owner, name, desc, intf);
+		public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc) {
 
-//			if(this.mv.ins)
-//
-//			if ((opcode == Opcodes.INVOKEVIRTUAL) && owner.equals("java/util/concurrent/locks/ReentrantLock") && name.equals("unlock") && desc.equals("()V") && (intf == false)) {
-//
-//				final Label l16 = new Label();
-//				this.visitLabel(l16);
-//				this.visitLineNumber(146, l16);
-//				this.visitMethodInsn(Opcodes.INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "dummyEventBoolean", "()Z", false);
-//				final Label l17 = new Label();
-//				this.visitJumpInsn(Opcodes.IFNE, l17);
-//				this.visitInsn(Opcodes.RETURN);
-//				this.visitLabel(l17);
-//				this.visitLineNumber(148, l17);
-//				this.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-//
-//			}
+			// inject creation of RebuildChunkEvents hook variable
+			if ((opcode == Opcodes.GETSTATIC) && owner.equals(this.RENDER_CHUNK_INTERNAL_NAME) && (name.equals("renderChunksUpdated") || name.equals("field_178592_a")) && (desc == "I")) {
+				;
+			}
+			super.visitFieldInsn(opcode, owner, name, desc);
 		}
 
-		public final String	HOOKS_CLASS_INTERNAL_NAME		= Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
-		public final String	RENDER_CHUNK_INTERNAL_NAME		= "net/minecraft/client/renderer/chunk/RenderChunk";
+		public final String HOOKS_CLASS_INTERNAL_NAME = Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
+		// cant reference renderChunk because the class loader is still loading it at this time
+		public final String	RENDER_CHUNK_INTERNAL_NAME		= RenderChunkRebuildChunkHooksRenderChunkClassTransformer2.this.isDeobfuscated ? "net/minecraft/client/renderer/chunk/RenderChunk" : "bxp";
 		public final String	RENDER_GLOBAL_INTERNAL_NAME		= Type.getInternalName(RenderGlobal.class);
 		public final String	CHUNK_CACHE_INTERNAL_NAME		= Type.getInternalName(ChunkCache.class);
 		public final String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= Type.getInternalName(MutableBlockPos.class);
@@ -191,21 +163,15 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer2 implements
 //					this.visitFieldInsn(Opcodes.GETFIELD, this.RENDER_CHUNK_INTERNAL_NAME, "field_178586_f", Type.getObjectType(this.MUTABLE_BLOCK_POS_INTERNAL_NAME).getDescriptor());
 //				}
 //
-//				this.visitVarInsn(Opcodes.FLOAD, 1);
-//				this.visitVarInsn(Opcodes.FLOAD, 2);
-//				this.visitVarInsn(Opcodes.FLOAD, 3);
-//				this.visitMethodInsn(Opcodes.INVOKESTATIC, this.HOOKS_CLASS_INTERNAL_NAME, "onRebuildChunkEvent", this.ON_REBUILD_CHUNK_EVENT_DESCRIPTOR, false);
-//				final Label l17 = new Label();
-//				this.visitJumpInsn(Opcodes.IFNE, l17);
-//				this.visitInsn(Opcodes.RETURN);
-//				this.visitLabel(l17);
-//				this.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 
 				final Label l16 = new Label();
 				this.mv.visitLabel(l16);
-//				mv.visitLineNumber(130, l16);
 				this.mv.visitVarInsn(Opcodes.ALOAD, 0);
-				this.mv.visitFieldInsn(Opcodes.GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;");
+				if (RenderChunkRebuildChunkHooksRenderChunkClassTransformer2.this.isDeobfuscated) {
+					this.visitFieldInsn(Opcodes.GETFIELD, this.RENDER_CHUNK_INTERNAL_NAME, "renderGlobal", Type.getObjectType(this.RENDER_GLOBAL_INTERNAL_NAME).getDescriptor());
+				} else {
+					this.visitFieldInsn(Opcodes.GETFIELD, this.RENDER_CHUNK_INTERNAL_NAME, "field_178589_e", Type.getObjectType(this.RENDER_GLOBAL_INTERNAL_NAME).getDescriptor());
+				}
 				this.mv.visitVarInsn(Opcodes.ALOAD, 0);
 				this.mv.visitFieldInsn(Opcodes.GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
 				this.mv.visitVarInsn(Opcodes.ALOAD, 4);
@@ -217,21 +183,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer2 implements
 				this.mv.visitVarInsn(Opcodes.FLOAD, 3);
 				this.mv.visitMethodInsn(Opcodes.INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkEvent", "(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Z", false);
 				final Label l17 = new Label();
-				this.mv.visitJumpInsn(Opcodes.IFNE, l17);
-				final Label l18 = new Label();
-				this.mv.visitLabel(l18);
-//				mv.visitLineNumber(131, l18);
+				this.mv.visitJumpInsn(Opcodes.IFEQ, l17);
 				this.mv.visitInsn(Opcodes.RETURN);
 				this.mv.visitLabel(l17);
-//				mv.visitLineNumber(134, l17);
 				this.mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-
-//				this.visitMethodInsn(Opcodes.INVOKESTATIC, this.HOOKS_CLASS_INTERNAL_NAME, "dummyEventBoolean", "()Z", false);
-//				final Label l17 = new Label();
-//				this.visitJumpInsn(Opcodes.IFEQ, l17); // should ber IFNE but... its inverted???
-//				this.visitInsn(Opcodes.RETURN);
-//				this.visitLabel(l17);
-//				this.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 
 			}
 			super.visitTypeInsn(opcode, type);
@@ -239,18 +194,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer2 implements
 			RenderChunkRebuildChunkHooksHooks.dummyEventVoid();
 		}
 
-//		mv.visitTypeInsn(NEW, "net/minecraft/client/renderer/chunk/VisGraph");
-
-		@Override
-		public void visitLdcInsn(final Object cst) {
-
-//			NEW net/minecraft/client/renderer/chunk/VisGraph
-
-//			if ("prepareterrain".equals(cst)) {
-//				this.shouldInjectHook = true;
-//			}
-			super.visitLdcInsn(cst);
-		}
 	}
 
 }

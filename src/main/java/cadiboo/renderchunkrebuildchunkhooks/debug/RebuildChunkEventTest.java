@@ -20,7 +20,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent;
-import net.minecraft.init.Biomes;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -40,9 +39,9 @@ public class RebuildChunkEventTest {
 
 		System.out.println(MODID);
 
-		if (event.getWorldView().getBiome(event.getPosition()) == Biomes.RIVER) {
-			event.setCanceled(true);
-		}
+//		if (event.getWorldView().getBiome(event.getPosition()) == Biomes.RIVER) {
+//			event.setCanceled(true);
+//		}
 
 	}
 
