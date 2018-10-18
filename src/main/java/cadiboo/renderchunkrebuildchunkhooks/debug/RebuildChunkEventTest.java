@@ -37,7 +37,7 @@ public class RebuildChunkEventTest {
 			return;
 		}
 
-		System.out.println(MODID);
+//		System.out.println(MODID);
 
 //		if (event.getWorldView().getBiome(event.getPosition()) == Biomes.RIVER) {
 //			event.setCanceled(true);

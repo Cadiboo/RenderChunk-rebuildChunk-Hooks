@@ -2,15 +2,21 @@ package cadiboo.renderchunkrebuildchunkhooks;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 
 //@Mod(modid = RenderChunkRebuildChunkHooks.MODID, name = RenderChunkRebuildChunkHooks.NAME, version = RenderChunkRebuildChunkHooks.VERSION)
 public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContainer {
 
-	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
-	public static final String MOD_NAME = "Render Chunk Rebuild Chunk Hooks";
-	
+	public static final String	MOD_ID		= "render_chunk_rebuild_chunk_hooks";
+	public static final String	MOD_NAME	= "Render Chunk Rebuild Chunk Hooks";
+
+	// Directly reference a log4j logger.
+	public static final Logger LOGGER = LogManager.getLogger();
+
 	public RenderChunkRebuildChunkHooksDummyContainer() {
 
 		super(new ModMetadata());
