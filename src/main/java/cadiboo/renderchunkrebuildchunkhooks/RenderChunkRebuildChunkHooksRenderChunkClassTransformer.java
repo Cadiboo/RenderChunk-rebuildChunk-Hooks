@@ -40,13 +40,22 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		final ClassReader classReader = new ClassReader(basicClass);
 		final ClassWriter classWriter = new ClassWriter(classReader, FLAGS);
+
+		LogManager.getLogger().info("creating custom method visitor to make the following hooks. If you don't see output that the hook was created theres an error");
+		LogManager.getLogger().info("RebuildChunkEvent hook (in visitTypeInsn)");
+		LogManager.getLogger().info("RebuildChunkBlocksEvent hook (in visitFieldInsn and visitEnd)");
+		LogManager.getLogger().info("RebuildChunkBlockEvent hook (in visitEnd)");
+
 		final ClassVisitor classVisitor = new RebuildChunkHooksClassVisitor(classWriter);
+
+		LogManager.getLogger().info("Attempting to make hooks...");
 
 		try {
 			classReader.accept(classVisitor, 0);
+			LogManager.getLogger().info("Made hooks!");
 			return classWriter.toByteArray();
 		} catch (final Exception e) {
-			// TODO: handle exception
+			LogManager.getLogger().error("FAILED to make hooks!!!");
 		}
 
 		return basicClass;
@@ -63,6 +72,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		@Override
 		public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
+
 			final MethodVisitor originalVisitor = super.visitMethod(access, name, desc, signature, exceptions);
 
 			if (!name.equals("rebuildChunk") && !name.equals("func_178581_b")) {
@@ -77,70 +87,50 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public class RebuildChunkHooksMethodVisitor extends MethodVisitor {
 
-		public final Type	VIS_GRAPH_TYPE			= Type.getObjectType(Type.getInternalName(VisGraph.class));
-		public final String	VIS_GRAPH_INTERNAL_NAME	= Type.getInternalName(VisGraph.class);
+		public final Type	VIS_GRAPH_TYPE				= Type.getObjectType(Type.getInternalName(VisGraph.class));
+		public final String	VIS_GRAPH_INTERNAL_NAME		= Type.getInternalName(VisGraph.class);
+		public final String	HOOKS_CLASS_INTERNAL_NAME	= Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
+		// cant reference renderChunk because the class loader is still loading it at this time
+		public final String	RENDER_CHUNK_INTERNAL_NAME		= RenderChunkRebuildChunkHooksRenderChunkClassTransformer.this.isDeobfuscated ? "net/minecraft/client/renderer/chunk/RenderChunk" : "bxp";
+		public final String	RENDER_GLOBAL_INTERNAL_NAME		= Type.getInternalName(RenderGlobal.class);
+		public final String	CHUNK_CACHE_INTERNAL_NAME		= Type.getInternalName(ChunkCache.class);
+		public final String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= Type.getInternalName(MutableBlockPos.class);
+
+		public final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(this.RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(this.CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)), Type.getObjectType(Type.getInternalName(CompiledChunk.class)), Type.getObjectType(this.MUTABLE_BLOCK_POS_INTERNAL_NAME));
 
 		public RebuildChunkHooksMethodVisitor(final MethodVisitor mv) {
 			super(Opcodes.ASM5, mv);
 		}
 
-//		mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/world/ChunkCache", "isEmpty", "()Z", false);
-//		Label l20 = new Label();
-//		mv.visitJumpInsn(IFNE, l20);
-//		Label l21 = new Label();
-//>		mv.visitLabel(l21);
-//>		mv.visitLineNumber(154, l21);
-//>		mv.visitVarInsn(ALOAD, 0);
-//>		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;");
-//>		mv.visitVarInsn(ALOAD, 0);
-//>		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
-//>		mv.visitVarInsn(ALOAD, 4);
-//>		mv.visitVarInsn(ALOAD, 5);
-//>		mv.visitVarInsn(ALOAD, 7);
-//>		mv.visitVarInsn(ALOAD, 8);
-//>		mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/util/math/BlockPos", "getAllInBoxMutable", "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;", false);
-//>		mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false);
-//>		mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false);
-//>		mv.visitVarInsn(ALOAD, 0);
-//>		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
-//>		mv.visitVarInsn(FLOAD, 1);
-//>		mv.visitVarInsn(FLOAD, 2);
-//>		mv.visitVarInsn(FLOAD, 3);
-//>		mv.visitVarInsn(ALOAD, 10);
-//>		mv.visitVarInsn(ALOAD, 9);
-//>		mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkBlocksEvent", "(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Ljava/lang/Iterable;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Lcadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent;", false);
-//>		mv.visitVarInsn(ASTORE, 11);
-//		Label l22 = new Label();
-//		mv.visitLabel(l22);
-//		mv.visitLineNumber(155, l22);
-//		mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I"); <<<<<<<<<<<<<<<<<<<<<<<
-//		mv.visitInsn(ICONST_1);
-
 		@Override
 		public void visitFieldInsn(final int opcode, final String owner, final String name, final String desc) {
 
+			// inject RebuildChunkBlocksEvent hook variable
+			if ((opcode == Opcodes.GETSTATIC) && (owner.equals(this.RENDER_CHUNK_INTERNAL_NAME)) && (name.equals("renderChunksUpdated") || name.equals("field_178592_a")) && (desc.equals(Type.INT_TYPE.getDescriptor()))) {
+				LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook variable...");
+
 // KEY:
-//>>>>>			= header
-//>>>>>>>>>>>	= header
+//>>>>			= header
+//>>>>>>>>		= header
 //>				= my insertion
-//#			= ASM Injection Point
+//#				= ASM Injection Point
 //*				= insertion by compiler for reasons I don't understand
 //	  ______	= read this line it explains itself
 
-//>>>>>			ORIGINAL SOURCE CODE:
+//>>>>			ORIGINAL SOURCE CODE:
 //		        if (!this.worldView.isEmpty())
 //		        {
 //		            ++renderChunksUpdated;
 
-//>>>>>			MODIFIED SOURCE CODE:
+//>>>>			MODIFIED SOURCE CODE:
 //			 	if (!this.worldView.isEmpty())
 //		        {
 //>		            final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlocksEvent rebuildBlocksEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlocksEvent(renderGlobal, worldView, generator, compiledchunk, BlockPos.getAllInBoxMutable(blockpos, blockpos1),Minecraft.getMinecraft().getBlockRendererDispatcher(), this.position, x, y, z, lvt_10_1_, lvt_9_1_);
 //		            ++renderChunksUpdated;
 
-//>>>>>>>>>>>	TURNED INTO BYTECODE INSTRUCTIONS:
+//>>>>>>>>		TURNED INTO BYTECODE INSTRUCTIONS:
 
-//>>>>>			ORIGINAL BYTECODE INSTRUCTIONS:
+//>>>>			ORIGINAL BYTECODE INSTRUCTIONS:
 //			   L20
 //			    LINENUMBER 152 L20
 //			    ALOAD 0
@@ -154,7 +144,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //			    IADD
 //			    PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
 
-//>>>>>			MODIFIED BYTECODE INSTRUCTIONS:
+//>>>>			MODIFIED BYTECODE INSTRUCTIONS:
 //			  L19
 //			    LINENUMBER 152 L19
 //			    ALOAD 0
@@ -190,9 +180,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //			    IADD
 //			    PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
 
-//>>>>>>>>>>>	TURNED INTO ASM INSTRUCTIONS:
+//>>>>>>>>		TURNED INTO ASM INSTRUCTIONS:
 
-//>>>>>			ORIGINAL ASM INSTRUCTIONS:
+//>>>>			ORIGINAL ASM INSTRUCTIONS:
 //				Label l20 = new Label();
 //				mv.visitLabel(l20);
 //				mv.visitLineNumber(152, l20);
@@ -209,7 +199,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //				mv.visitInsn(IADD);
 //				mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I");
 
-//>>>>>			MODIFIED ASM INSTRUCTIONS:
+//>>>>			MODIFIED ASM INSTRUCTIONS:
 //				Label l19 = new Label();
 //				mv.visitLabel(l19);
 //				mv.visitLineNumber(152, l19);
@@ -249,10 +239,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //				mv.visitInsn(IADD);
 //				mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I");
 
-			// inject RebuildChunkBlocksEvent hook variable
-			if ((opcode == Opcodes.GETSTATIC) && (owner.equals(this.RENDER_CHUNK_INTERNAL_NAME)) && (name.equals("renderChunksUpdated") || name.equals("field_178592_a")) && (desc.equals(Type.INT_TYPE.getDescriptor()))) {
-				LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook variable");
-
 				final Label l21 = new Label();
 				this.mv.visitLabel(l21);
 				this.mv.visitLineNumber(154, l21);
@@ -286,20 +272,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			super.visitFieldInsn(opcode, owner, name, desc);
 		}
 
-		public final String HOOKS_CLASS_INTERNAL_NAME = Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
-		// cant reference renderChunk because the class loader is still loading it at this time
-		public final String	RENDER_CHUNK_INTERNAL_NAME		= RenderChunkRebuildChunkHooksRenderChunkClassTransformer.this.isDeobfuscated ? "net/minecraft/client/renderer/chunk/RenderChunk" : "bxp";
-		public final String	RENDER_GLOBAL_INTERNAL_NAME		= Type.getInternalName(RenderGlobal.class);
-		public final String	CHUNK_CACHE_INTERNAL_NAME		= Type.getInternalName(ChunkCache.class);
-		public final String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= Type.getInternalName(MutableBlockPos.class);
-
-		public final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(this.RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(this.CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)), Type.getObjectType(Type.getInternalName(CompiledChunk.class)), Type.getObjectType(this.MUTABLE_BLOCK_POS_INTERNAL_NAME));
-
 		@Override
 		public void visitTypeInsn(final int opcode, final String type) {
 
 			// inject RebuildChunkEvent hook
 			if ((opcode == Opcodes.NEW) && type.equals(this.VIS_GRAPH_INTERNAL_NAME)) {
+				LogManager.getLogger().info("injecting RebuildChunkEvent hook...");
 
 //				final Label l16 = new Label();
 //				this.visitLabel(l16);
@@ -326,14 +304,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //
 
 // KEY:
-//>>>>>			= header
-//>>>>>>>>>>>	= header
+//>>>>			= header
+//>>>>>>>>		= header
 //>				= my insertion
 //#				= ASM Injection Point
 //*				= insertion by compiler for reasons I don't understand
 //	  ______	= read this line it explains itself
 
-//>>>>>			ORIGINAL SOURCE CODE:
+//>>>>			ORIGINAL SOURCE CODE:
 //				finally
 //		        {
 //		            generator.getLock().unlock();
@@ -341,7 +319,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //
 //		        VisGraph lvt_9_1_ = new VisGraph();
 
-//>>>>>			MODIFIED SOURCE CODE:
+//>>>>			MODIFIED SOURCE CODE:
 //				finally
 //		        {
 //		            generator.getLock().unlock();
@@ -349,9 +327,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //>		        if (cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkEvent(renderGlobal, worldView, generator, compiledchunk, this.position, x, y, z)) return;
 //		        VisGraph lvt_9_1_ = new VisGraph();
 
-//>>>>>>>>>>>	TURNED INTO BYTECODE INSTRUCTIONS:
+//>>>>>>>>		TURNED INTO BYTECODE INSTRUCTIONS:
 
-//>>>>>			ORIGINAL BYTECODE INSTRUCTIONS:
+//>>>>			ORIGINAL BYTECODE INSTRUCTIONS:
 //				FRAME SAME1 java/lang/Throwable
 //			    ASTORE 9
 //			   L5
@@ -368,7 +346,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //#			    NEW net/minecraft/client/renderer/chunk/VisGraph
 //			    DUP
 
-//>>>>>			MODIFIED BYTECODE INSTRUCTIONS:
+//>>>>			MODIFIED BYTECODE INSTRUCTIONS:
 //				FRAME SAME1 java/lang/Throwable
 //			    ASTORE 9
 //			   L14
@@ -408,9 +386,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //#			    NEW net/minecraft/client/renderer/chunk/VisGraph
 //			    DUP
 
-//>>>>>>>>>>>	TURNED INTO ASM INSTRUCTIONS:
+//>>>>>>>>		TURNED INTO ASM INSTRUCTIONS:
 
-//>>>>>			ORIGINAL ASM INSTRUCTIONS:
+//>>>>			ORIGINAL ASM INSTRUCTIONS:
 //				mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/lang/Throwable"});
 //				mv.visitVarInsn(ASTORE, 9);
 //				mv.visitLabel(l5);
@@ -428,7 +406,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //				mv.visitTypeInsn(NEW, "net/minecraft/client/renderer/chunk/VisGraph");
 //				mv.visitInsn(DUP);
 
-//>>>>>			MODIFIED ASM INSTRUCTIONS:
+//>>>>			MODIFIED ASM INSTRUCTIONS:
 //				mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/lang/Throwable"});
 //				mv.visitVarInsn(ASTORE, 9);
 //				Label l14 = new Label();
@@ -468,7 +446,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //>				mv.visitInsn(RETURN);
 //>				mv.visitLabel(l17);
 //>				mv.visitLineNumber(149, l17);
-//	  ______	we add another visit frame SAME	here that isn't in the generated ASM (TODO:check if it still crashes without it):			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+//	  ______	we add another visit frame SAME	here that isn't in the generated ASM:			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 //				mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 //				mv.visitTypeInsn(NEW, "net/minecraft/client/renderer/chunk/VisGraph");
 //				mv.visitInsn(DUP);
@@ -497,10 +475,156 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				this.mv.visitLabel(l17);
 				this.mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 
+				LogManager.getLogger().info("finished injecting RebuildChunkEvent hook");
+
 			}
 			super.visitTypeInsn(opcode, type);
 
 			RenderChunkRebuildChunkHooksHooks.dummyEventVoid();
+		}
+
+		@Override
+		public void visitEnd() {
+
+			LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook logic part 1...");
+
+// KEY:
+//>>>>		= header
+//>>>>>>>>	= header
+//>			= my insertion
+//#			= ASM Injection Point
+//*			= insertion by compiler for reasons I don't understand
+//  ______  = read this line it explains itself
+//$			= my hook that has been already inserted
+//<			= removed instructions
+
+//>>>>		ORIGINAL SOURCE CODE:
+//			if (!this.worldView.isEmpty())
+//	        {
+//	            ++renderChunksUpdated;
+//	            boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
+//	            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+//>>>>		ORIGINAL SOURCE CODE (MODIFIED BY ALREADY CREATED HOOK):
+//			if (!this.worldView.isEmpty()) {
+//$				final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlocksEvent rebuildBlocksEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlocksEvent(this.renderGlobal, this.worldView, generator, compiledchunk, BlockPos.getAllInBoxMutable(blockpos, blockpos1), Minecraft.getMinecraft().getBlockRendererDispatcher(), this.position, x, y, z, lvt_10_1_, lvt_9_1_);
+//				++renderChunksUpdated;
+//				boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
+//				final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+//>>>>		MODIFIED SOURCE CODE:
+//			if (!this.worldView.isEmpty()) {
+//				++renderChunksUpdated;
+//>				final boolean[] aboolean = rebuildBlocksEvent.getUsedBlockRenderLayers();
+//				final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+//>>>>		MODIFIED SOURCE CODE (MODIFIED BY ALREADY CREATED HOOK):
+//			if (!this.worldView.isEmpty()) {
+//$				final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlocksEvent rebuildBlocksEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlocksEvent(this.renderGlobal, this.worldView, generator, compiledchunk, BlockPos.getAllInBoxMutable(blockpos, blockpos1), Minecraft.getMinecraft().getBlockRendererDispatcher(), this.position, x, y, z, lvt_10_1_, lvt_9_1_);
+//				++renderChunksUpdated;
+//>				final boolean[] aboolean = rebuildBlocksEvent.getUsedBlockRenderLayers();
+//				final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+//>>>>>>>>	TURNED INTO BYTECODE INSTRUCTIONS (MODIFIED BY ALREADY CREATED HOOK):
+
+//>>>>		ORIGINAL BYTECODE INSTRUCTIONS (MODIFIED BY ALREADY CREATED HOOK):
+//			L23
+//		    LINENUMBER 139 L23
+//		    GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
+//		    ICONST_1
+//		    IADD
+//		    PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
+//		   L24
+//		    LINENUMBER 140 L24
+//<		    INVOKESTATIC net/minecraft/util/BlockRenderLayer.values()[Lnet/minecraft/util/BlockRenderLayer;
+//<		    ARRAYLENGTH
+//<		    NEWARRAY T_BOOLEAN
+//		    ASTORE 12
+//		   L25
+//		    LINENUMBER 141 L25
+//		    INVOKESTATIC net/minecraft/client/Minecraft.getMinecraft()Lnet/minecraft/client/Minecraft;
+//		    INVOKEVIRTUAL net/minecraft/client/Minecraft.getBlockRendererDispatcher()Lnet/minecraft/client/renderer/BlockRendererDispatcher;
+//		    ASTORE 13
+
+//>>>>		MODIFIED BYTECODE INSTRUCTIONS (MODIFIED BY ALREADY CREATED HOOK):
+//			L23
+//		    LINENUMBER 139 L23
+//		    GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
+//		    ICONST_1
+//		    IADD
+//		    PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
+//		   L24
+//		    LINENUMBER 140 L24
+//>		    ALOAD 11
+//>		    INVOKEVIRTUAL cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent.getUsedBlockRenderLayers()[Z
+//		    ASTORE 12
+//		   L25
+//		    LINENUMBER 141 L25
+//		    INVOKESTATIC net/minecraft/client/Minecraft.getMinecraft()Lnet/minecraft/client/Minecraft;
+//		    INVOKEVIRTUAL net/minecraft/client/Minecraft.getBlockRendererDispatcher()Lnet/minecraft/client/renderer/BlockRendererDispatcher;
+//		    ASTORE 13
+
+//>>>>>>>>	TURNED INTO ASM INSTRUCTIONS (MODIFIED BY ALREADY CREATED HOOK):
+
+//>>>>		ORIGINAL ASM INSTRUCTIONS (MODIFIED BY ALREADY CREATED HOOK):
+//			Label l23 = new Label();
+//			mv.visitLabel(l23);
+//			mv.visitLineNumber(139, l23);
+//			mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I");
+//			mv.visitInsn(ICONST_1);
+//			mv.visitInsn(IADD);
+//			mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I");
+//			Label l24 = new Label();
+//			mv.visitLabel(l24);
+//			mv.visitLineNumber(140, l24);
+//<			mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/util/BlockRenderLayer", "values", "()[Lnet/minecraft/util/BlockRenderLayer;", false);
+//<			mv.visitInsn(ARRAYLENGTH);
+//<			mv.visitIntInsn(NEWARRAY, T_BOOLEAN);
+//			mv.visitVarInsn(ASTORE, 12);
+//			Label l25 = new Label();
+//			mv.visitLabel(l25);
+//			mv.visitLineNumber(141, l25);
+//			mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false);
+//			mv.visitVarInsn(ASTORE, 13);
+
+//>>>>		MODIFIED ASM INSTRUCTIONS (MODIFIED BY ALREADY CREATED HOOK):
+//			Label l23 = new Label();
+//			mv.visitLabel(l23);
+//			mv.visitLineNumber(139, l23);
+//			mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I");
+//			mv.visitInsn(ICONST_1);
+//			mv.visitInsn(IADD);
+//			mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I");
+//			Label l24 = new Label();
+//			mv.visitLabel(l24);
+//			mv.visitLineNumber(140, l24);
+//>			mv.visitVarInsn(ALOAD, 11);
+//>			mv.visitMethodInsn(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false);
+//			mv.visitVarInsn(ASTORE, 12);
+//			Label l25 = new Label();
+//			mv.visitLabel(l25);
+//			mv.visitLineNumber(141, l25);
+//			mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false);
+//			mv.visitVarInsn(ASTORE, 13);
+
+//			Label l24 = new Label();
+//			mv.visitLabel(l24);
+//			mv.visitLineNumber(140, l24);
+//			mv.visitVarInsn(ALOAD, 11);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false);
+//			mv.visitVarInsn(ASTORE, 12);
+
+			LogManager.getLogger().info("finished injecting RebuildChunkBlocksEvent hook logic part 1");
+
+			LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook logic part 2 ...");
+			LogManager.getLogger().info("injecting RebuildChunkBlockEvent hook...");
+
+			LogManager.getLogger().info("finished injecting RebuildChunkBlocksEvent hook logic");
+			LogManager.getLogger().info("finished injecting RebuildChunkBlockEvent hook");
+
+			super.visitEnd();
 		}
 
 	}
