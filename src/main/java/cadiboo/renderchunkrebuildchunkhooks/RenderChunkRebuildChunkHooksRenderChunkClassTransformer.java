@@ -538,7 +538,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //		    LINENUMBER 140 L24
 //<		    INVOKESTATIC net/minecraft/util/BlockRenderLayer.values()[Lnet/minecraft/util/BlockRenderLayer;
 //<		    ARRAYLENGTH
-//<		    NEWARRAY T_BOOLEAN
+//<#	    NEWARRAY T_BOOLEAN
 //		    ASTORE 12
 //		   L25
 //		    LINENUMBER 141 L25
@@ -615,6 +615,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //			mv.visitVarInsn(ALOAD, 11);
 //			mv.visitMethodInsn(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false);
 //			mv.visitVarInsn(ASTORE, 12);
+
+			// loop through instruction to find NEWARRAY T_BOOLEAN
+			// remove instruction above
+			// remove instruction below
+			// remove instruction
 
 			LogManager.getLogger().info("finished injecting RebuildChunkBlocksEvent hook logic part 1");
 

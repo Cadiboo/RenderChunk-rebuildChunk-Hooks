@@ -711,6 +711,7 @@ public class RebuildChunkBlocksEventTest {
 		smooth |= state.getBlock() instanceof BlockDirt;
 		smooth |= state.getBlock() instanceof BlockClay;
 		smooth |= state.getBlock() instanceof BlockSnow;
+		smooth |= state.getBlock() == Blocks.BEDROCK;
 
 		return smooth;
 	}
@@ -728,14 +729,19 @@ public class RebuildChunkBlocksEventTest {
 					final IBlockState state = cache.getBlockState(mutablePos);
 
 					if (shouldSmooth(state)) {
-						++density;
+						density += 1;
 					} else if (state.isNormalCube()) {
 
 					} else if (state.getBlock().getMaterial(state) == Material.VINE) {
 						density -= 0.75;
 					} else {
-						--density;
+						density -= 1;
 					}
+
+					if (state.getBlock() == Blocks.BEDROCK) {
+						density += 0.000000000000000000000000000000000000000000001f;
+					}
+
 				}
 			}
 		}
