@@ -124,6 +124,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerCheat implem
 			final int BASTORE = Opcodes.BASTORE;
 			final int ACONST_NULL = Opcodes.ACONST_NULL;
 
+			// TODO: obfuscated environment (actually don't, write the mod properly and don't take this cheaty way!)
+
 //			this.mv.visitCode();
 			final Label l0 = new Label();
 			final Label l1 = new Label();

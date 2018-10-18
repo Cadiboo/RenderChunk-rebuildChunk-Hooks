@@ -42,9 +42,6 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadin
 		return null;
 	}
 
-	// @Override
-	// public String getSetupClass() { return "com.landofminecraft.landofminecraftcore.core.LandofMinecraftHook"; }
-
 	@Override
 	public void injectData(final Map<String, Object> data) {
 		// TODO Auto-generated method stub
