@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksDummyContainer;
 import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
-import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksRenderChunkClassTransformer2;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 //import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.*;
@@ -29,7 +28,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadin
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName(), RenderChunkRebuildChunkHooksRenderChunkClassTransformer2.class.getName(),};
+		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName() };
 	}
 
 	@Override
