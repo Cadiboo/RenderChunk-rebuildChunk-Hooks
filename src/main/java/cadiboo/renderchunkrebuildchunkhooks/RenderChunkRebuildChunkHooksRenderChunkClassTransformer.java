@@ -38,13 +38,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		this.isDeobfuscated = name.equals("net.minecraft.client.renderer.chunk.RenderChunk");
 
-		final ClassReader classReader = new ClassReader(basicClass);
-		final ClassWriter classWriter = new ClassWriter(classReader, FLAGS);
-
 		LogManager.getLogger().info("creating custom method visitor to make the following hooks. If you don't see output that the hook was created theres an error");
 		LogManager.getLogger().info("RebuildChunkEvent hook (in visitTypeInsn)");
 		LogManager.getLogger().info("RebuildChunkBlocksEvent hook (in visitFieldInsn and visitEnd)");
 		LogManager.getLogger().info("RebuildChunkBlockEvent hook (in visitEnd)");
+
+		final ClassReader classReader = new ClassReader(basicClass);
+		final ClassWriter classWriter = new ClassWriter(classReader, FLAGS);
 
 		final ClassVisitor classVisitor = new RebuildChunkHooksClassVisitor(classWriter);
 
@@ -52,6 +52,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		try {
 			classReader.accept(classVisitor, 0);
+
 			LogManager.getLogger().info("Made hooks!");
 			return classWriter.toByteArray();
 		} catch (final Exception e) {
