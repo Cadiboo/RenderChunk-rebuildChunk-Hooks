@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 
@@ -32,5 +33,8 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		meta.screenshots = new String[0];
 		meta.logoFile = "";
 
+		RenderChunk.class.getName();
+
 	}
+
 }
