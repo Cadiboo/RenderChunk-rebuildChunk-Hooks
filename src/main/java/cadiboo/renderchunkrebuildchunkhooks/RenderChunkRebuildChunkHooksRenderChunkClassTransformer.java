@@ -1,5 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks;
 
+import java.io.PrintWriter;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 import com.google.common.collect.ImmutableList;
 
@@ -46,12 +49,22 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		final ClassReader classReader = new ClassReader(basicClass);
 		final ClassWriter classWriter = new ClassWriter(classReader, FLAGS);
 
-		final ClassVisitor classVisitor = new RebuildChunkHooksClassVisitor(classWriter);
+		final TraceClassVisitor classVisitor = new TraceClassVisitor(classWriter, new PrintWriter(System.out));
+
+		final RebuildChunkHooksClassVisitor modifyingClassVisitor = new RebuildChunkHooksClassVisitor(classVisitor);
+
+//		ClassReader reader = new ClassReader("Target");
+//		ClassWriter writer = new ClassWriter(reader, 0);
+//		TraceClassVisitor printer = new TraceClassVisitor(writer,
+//		        new PrintWriter(System.getProperty("java.io.tmpdir") + File.separator + "Target.log"));
+//		ClassAdapter adapter = new ClassAdapter(printer);
+//		reader.accept(adapter, 0);
+//		byte[] b = writer.toByteArray(); // The modified bytecode
 
 		LogManager.getLogger().info("Attempting to make hooks...");
 
 		try {
-			classReader.accept(classVisitor, 0);
+			classReader.accept(modifyingClassVisitor, 0);
 
 			LogManager.getLogger().info("Made hooks!");
 			return classWriter.toByteArray();
@@ -81,13 +94,21 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				return originalVisitor;
 			}
 
-			return new RebuildChunkHooksMethodVisitor(originalVisitor);
+			return new MethodNode(Opcodes.ASM5);
+
+//			return new RebuildChunkHooksMethodVisitor(originalVisitor);
 
 		}
 
 	}
 
-	public class RebuildChunkHooksMethodVisitor extends MethodVisitor {
+	public class RebuildChunkHooksMethodVisitor extends MethodNode {
+
+		@Override
+		public void visitEnd() {
+			LogManager.getLogger().info("eh??");
+			super.visitEnd();
+		}
 
 		public final Type	VIS_GRAPH_TYPE				= Type.getObjectType(Type.getInternalName(VisGraph.class));
 		public final String	VIS_GRAPH_INTERNAL_NAME		= Type.getInternalName(VisGraph.class);
@@ -101,7 +122,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		public final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(this.RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(this.CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)), Type.getObjectType(Type.getInternalName(CompiledChunk.class)), Type.getObjectType(this.MUTABLE_BLOCK_POS_INTERNAL_NAME));
 
 		public RebuildChunkHooksMethodVisitor(final MethodVisitor mv) {
-			super(Opcodes.ASM5, mv);
+			super(Opcodes.ASM5);
+			this.mv = mv;
 		}
 
 		@Override
@@ -485,8 +507,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			RenderChunkRebuildChunkHooksHooks.dummyEventVoid();
 		}
 
-		@Override
-		public void visitEnd() {
+//		@Override
+		public void visitEnd2() {
 
 			LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook logic part 1...");
 
