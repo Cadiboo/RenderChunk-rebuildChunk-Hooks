@@ -3,7 +3,7 @@ package cadiboo.renderchunkrebuildchunkhooks.hooks;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import cadiboo.renderchunkrebuildchunkhooks.dummymod.RenderChunkRebuildChunkHooksDummyContainer;
+import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksDummyContainer;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlocksEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent;

@@ -1,4 +1,4 @@
-package cadiboo.renderchunkrebuildchunkhooks.dummymod;
+package cadiboo.renderchunkrebuildchunkhooks;
 
 import java.util.Arrays;
 
