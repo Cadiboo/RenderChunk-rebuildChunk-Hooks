@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlocksEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlocksEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockDirt;
@@ -108,27 +108,35 @@ public class RebuildChunkBlocksEventTest {
 			return;
 		}
 
-		for (final BlockPos.MutableBlockPos blockpos$mutableblockpos : event.getChunkBlockPositions()) {
-			final IBlockState iblockstate = event.getWorldView().getBlockState(blockpos$mutableblockpos);
-			final Block block = iblockstate.getBlock();
+		for (final BlockPos.MutableBlockPos currentBlockPos : event.getChunkBlockPositions()) {
+
+			final IBlockState blockState = event.getWorldView().getBlockState(currentBlockPos);
+			final Block block = blockState.getBlock();
 
 			for (final BlockRenderLayer blockRenderLayer : BlockRenderLayer.values()) {
-				if (!block.canRenderInLayer(iblockstate, blockRenderLayer)) {
+
+				if (!block.canRenderInLayer(blockState, blockRenderLayer)) {
 					continue;
 				}
+
 				net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockRenderLayer);
 
 				if (block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE) {
+
 					final BufferBuilder bufferbuilder = event.startOrContinueLayer(blockRenderLayer);
 
-					final boolean used = event.getBlockRendererDispatcher().renderBlock(iblockstate, blockpos$mutableblockpos, event.getWorldView(), bufferbuilder);
+					final boolean used = event.getBlockRendererDispatcher().renderBlock(blockState, currentBlockPos, event.getWorldView(), bufferbuilder);
 
 					event.setBlockRenderLayerUsedWithOrOpperation(blockRenderLayer, used);
 
 				}
+
 			}
+
 			net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
+
 		}
+
 	}
 
 	@SubscribeEvent
