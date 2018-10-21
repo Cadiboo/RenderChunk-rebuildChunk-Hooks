@@ -57,10 +57,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			return classWriter.toByteArray();
 		} catch (final Exception e) {
 			e.printStackTrace();
-			LogManager.getLogger().error("FAILED to make hooks!!!");
+			LogManager.getLogger().error("FAILED to make hooks!!! Discarding changes.");
+			return basicClass;
 		}
-
-		return basicClass;
 	}
 
 	public class RebuildChunkHooksClassVisitor extends ClassVisitor {
