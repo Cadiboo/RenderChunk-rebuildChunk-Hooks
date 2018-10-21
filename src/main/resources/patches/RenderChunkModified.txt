@@ -201,19 +201,20 @@ public class RenderChunk
                         compiledchunk.setLayerStarted(blockrenderlayer1);
                         this.preRenderBlocks(bufferbuilder, blockpos);
                     }
-					if (!rebuildBlocksEvent.isCanceled()) {
-						final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlockEvent rebuildBlockEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, x, y, z, lvt_10_1_, lvt_9_1_);
-						if (rebuildBlockEvent.isCanceled()) {
-							for (final BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
-								if (rebuildBlockEvent.getUsedBlockRenderLayers()[blockrenderlayer.ordinal()]) {
-									compiledchunk.setLayerUsed(blockrenderlayer);
-								}
-							}
-						} else {
-							aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
-						}
-					}
-					rebuildBlocksEvent.isCanceled();
+
+                    if (!rebuildBlocksEvent.isCanceled()) {
+                        final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlockEvent rebuildBlockEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, x, y, z, lvt_10_1_, lvt_9_1_);
+                        if (rebuildBlockEvent.isCanceled()) {
+                            for (final BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
+                                if (rebuildBlockEvent.getUsedBlockRenderLayers()[blockrenderlayer.ordinal()]) {
+                                    compiledchunk.setLayerUsed(blockrenderlayer);
+                                }
+                            }
+                        } else {
+                            aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
+                        }
+                    }
+                    rebuildBlocksEvent.isCanceled();
                 }
                 }
                 net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
