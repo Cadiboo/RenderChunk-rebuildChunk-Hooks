@@ -1,0 +1,40 @@
+--- ../src-base/minecraft/net/minecraft/client/renderer/chunk/RenderChunk.java
++++ ../src-work/minecraft/net/minecraft/client/renderer/chunk/RenderChunk.java
+@@ -146,13 +146,15 @@
+             generator.getLock().unlock();
+         }
+
++        if (cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkEvent(renderGlobal, worldView, generator, compiledchunk, this.position, x, y, z)) return;
+         VisGraph lvt_9_1_ = new VisGraph();
+         HashSet lvt_10_1_ = Sets.newHashSet();
+
+         if (!this.worldView.isEmpty())
+         {
+             ++renderChunksUpdated;
+-            boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
++            final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlocksEvent rebuildBlocksEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlocksEvent(this.renderGlobal, this.worldView, generator, compiledchunk, BlockPos.getAllInBoxMutable(blockpos, blockpos1), Minecraft.getMinecraft().getBlockRendererDispatcher(), this.position, x, y, z, lvt_10_1_, lvt_9_1_);
++            final boolean[] aboolean = rebuildBlocksEvent.getUsedBlockRenderLayers();
+             BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+             for (BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(blockpos, blockpos1))
+@@ -200,7 +202,19 @@
+                         this.preRenderBlocks(bufferbuilder, blockpos);
+                     }
+
+-                    aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
++                    if (!rebuildBlocksEvent.isCanceled()) {
++                        final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlockEvent rebuildBlockEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, x, y, z, lvt_10_1_, lvt_9_1_);
++                        if (rebuildBlockEvent.isCanceled()) {
++                            for (final BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
++                                if (rebuildBlockEvent.getUsedBlockRenderLayers()[blockrenderlayer.ordinal()]) {
++                                    compiledchunk.setLayerUsed(blockrenderlayer);
++                                }
++                            }
++                        } else {
++                            aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
++                        }
++                    }
++                    rebuildBlocksEvent.isCanceled();
+                 }
+                 }
+                 net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
