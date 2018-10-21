@@ -736,6 +736,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			if ((opcode == Opcodes.NEWARRAY) && (operand == Opcodes.T_BOOLEAN)) {
 				LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook logic part 1...");
 
+				super.visitIntInsn(opcode, operand);
 				this.mv.visitVarInsn(Opcodes.ASTORE, 12); // because we have
 				final Label l24 = new Label();
 				this.mv.visitLabel(l24);
@@ -744,9 +745,443 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				this.mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false);
 
 				LogManager.getLogger().info("finished injecting RebuildChunkBlocksEvent hook logic part 1");
+				return;
 			}
 
 			super.visitIntInsn(opcode, operand);
+		}
+
+		Label l47 = null;
+
+		@Override
+		public void visitFrame(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack) {
+
+//			L47
+//		    LINENUMBER 190 L47
+//		   FRAME FULL [RenderChunk float float float ChunkCompileTaskGenerator CompiledChunk int BlockPos BlockPos VisGraph HashSet RebuildChunkEvent$RebuildChunkBlocksEvent boolean[] BlockRendererDispatcher BlockPos$MutableBlockPos Iterator IBlockState Block top int int BlockRenderLayer[]] []
+//		   mv.visitFrame(Opcodes.F_FULL, 22, new Object[] {"net/minecraft/client/renderer/chunk/RenderChunk", Opcodes.FLOAT, Opcodes.FLOAT, Opcodes.FLOAT, "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/CompiledChunk", Opcodes.INTEGER, "net/minecraft/util/math/BlockPos", "net/minecraft/util/math/BlockPos", "net/minecraft/client/renderer/chunk/VisGraph", "java/util/HashSet", "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "[Z", "net/minecraft/client/renderer/BlockRendererDispatcher", "net/minecraft/util/math/BlockPos$MutableBlockPos", "java/util/Iterator", "net/minecraft/block/state/IBlockState", "net/minecraft/block/Block", "net/minecraft/util/BlockRenderLayer", Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;"}, 0, new Object[] {});
+
+			if ((type == Opcodes.F_FULL) && (nStack == 0)) {
+				this.l47 = new Label();
+				this.mv.visitLabel(this.l47);
+				LogManager.getLogger().info("ehehehehheheheheheh {}, {}, {}, {}, {}, {}, {}", type, nLocal, local, nStack, stack);
+				;
+			}
+
+// KEY:
+//>>>>		= header
+//>>>>>>>>	= header
+//>			= my insertion
+//#			= ASM Injection Point
+//*			= insertion by compiler for reasons I don't understand
+//  ______  = read this line it explains itself
+//$			= my hook that has been already inserted
+
+//>>>>		ORIGINAL SOURCE CODE:
+//			if (!compiledchunk.isLayerStarted(blockrenderlayer1))
+//          {
+//              compiledchunk.setLayerStarted(blockrenderlayer1);
+//              this.preRenderBlocks(bufferbuilder, blockpos);
+//          }
+//
+//          aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
+//      }
+
+//>>>>		MODIFIED SOURCE CODE:
+//			if (!compiledchunk.isLayerStarted(blockrenderlayer1))
+//          {
+//              compiledchunk.setLayerStarted(blockrenderlayer1);
+//              this.preRenderBlocks(bufferbuilder, blockpos);
+//          }
+//			if (!rebuildBlocksEvent.isCanceled()) {
+//				final cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent.RebuildChunkBlockEvent rebuildBlockEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, x, y, z, lvt_10_1_, lvt_9_1_);
+//				if (rebuildBlockEvent.isCanceled()) {
+//					for (final BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
+//						if (rebuildBlockEvent.getUsedBlockRenderLayers()[blockrenderlayer.ordinal()]) {
+//							compiledchunk.setLayerUsed(blockrenderlayer);
+//						}
+//					}
+//				} else {
+//					aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
+//				}
+//			}
+//      }
+
+//>>>>>>>>	TURNED INTO BYTECODE INSTRUCTIONS:
+
+//>>>>		ORIGINAL BYTECODE INSTRUCTIONS:
+//		   L49
+//		    LINENUMBER 197 L49
+//		    ALOAD 5
+//		    ALOAD 20
+//		    INVOKEVIRTUAL net/minecraft/client/renderer/chunk/CompiledChunk.isLayerStarted(Lnet/minecraft/util/BlockRenderLayer;)Z
+//		    IFNE L50
+//		   L51
+//		    LINENUMBER 199 L51
+//		    ALOAD 5
+//		    ALOAD 20
+//		    INVOKEVIRTUAL net/minecraft/client/renderer/chunk/CompiledChunk.setLayerStarted(Lnet/minecraft/util/BlockRenderLayer;)V
+//		   L52
+//		    LINENUMBER 200 L52
+//		    ALOAD 0
+//		    ALOAD 22
+//		    ALOAD 7
+//		    INVOKESPECIAL net/minecraft/client/renderer/chunk/RenderChunk.preRenderBlocks(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos;)V
+//		   L50
+//		    LINENUMBER 203 L50
+//#		   FRAME APPEND [I net/minecraft/client/renderer/BufferBuilder]
+//		    ALOAD 11
+//		    ILOAD 21
+//		    DUP2
+//		    BALOAD
+//		    ALOAD 12
+//		    ALOAD 15
+//		    ALOAD 14
+//		    ALOAD 0
+//		    GETFIELD net/minecraft/client/renderer/chunk/RenderChunk.worldView : Lnet/minecraft/world/ChunkCache;
+//		    ALOAD 22
+//		    INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z
+//		    IOR
+//		    BASTORE
+//		   L45
+//		    LINENUMBER 188 L45
+//		   FRAME CHOP 3
+//		    IINC 19 1
+//		    GOTO L41
+//		   L42
+//		    LINENUMBER 206 L42
+//		   FRAME CHOP 3
+//		    ACONST_NULL
+//		    INVOKESTATIC net/minecraftforge/client/ForgeHooksClient.setRenderLayer(Lnet/minecraft/util/BlockRenderLayer;)V
+
+//>>>>		MODIFIED BYTECODE INSTRUCTIONS:
+//		   L51
+//		    LINENUMBER 199 L51
+//		    ALOAD 5
+//		    ALOAD 18
+//		    INVOKEVIRTUAL net/minecraft/client/renderer/chunk/CompiledChunk.isLayerStarted(Lnet/minecraft/util/BlockRenderLayer;)Z
+//		    IFNE L52
+//		   L53
+//		    LINENUMBER 201 L53
+//		    ALOAD 5
+//		    ALOAD 18
+//		    INVOKEVIRTUAL net/minecraft/client/renderer/chunk/CompiledChunk.setLayerStarted(Lnet/minecraft/util/BlockRenderLayer;)V
+//		   L54
+//		    LINENUMBER 202 L54
+//		    ALOAD 0
+//		    ALOAD 23
+//		    ALOAD 7
+//		    INVOKESPECIAL net/minecraft/client/renderer/chunk/RenderChunk.preRenderBlocks(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos;)V
+//		   L52
+//		    LINENUMBER 204 L52
+//#		   FRAME APPEND [I net/minecraft/client/renderer/BufferBuilder]
+//>		    ALOAD 11
+//>		    INVOKEVIRTUAL cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent.isCanceled()Z
+//>		    IFNE L47
+//>		   L55
+//>		    LINENUMBER 205 L55
+//>		    ALOAD 0
+//>		    GETFIELD net/minecraft/client/renderer/chunk/RenderChunk.renderGlobal : Lnet/minecraft/client/renderer/RenderGlobal;
+//>		    ALOAD 0
+//>		    GETFIELD net/minecraft/client/renderer/chunk/RenderChunk.worldView : Lnet/minecraft/world/ChunkCache;
+//>		    ALOAD 4
+//>		    ALOAD 5
+//>		    ALOAD 13
+//>		    ALOAD 16
+//>		    ALOAD 14
+//>		    ALOAD 23
+//>		    ALOAD 0
+//>		    GETFIELD net/minecraft/client/renderer/chunk/RenderChunk.position : Lnet/minecraft/util/math/BlockPos$MutableBlockPos;
+//>		    FLOAD 1
+//>		    FLOAD 2
+//>		    FLOAD 3
+//>		    ALOAD 10
+//>		    ALOAD 9
+//>		    INVOKESTATIC cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Lcadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent;
+//>		    ASTORE 24
+//>		   L56
+//>		    LINENUMBER 206 L56
+//>		    ALOAD 24
+//>		    INVOKEVIRTUAL cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent.isCanceled()Z
+//>		    IFEQ L57
+//>		   L58
+//>		    LINENUMBER 207 L58
+//>		    INVOKESTATIC net/minecraft/util/BlockRenderLayer.values()[Lnet/minecraft/util/BlockRenderLayer;
+//>		    DUP
+//>		    ASTORE 28
+//>		    ARRAYLENGTH
+//>		    ISTORE 27
+//>		    ICONST_0
+//>		    ISTORE 26
+//>		    GOTO L59
+//>		   L60
+//>		   FRAME FULL [net/minecraft/client/renderer/chunk/RenderChunk F F F net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator net/minecraft/client/renderer/chunk/CompiledChunk I net/minecraft/util/math/BlockPos net/minecraft/util/math/BlockPos net/minecraft/client/renderer/chunk/VisGraph java/util/HashSet cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent [Z net/minecraft/client/renderer/BlockRendererDispatcher net/minecraft/util/math/BlockPos$MutableBlockPos java/util/Iterator net/minecraft/block/state/IBlockState net/minecraft/block/Block net/minecraft/util/BlockRenderLayer I I [Lnet/minecraft/util/BlockRenderLayer; I net/minecraft/client/renderer/BufferBuilder cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent T I I [Lnet/minecraft/util/BlockRenderLayer;] []
+//>		    ALOAD 28
+//>		    ILOAD 26
+//>		    AALOAD
+//>		    ASTORE 25
+//>		   L61
+//>		    LINENUMBER 208 L61
+//>		    ALOAD 24
+//>		    INVOKEVIRTUAL cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent.getUsedBlockRenderLayers()[Z
+//>		    ALOAD 25
+//>		    INVOKEVIRTUAL net/minecraft/util/BlockRenderLayer.ordinal()I
+//>		    BALOAD
+//>		    IFEQ L62
+//>		   L63
+//>		    LINENUMBER 209 L63
+//>		    ALOAD 5
+//>		    ALOAD 25
+//>		    INVOKEVIRTUAL net/minecraft/client/renderer/chunk/CompiledChunk.setLayerUsed(Lnet/minecraft/util/BlockRenderLayer;)V
+//>		   L62
+//>		    LINENUMBER 207 L62
+//>		   FRAME SAME
+//>		    IINC 26 1
+//>		   L59
+//>		   FRAME SAME
+//>		    ILOAD 26
+//>		    ILOAD 27
+//>		    IF_ICMPLT L60
+//>		   L64
+//>		    LINENUMBER 212 L64
+//>		    GOTO L47
+//>		   L57
+//>		    LINENUMBER 213 L57
+//		   FRAME FULL [net/minecraft/client/renderer/chunk/RenderChunk F F F net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator net/minecraft/client/renderer/chunk/CompiledChunk I net/minecraft/util/math/BlockPos net/minecraft/util/math/BlockPos net/minecraft/client/renderer/chunk/VisGraph java/util/HashSet cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent [Z net/minecraft/client/renderer/BlockRendererDispatcher net/minecraft/util/math/BlockPos$MutableBlockPos java/util/Iterator net/minecraft/block/state/IBlockState net/minecraft/block/Block net/minecraft/util/BlockRenderLayer I I [Lnet/minecraft/util/BlockRenderLayer; I net/minecraft/client/renderer/BufferBuilder cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent] []
+//		    ALOAD 12
+//		    ILOAD 22
+//		    DUP2
+//		    BALOAD
+//		    ALOAD 13
+//		    ALOAD 16
+//		    ALOAD 14
+//		    ALOAD 0
+//		    GETFIELD net/minecraft/client/renderer/chunk/RenderChunk.worldView : Lnet/minecraft/world/ChunkCache;
+//		    ALOAD 23
+//		    INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z
+//		    IOR
+//		    BASTORE
+//		   L47
+//		    LINENUMBER 190 L47
+//		   FRAME FULL [net/minecraft/client/renderer/chunk/RenderChunk F F F net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator net/minecraft/client/renderer/chunk/CompiledChunk I net/minecraft/util/math/BlockPos net/minecraft/util/math/BlockPos net/minecraft/client/renderer/chunk/VisGraph java/util/HashSet cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent [Z net/minecraft/client/renderer/BlockRendererDispatcher net/minecraft/util/math/BlockPos$MutableBlockPos java/util/Iterator net/minecraft/block/state/IBlockState net/minecraft/block/Block T I I [Lnet/minecraft/util/BlockRenderLayer;] []
+//		    IINC 19 1
+//		   L43
+//		   FRAME SAME
+//		    ILOAD 19
+//		    ILOAD 20
+//		    IF_ICMPLT L44
+//		   L65
+//		    LINENUMBER 218 L65
+//		    ACONST_NULL
+//		    INVOKESTATIC net/minecraftforge/client/ForgeHooksClient.setRenderLayer(Lnet/minecraft/util/BlockRenderLayer;)V
+
+//>>>>>>>>	TURNED INTO ASM INSTRUCTIONS:
+
+//>>>>		ORIGINAL ASM INSTRUCTIONS:
+//			Label l49 = new Label();
+//			mv.visitLabel(l49);
+//			mv.visitLineNumber(197, l49);
+//			mv.visitVarInsn(ALOAD, 5);
+//			mv.visitVarInsn(ALOAD, 20);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/chunk/CompiledChunk", "isLayerStarted", "(Lnet/minecraft/util/BlockRenderLayer;)Z", false);
+//			Label l50 = new Label();
+//			mv.visitJumpInsn(IFNE, l50);
+//			Label l51 = new Label();
+//			mv.visitLabel(l51);
+//			mv.visitLineNumber(199, l51);
+//			mv.visitVarInsn(ALOAD, 5);
+//			mv.visitVarInsn(ALOAD, 20);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/chunk/CompiledChunk", "setLayerStarted", "(Lnet/minecraft/util/BlockRenderLayer;)V", false);
+//			Label l52 = new Label();
+//			mv.visitLabel(l52);
+//			mv.visitLineNumber(200, l52);
+//			mv.visitVarInsn(ALOAD, 0);
+//			mv.visitVarInsn(ALOAD, 22);
+//			mv.visitVarInsn(ALOAD, 7);
+//			mv.visitMethodInsn(INVOKESPECIAL, "net/minecraft/client/renderer/chunk/RenderChunk", "preRenderBlocks", "(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos;)V", false);
+//			mv.visitLabel(l50);
+//			mv.visitLineNumber(203, l50);
+//#			mv.visitFrame(Opcodes.F_APPEND,2, new Object[] {Opcodes.INTEGER, "net/minecraft/client/renderer/BufferBuilder"}, 0, null);
+//			mv.visitVarInsn(ALOAD, 11);
+//			mv.visitVarInsn(ILOAD, 21);
+//			mv.visitInsn(DUP2);
+//			mv.visitInsn(BALOAD);
+//			mv.visitVarInsn(ALOAD, 12);
+//			mv.visitVarInsn(ALOAD, 15);
+//			mv.visitVarInsn(ALOAD, 14);
+//			mv.visitVarInsn(ALOAD, 0);
+//			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
+//			mv.visitVarInsn(ALOAD, 22);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/BlockRendererDispatcher", "renderBlock", "(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z", false);
+//			mv.visitInsn(IOR);
+//			mv.visitInsn(BASTORE);
+//			mv.visitLabel(l45);
+//			mv.visitLineNumber(188, l45);
+//			mv.visitFrame(Opcodes.F_CHOP,3, null, 0, null);
+//			mv.visitIincInsn(19, 1);
+//			mv.visitJumpInsn(GOTO, l41);
+//			mv.visitLabel(l42);
+//			mv.visitLineNumber(206, l42);
+//			mv.visitFrame(Opcodes.F_CHOP,3, null, 0, null);
+//			mv.visitInsn(ACONST_NULL);
+//			mv.visitMethodInsn(INVOKESTATIC, "net/minecraftforge/client/ForgeHooksClient", "setRenderLayer", "(Lnet/minecraft/util/BlockRenderLayer;)V", false);
+
+//>>>>		MODIFIED ASM INSTRUCTIONS:
+//			Label l51 = new Label();
+//			mv.visitLabel(l51);
+//			mv.visitLineNumber(199, l51);
+//			mv.visitVarInsn(ALOAD, 5);
+//			mv.visitVarInsn(ALOAD, 18);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/chunk/CompiledChunk", "isLayerStarted", "(Lnet/minecraft/util/BlockRenderLayer;)Z", false);
+//			Label l52 = new Label();
+//			mv.visitJumpInsn(IFNE, l52);
+//			Label l53 = new Label();
+//			mv.visitLabel(l53);
+//			mv.visitLineNumber(201, l53);
+//			mv.visitVarInsn(ALOAD, 5);
+//			mv.visitVarInsn(ALOAD, 18);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/chunk/CompiledChunk", "setLayerStarted", "(Lnet/minecraft/util/BlockRenderLayer;)V", false);
+//			Label l54 = new Label();
+//			mv.visitLabel(l54);
+//			mv.visitLineNumber(202, l54);
+//			mv.visitVarInsn(ALOAD, 0);
+//			mv.visitVarInsn(ALOAD, 23);
+//			mv.visitVarInsn(ALOAD, 7);
+//			mv.visitMethodInsn(INVOKESPECIAL, "net/minecraft/client/renderer/chunk/RenderChunk", "preRenderBlocks", "(Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos;)V", false);
+//			mv.visitLabel(l52);
+//			mv.visitLineNumber(204, l52);
+//#			mv.visitFrame(Opcodes.F_APPEND,2, new Object[] {Opcodes.INTEGER, "net/minecraft/client/renderer/BufferBuilder"}, 0, null);
+//>			mv.visitVarInsn(ALOAD, 11);
+//>			mv.visitMethodInsn(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "isCanceled", "()Z", false);
+//>			mv.visitJumpInsn(IFNE, l47);
+//>			Label l55 = new Label();
+//>			mv.visitLabel(l55);
+//>			mv.visitLineNumber(205, l55);
+//>			mv.visitVarInsn(ALOAD, 0);
+//>			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;");
+//>			mv.visitVarInsn(ALOAD, 0);
+//>			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
+//>			mv.visitVarInsn(ALOAD, 4);
+//>			mv.visitVarInsn(ALOAD, 5);
+//>			mv.visitVarInsn(ALOAD, 13);
+//>			mv.visitVarInsn(ALOAD, 16);
+//>			mv.visitVarInsn(ALOAD, 14);
+//>			mv.visitVarInsn(ALOAD, 23);
+//>			mv.visitVarInsn(ALOAD, 0);
+//>			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
+//>			mv.visitVarInsn(FLOAD, 1);
+//>			mv.visitVarInsn(FLOAD, 2);
+//>			mv.visitVarInsn(FLOAD, 3);
+//>			mv.visitVarInsn(ALOAD, 10);
+//>			mv.visitVarInsn(ALOAD, 9);
+//>			mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkBlockEvent", "(Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Lcadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent;", false);
+//>			mv.visitVarInsn(ASTORE, 24);
+//>			Label l56 = new Label();
+//>			mv.visitLabel(l56);
+//>			mv.visitLineNumber(206, l56);
+//>			mv.visitVarInsn(ALOAD, 24);
+//>			mv.visitMethodInsn(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent", "isCanceled", "()Z", false);
+//>			Label l57 = new Label();
+//>			mv.visitJumpInsn(IFEQ, l57);
+//>			Label l58 = new Label();
+//>			mv.visitLabel(l58);
+//>			mv.visitLineNumber(207, l58);
+//>			mv.visitMethodInsn(INVOKESTATIC, "net/minecraft/util/BlockRenderLayer", "values", "()[Lnet/minecraft/util/BlockRenderLayer;", false);
+//>			mv.visitInsn(DUP);
+//>			mv.visitVarInsn(ASTORE, 28);
+//>			mv.visitInsn(ARRAYLENGTH);
+//>			mv.visitVarInsn(ISTORE, 27);
+//>			mv.visitInsn(ICONST_0);
+//>			mv.visitVarInsn(ISTORE, 26);
+//>			Label l59 = new Label();
+//>			mv.visitJumpInsn(GOTO, l59);
+//>			Label l60 = new Label();
+//>			mv.visitLabel(l60);
+//>			mv.visitFrame(Opcodes.F_FULL, 29, new Object[] {"net/minecraft/client/renderer/chunk/RenderChunk", Opcodes.FLOAT, Opcodes.FLOAT, Opcodes.FLOAT, "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/CompiledChunk", Opcodes.INTEGER, "net/minecraft/util/math/BlockPos", "net/minecraft/util/math/BlockPos", "net/minecraft/client/renderer/chunk/VisGraph", "java/util/HashSet", "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "[Z", "net/minecraft/client/renderer/BlockRendererDispatcher", "net/minecraft/util/math/BlockPos$MutableBlockPos", "java/util/Iterator", "net/minecraft/block/state/IBlockState", "net/minecraft/block/Block", "net/minecraft/util/BlockRenderLayer", Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;", Opcodes.INTEGER, "net/minecraft/client/renderer/BufferBuilder", "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent", Opcodes.TOP, Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;"}, 0, new Object[] {});
+//>			mv.visitVarInsn(ALOAD, 28);
+//>			mv.visitVarInsn(ILOAD, 26);
+//>			mv.visitInsn(AALOAD);
+//>			mv.visitVarInsn(ASTORE, 25);
+//>			Label l61 = new Label();
+//>			mv.visitLabel(l61);
+//>			mv.visitLineNumber(208, l61);
+//>			mv.visitVarInsn(ALOAD, 24);
+//>			mv.visitMethodInsn(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent", "getUsedBlockRenderLayers", "()[Z", false);
+//>			mv.visitVarInsn(ALOAD, 25);
+//>			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/util/BlockRenderLayer", "ordinal", "()I", false);
+//>			mv.visitInsn(BALOAD);
+//>			Label l62 = new Label();
+//>			mv.visitJumpInsn(IFEQ, l62);
+//>			Label l63 = new Label();
+//>			mv.visitLabel(l63);
+//>			mv.visitLineNumber(209, l63);
+//>			mv.visitVarInsn(ALOAD, 5);
+//>			mv.visitVarInsn(ALOAD, 25);
+//>			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/chunk/CompiledChunk", "setLayerUsed", "(Lnet/minecraft/util/BlockRenderLayer;)V", false);
+//>			mv.visitLabel(l62);
+//>			mv.visitLineNumber(207, l62);
+//>			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+//>			mv.visitIincInsn(26, 1);
+//>			mv.visitLabel(l59);
+//>			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+//>			mv.visitVarInsn(ILOAD, 26);
+//>			mv.visitVarInsn(ILOAD, 27);
+//>			mv.visitJumpInsn(IF_ICMPLT, l60);
+//>			Label l64 = new Label();
+//>			mv.visitLabel(l64);
+//>			mv.visitLineNumber(212, l64);
+//>			mv.visitJumpInsn(GOTO, l47);
+//>			mv.visitLabel(l57);
+//>			mv.visitLineNumber(213, l57);
+//>			mv.visitFrame(Opcodes.F_FULL, 25, new Object[] {"net/minecraft/client/renderer/chunk/RenderChunk", Opcodes.FLOAT, Opcodes.FLOAT, Opcodes.FLOAT, "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/CompiledChunk", Opcodes.INTEGER, "net/minecraft/util/math/BlockPos", "net/minecraft/util/math/BlockPos", "net/minecraft/client/renderer/chunk/VisGraph", "java/util/HashSet", "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "[Z", "net/minecraft/client/renderer/BlockRendererDispatcher", "net/minecraft/util/math/BlockPos$MutableBlockPos", "java/util/Iterator", "net/minecraft/block/state/IBlockState", "net/minecraft/block/Block", "net/minecraft/util/BlockRenderLayer", Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;", Opcodes.INTEGER, "net/minecraft/client/renderer/BufferBuilder", "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlockEvent"}, 0, new Object[] {});
+//			mv.visitVarInsn(ALOAD, 12);
+//			mv.visitVarInsn(ILOAD, 22);
+//			mv.visitInsn(DUP2);
+//			mv.visitInsn(BALOAD);
+//			mv.visitVarInsn(ALOAD, 13);
+//			mv.visitVarInsn(ALOAD, 16);
+//			mv.visitVarInsn(ALOAD, 14);
+//			mv.visitVarInsn(ALOAD, 0);
+//			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;");
+//			mv.visitVarInsn(ALOAD, 23);
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/client/renderer/BlockRendererDispatcher", "renderBlock", "(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z", false);
+//			mv.visitInsn(IOR);
+//			mv.visitInsn(BASTORE);
+//			mv.visitLabel(l47);
+//			mv.visitLineNumber(190, l47);
+//			mv.visitFrame(Opcodes.F_FULL, 22, new Object[] {"net/minecraft/client/renderer/chunk/RenderChunk", Opcodes.FLOAT, Opcodes.FLOAT, Opcodes.FLOAT, "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/CompiledChunk", Opcodes.INTEGER, "net/minecraft/util/math/BlockPos", "net/minecraft/util/math/BlockPos", "net/minecraft/client/renderer/chunk/VisGraph", "java/util/HashSet", "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "[Z", "net/minecraft/client/renderer/BlockRendererDispatcher", "net/minecraft/util/math/BlockPos$MutableBlockPos", "java/util/Iterator", "net/minecraft/block/state/IBlockState", "net/minecraft/block/Block", Opcodes.TOP, Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;"}, 0, new Object[] {});
+//			mv.visitIincInsn(19, 1);
+//			mv.visitLabel(l43);
+//			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+//			mv.visitVarInsn(ILOAD, 19);
+//			mv.visitVarInsn(ILOAD, 20);
+//			mv.visitJumpInsn(IF_ICMPLT, l44);
+//			Label l65 = new Label();
+//			mv.visitLabel(l65);
+//			mv.visitLineNumber(218, l65);
+//			mv.visitInsn(ACONST_NULL);
+//			mv.visitMethodInsn(INVOKESTATIC, "net/minecraftforge/client/ForgeHooksClient", "setRenderLayer", "(Lnet/minecraft/util/BlockRenderLayer;)V", false);
+
+//			FRAME APPEND [I net/minecraft/client/renderer/BufferBuilder]
+//			mv.visitFrame(Opcodes.F_APPEND,2, new Object[] {Opcodes.INTEGER, "net/minecraft/client/renderer/BufferBuilder"}, 0, null);
+			LogManager.getLogger().info("{}, {}, {}, {}, {}, {}, {}", type, nLocal, local, nStack, stack);
+			if ((type == Opcodes.F_APPEND) && (nLocal == 2) && (local.length >= 2) && (local[0] == Opcodes.INTEGER) && (local[1].equals("net/minecraft/client/renderer/BufferBuilder")) && (nStack == 0)) {
+
+				final int ALOAD = Opcodes.ALOAD;
+				final int FLOAD = Opcodes.FLOAD;
+				final int GETFIELD = Opcodes.GETFIELD;
+
+				super.visitFrame(type, nLocal, local, nStack, stack);
+
+				this.mv.visitLabel(this.l47);
+//				this.mv.visitFrame(Opcodes.F_FULL, 22, new Object[] { "net/minecraft/client/renderer/chunk/RenderChunk", Opcodes.FLOAT, Opcodes.FLOAT, Opcodes.FLOAT, "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/CompiledChunk", Opcodes.INTEGER, "net/minecraft/util/math/BlockPos", "net/minecraft/util/math/BlockPos", "net/minecraft/client/renderer/chunk/VisGraph", "java/util/HashSet",
+//						"cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "[Z", "net/minecraft/client/renderer/BlockRendererDispatcher", "net/minecraft/util/math/BlockPos$MutableBlockPos", "java/util/Iterator", "net/minecraft/block/state/IBlockState", "net/minecraft/block/Block", Opcodes.TOP, Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;" }, 0, new Object[] {});
+				this.mv.visitIincInsn(19, 1);
+				return;
+
+			}
+
+			super.visitFrame(type, nLocal, local, nStack, stack);
 		}
 
 		@Override
