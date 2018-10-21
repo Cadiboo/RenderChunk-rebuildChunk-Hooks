@@ -3,16 +3,18 @@ package cadiboo.renderchunkrebuildchunkhooks.loadingplugin;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksDummyContainer;
-import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
+import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksCallHook;
+import cadiboo.renderchunkrebuildchunkhooks.dummymod.RenderChunkRebuildChunkHooksDummyContainer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 //import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.*;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.Name;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.SortingIndex;
 
 @Name("Rebuild Chunk Hooks")
 @MCVersion("1.12")
+@SortingIndex(1010)
 public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadingPlugin {
 
 	public static final String CORE_MARKER = "RenderChunkRebuildChunkHooksLoaded";
@@ -28,7 +30,8 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadin
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName() };
+//		return new String[] { RenderChunkRebuildChunkHooksClassTransformer.class.getName() };
+		return new String[0];
 	}
 
 	@Override
@@ -38,8 +41,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadin
 
 	@Override
 	public String getSetupClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return RenderChunkRebuildChunkHooksCallHook.class.getName();
 	}
 
 	@Override
