@@ -1188,22 +1188,22 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			super.visitFrame(type, nLocal, local, nStack, stack);
 		}
 
-		@Override
-		public void visitEnd() {
-
-			// loop through instruction to find NEWARRAY T_BOOLEAN
-			// remove instruction above
-			// remove instruction below
-			// remove instruction
-
-			LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook logic part 2 ...");
-			LogManager.getLogger().info("injecting RebuildChunkBlockEvent hook...");
-
-			LogManager.getLogger().info("finished injecting RebuildChunkBlocksEvent hook logic");
-			LogManager.getLogger().info("finished injecting RebuildChunkBlockEvent hook");
-
-			super.visitEnd();
-		}
+//		@Override
+//		public void visitEnd() {
+//
+//			// loop through instruction to find NEWARRAY T_BOOLEAN
+//			// remove instruction above
+//			// remove instruction below
+//			// remove instruction
+//
+//			LogManager.getLogger().info("injecting RebuildChunkBlocksEvent hook logic part 2 ...");
+//			LogManager.getLogger().info("injecting RebuildChunkBlockEvent hook...");
+//
+//			LogManager.getLogger().info("finished injecting RebuildChunkBlocksEvent hook logic");
+//			LogManager.getLogger().info("finished injecting RebuildChunkBlockEvent hook");
+//
+//			super.visitEnd();
+//		}
 
 	}
 
