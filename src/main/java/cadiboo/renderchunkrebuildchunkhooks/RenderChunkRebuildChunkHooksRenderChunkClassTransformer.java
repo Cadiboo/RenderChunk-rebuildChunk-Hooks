@@ -1171,7 +1171,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				final int FLOAD = Opcodes.FLOAD;
 				final int GETFIELD = Opcodes.GETFIELD;
 
-				this.mv.visitVarInsn(ALOAD, 10);
+				this.mv.visitVarInsn(ALOAD, 13);
 				this.mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkBlocksEvent", "isCanceled", "()Z", false);
 //				this.mv.visitJumpInsn(Opcodes.IFNE, this.l47_ForLoopLabel);
 
