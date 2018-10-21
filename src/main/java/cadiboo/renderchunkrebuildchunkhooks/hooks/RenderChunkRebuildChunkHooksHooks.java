@@ -3,10 +3,10 @@ package cadiboo.renderchunkrebuildchunkhooks.hooks;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksDummyContainer;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlocksEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent;
+import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;

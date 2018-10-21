@@ -15,7 +15,7 @@ public class RebuildChunkBlockEventTest {
 	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
 
 		event.setCanceled(true);
-		System.out.println("eh?");
+		System.out.println("eh? cancelled event!");
 
 	}
 

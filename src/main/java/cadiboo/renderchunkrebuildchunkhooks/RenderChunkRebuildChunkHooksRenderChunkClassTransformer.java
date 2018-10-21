@@ -751,7 +751,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			super.visitIntInsn(opcode, operand);
 		}
 
-		Label l47 = null;
+		Label l47_ForLoopLabel = null;
 
 		@Override
 		public void visitFrame(final int type, final int nLocal, final Object[] local, final int nStack, final Object[] stack) {
@@ -762,8 +762,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //		   mv.visitFrame(Opcodes.F_FULL, 22, new Object[] {"net/minecraft/client/renderer/chunk/RenderChunk", Opcodes.FLOAT, Opcodes.FLOAT, Opcodes.FLOAT, "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/CompiledChunk", Opcodes.INTEGER, "net/minecraft/util/math/BlockPos", "net/minecraft/util/math/BlockPos", "net/minecraft/client/renderer/chunk/VisGraph", "java/util/HashSet", "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "[Z", "net/minecraft/client/renderer/BlockRendererDispatcher", "net/minecraft/util/math/BlockPos$MutableBlockPos", "java/util/Iterator", "net/minecraft/block/state/IBlockState", "net/minecraft/block/Block", "net/minecraft/util/BlockRenderLayer", Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;"}, 0, new Object[] {});
 
 			if ((type == Opcodes.F_FULL) && (nStack == 0)) {
-				this.l47 = new Label();
-				this.mv.visitLabel(this.l47);
+				this.l47_ForLoopLabel = new Label();
+				this.mv.visitLabel(this.l47_ForLoopLabel);
 				LogManager.getLogger().info("ehehehehheheheheheh {}, {}, {}, {}, {}, {}, {}", type, nLocal, local, nStack, stack);
 				;
 			}
@@ -1167,16 +1167,21 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			LogManager.getLogger().info("{}, {}, {}, {}, {}, {}, {}", type, nLocal, local, nStack, stack);
 			if ((type == Opcodes.F_APPEND) && (nLocal == 2) && (local.length >= 2) && (local[0] == Opcodes.INTEGER) && (local[1].equals("net/minecraft/client/renderer/BufferBuilder")) && (nStack == 0)) {
 
+				super.visitFrame(type, nLocal, local, nStack, stack);
+
 				final int ALOAD = Opcodes.ALOAD;
 				final int FLOAD = Opcodes.FLOAD;
 				final int GETFIELD = Opcodes.GETFIELD;
 
-				super.visitFrame(type, nLocal, local, nStack, stack);
+				this.mv.visitVarInsn(ALOAD, 11);
+				this.mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "isCanceled", "()Z", false);
+				this.mv.visitJumpInsn(Opcodes.IFNE, this.l47_ForLoopLabel);
 
-				this.mv.visitLabel(this.l47);
+//				this.mv.visitJumpInsn(Opcodes.GOTO, this.l47_ForLoopLabel);
+//				this.mv.visitLabel(this.l47);
 //				this.mv.visitFrame(Opcodes.F_FULL, 22, new Object[] { "net/minecraft/client/renderer/chunk/RenderChunk", Opcodes.FLOAT, Opcodes.FLOAT, Opcodes.FLOAT, "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/CompiledChunk", Opcodes.INTEGER, "net/minecraft/util/math/BlockPos", "net/minecraft/util/math/BlockPos", "net/minecraft/client/renderer/chunk/VisGraph", "java/util/HashSet",
 //						"cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkEvent$RebuildChunkBlocksEvent", "[Z", "net/minecraft/client/renderer/BlockRendererDispatcher", "net/minecraft/util/math/BlockPos$MutableBlockPos", "java/util/Iterator", "net/minecraft/block/state/IBlockState", "net/minecraft/block/Block", Opcodes.TOP, Opcodes.INTEGER, Opcodes.INTEGER, "[Lnet/minecraft/util/BlockRenderLayer;" }, 0, new Object[] {});
-				this.mv.visitIincInsn(19, 1);
+//				this.mv.visitIincInsn(19, 1);
 				return;
 
 			}

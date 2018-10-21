@@ -3,8 +3,8 @@ package cadiboo.renderchunkrebuildchunkhooks.loadingplugin;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksDummyContainer;
 import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
+import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 //import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.*;
