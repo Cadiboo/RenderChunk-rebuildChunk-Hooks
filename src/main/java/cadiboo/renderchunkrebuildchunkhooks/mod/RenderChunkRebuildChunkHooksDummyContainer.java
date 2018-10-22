@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.ModMetadata;
 //@Mod(modid = RenderChunkRebuildChunkHooks.MODID, name = RenderChunkRebuildChunkHooks.NAME, version = RenderChunkRebuildChunkHooks.VERSION)
 public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContainer {
 
-	public static final String	MOD_ID		= "render_chunk_rebuild_chunk_hooks";
+	public static final String	MOD_ID		= "renderchunkrebuildchunkhooks";
 	public static final String	MOD_NAME	= "Render Chunk Rebuild Chunk Hooks";
 
 	// Directly reference a log4j logger.
@@ -28,7 +28,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		meta.credits = "Me, Myself and I";
 		meta.authorList = Arrays.asList("Cadiboo");
 		meta.description = "";
-		meta.url = "https://github.com/Cadiboo/";
+		meta.url = "https://github.com/Cadiboo/RenderChunkRebuildChunkHooks";
 		meta.updateUrl = "";
 		meta.screenshots = new String[0];
 		meta.logoFile = "";
