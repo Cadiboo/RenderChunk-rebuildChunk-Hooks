@@ -20,16 +20,15 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
-@Mod(modid = RebuildChunkEventTest.MODID, name = "RebuildChunkEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
+//@Mod.EventBusSubscriber
+//@Mod(modid = RebuildChunkEventTest.MODID, name = "RebuildChunkEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
 public class RebuildChunkEventTest {
 
 	public static final String MODID = "rebuild_chunk_event_test";
 
-	private static final boolean ENABLED = true;
+	private static final boolean ENABLED = false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkEvent(final RebuildChunkEvent event) {

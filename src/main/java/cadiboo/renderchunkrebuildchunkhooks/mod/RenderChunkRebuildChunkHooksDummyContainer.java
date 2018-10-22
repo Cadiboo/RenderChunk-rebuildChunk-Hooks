@@ -24,11 +24,11 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		final ModMetadata meta = this.getMetadata();
 		meta.modId = MOD_ID;
 		meta.name = MOD_NAME;
-		meta.version = "@VERSION@";
-		meta.credits = "Roll Credits ...";
-		meta.authorList = Arrays.asList("culegooner");
+		meta.version = "1.0.0.0";
+		meta.credits = "Me, Myself and I";
+		meta.authorList = Arrays.asList("Cadiboo");
 		meta.description = "";
-		meta.url = "https://github.com/culegooner/CreeperBurnCore";
+		meta.url = "https://github.com/Cadiboo/";
 		meta.updateUrl = "";
 		meta.screenshots = new String[0];
 		meta.logoFile = "";
