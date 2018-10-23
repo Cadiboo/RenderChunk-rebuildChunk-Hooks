@@ -1,34 +1,165 @@
 package cadiboo.renderchunkrebuildchunkhooks.hooks;
 
 import java.util.HashSet;
-import java.util.logging.Logger;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
+import com.google.common.collect.Sets;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlocksEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent;
-import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class RenderChunkRebuildChunkHooksHooks {
+public final class RenderChunkRebuildChunkHooksHooks {
 
-	public static boolean dummyEventBoolean() {
-		final Logger logger = Logger.getLogger(RenderChunkRebuildChunkHooksDummyContainer.MOD_ID);
-		logger.info("dummyEvent");
-		return Boolean.valueOf("false").booleanValue();
+	/** INTERNAL USE ONLY, CALLED BY INJECTED CODE IN RenderChunk#rebuildChunk */
+	public void rebuildChunk(final float x, final float y, final float z, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final MutableBlockPos renderChunkPosition, final ChunkCache worldView, final RenderGlobal renderGlobal, int renderChunksUpdated, final ReentrantLock lockCompileTask, final Set<TileEntity> setTileEntities) {
+
+		final CompiledChunk compiledChunk = new CompiledChunk();
+
+		chunkCompileTaskGenerator.getLock().lock();
+		try {
+			if (chunkCompileTaskGenerator.getStatus() != ChunkCompileTaskGenerator.Status.COMPILING) {
+				return;
+			}
+			chunkCompileTaskGenerator.setCompiledChunk(compiledChunk);
+		} finally {
+			chunkCompileTaskGenerator.getLock().unlock();
+		}
+
+		if (RenderChunkRebuildChunkHooksHooks.onRebuildChunkEvent(renderGlobal, worldView, chunkCompileTaskGenerator, compiledChunk, renderChunkPosition, x, y, z)) {
+			return;
+		}
+
+		final VisGraph visGraph = new VisGraph();
+		final HashSet<TileEntity> tileEntitiesWithGlobalRenderers = Sets.<TileEntity>newHashSet();
+
+		if (!worldView.isEmpty()) {
+			++renderChunksUpdated;
+
+			final RebuildChunkBlocksEvent rebuildBlocksEvent = RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlocksEvent(renderGlobal, worldView, chunkCompileTaskGenerator, compiledChunk, BlockPos.getAllInBoxMutable(renderChunkPosition, renderChunkPosition.add(15, 15, 15)), Minecraft.getMinecraft().getBlockRendererDispatcher(), renderChunkPosition, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
+
+			final boolean[] usedBlockRenderLayers = rebuildBlocksEvent.getUsedBlockRenderLayers();
+			final BlockRendererDispatcher blockRendererDispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+
+			for (final MutableBlockPos currentPos : BlockPos.getAllInBoxMutable(renderChunkPosition, renderChunkPosition.add(15, 15, 15))) {
+				final IBlockState blockState = worldView.getBlockState(currentPos);
+				final Block block = blockState.getBlock();
+
+				if (blockState.isOpaqueCube()) {
+					visGraph.setOpaqueCube(currentPos);
+				}
+
+				if (block.hasTileEntity(blockState)) {
+					final TileEntity tileentity = worldView.getTileEntity(currentPos, Chunk.EnumCreateEntityType.CHECK);
+
+					if (tileentity != null) {
+						final TileEntitySpecialRenderer<TileEntity> tileentityspecialrenderer = TileEntityRendererDispatcher.instance.<TileEntity>getRenderer(tileentity);
+
+						if (tileentityspecialrenderer != null) {
+
+							if (tileentityspecialrenderer.isGlobalRenderer(tileentity)) {
+								tileEntitiesWithGlobalRenderers.add(tileentity);
+							} else {
+								compiledChunk.addTileEntity(tileentity); // FORGE: Fix MC-112730
+							}
+						}
+					}
+				}
+
+				for (final BlockRenderLayer blockRenderLayer : BlockRenderLayer.values()) {
+					if (!block.canRenderInLayer(blockState, blockRenderLayer) && !RenderChunkRebuildChunkHooksHooks.canRenderInLayer(blockState, blockRenderLayer)) {
+						continue;
+					}
+					net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockRenderLayer);
+					final int blockRenderLayerId = blockRenderLayer.ordinal();
+
+					if (block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE) {
+						final BufferBuilder bufferbuilder = chunkCompileTaskGenerator.getRegionRenderCacheBuilder().getWorldRendererByLayerId(blockRenderLayerId);
+
+						if (!compiledChunk.isLayerStarted(blockRenderLayer)) {
+							compiledChunk.setLayerStarted(blockRenderLayer);
+							this.preRenderBlocks(bufferbuilder, renderChunkPosition);
+						}
+
+						if (!rebuildBlocksEvent.isCanceled()) {
+							final RebuildChunkBlockEvent rebuildBlockEvent = RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(renderGlobal, worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, blockState, currentPos, bufferbuilder, renderChunkPosition, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
+							if (rebuildBlockEvent.isCanceled()) {
+								for (final BlockRenderLayer blockRenderLayer2 : BlockRenderLayer.values()) {
+									if (rebuildBlockEvent.getUsedBlockRenderLayers()[blockRenderLayer2.ordinal()] == true) {
+										compiledChunk.setLayerUsed(blockRenderLayer2);
+									}
+								}
+							} else {
+								usedBlockRenderLayers[blockRenderLayerId] |= blockRendererDispatcher.renderBlock(blockState, currentPos, worldView, bufferbuilder);
+							}
+						}
+						rebuildBlocksEvent.isCanceled();
+					}
+				}
+				net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
+			}
+
+			for (final BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
+				if (usedBlockRenderLayers[blockrenderlayer.ordinal()]) {
+					compiledChunk.setLayerUsed(blockrenderlayer);
+				}
+
+				if (compiledChunk.isLayerStarted(blockrenderlayer)) {
+					this.postRenderBlocks(blockrenderlayer, x, y, z, chunkCompileTaskGenerator.getRegionRenderCacheBuilder().getWorldRendererByLayer(blockrenderlayer), compiledChunk);
+				}
+			}
+		}
+
+		compiledChunk.setVisibility(visGraph.computeVisibility());
+		lockCompileTask.lock();
+
+		try {
+			final Set<TileEntity> set = Sets.newHashSet(tileEntitiesWithGlobalRenderers);
+			final Set<TileEntity> set1 = Sets.newHashSet(setTileEntities);
+			set.removeAll(setTileEntities);
+			set1.removeAll(tileEntitiesWithGlobalRenderers);
+			setTileEntities.clear();
+			setTileEntities.addAll(tileEntitiesWithGlobalRenderers);
+			renderGlobal.updateTileEntities(set1, set);
+		} finally {
+			lockCompileTask.unlock();
+		}
 	}
 
-	public static void dummyEventVoid() {
-		final Logger logger = Logger.getLogger(RenderChunkRebuildChunkHooksDummyContainer.MOD_ID);
-		logger.info("dummyEvent");
+	private void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
+		bufferBuilderIn.begin(7, DefaultVertexFormats.BLOCK);
+		bufferBuilderIn.setTranslation((-pos.getX()), (-pos.getY()), (-pos.getZ()));
+	}
+
+	private void postRenderBlocks(final BlockRenderLayer layer, final float x, final float y, final float z, final BufferBuilder bufferBuilderIn, final CompiledChunk compiledChunkIn) {
+		if ((layer == BlockRenderLayer.TRANSLUCENT) && !compiledChunkIn.isLayerEmpty(layer)) {
+			bufferBuilderIn.sortVertexData(x, y, z);
+			compiledChunkIn.setState(bufferBuilderIn.getVertexState());
+		}
+
+		bufferBuilderIn.finishDrawing();
 	}
 
 	// public static RenderBlockRenderLayerEvent onRenderBlockRenderLayerEvent(final RenderGlobal renderGlobal, final BlockRenderLayer blockRenderLayer, final double partialTicks, final int pass, final Entity entity, final int chunksRendered) {
@@ -36,6 +167,12 @@ public class RenderChunkRebuildChunkHooksHooks {
 	// MinecraftForge.EVENT_BUS.post(event);
 	// return event;
 	// }
+
+	public static boolean canRenderInLayer(final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+		final RebuildChunkEvent event = new RebuildChunkEvent(renderGlobal, worldView, generator, compiledChunk, renderChunkPosition, x, y, z);
+		MinecraftForge.EVENT_BUS.post(event);
+		return event.getResult() != Event.Result.DENY;
+	}
 
 	/**
 	 * @return if vanilla rendering should be stopped

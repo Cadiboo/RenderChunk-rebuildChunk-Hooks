@@ -480,7 +480,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			}
 			super.visitTypeInsn(opcode, type);
 
-			RenderChunkRebuildChunkHooksHooks.dummyEventVoid();
 		}
 
 //		if (!compiledchunk.isLayerStarted(blockrenderlayer1))
