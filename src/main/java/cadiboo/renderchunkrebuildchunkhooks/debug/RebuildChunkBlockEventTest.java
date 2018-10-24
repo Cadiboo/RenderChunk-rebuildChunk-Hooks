@@ -3,10 +3,11 @@ package cadiboo.renderchunkrebuildchunkhooks.debug;
 import java.util.Random;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-//@Mod.EventBusSubscriber
-//@Mod(modid = RebuildChunkBlockEventTest.MODID, name = "RebuildChunkBlockEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
+@Mod.EventBusSubscriber
+@Mod(modid = RebuildChunkBlockEventTest.MODID, name = "RebuildChunkBlockEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
 public class RebuildChunkBlockEventTest {
 
 	public static final String	MODID	= "rebuild_chunk_block_event_test";
