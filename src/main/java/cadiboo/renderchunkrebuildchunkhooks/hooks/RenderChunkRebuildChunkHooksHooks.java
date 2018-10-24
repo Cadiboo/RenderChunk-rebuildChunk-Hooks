@@ -202,6 +202,12 @@ public final class RenderChunkRebuildChunkHooksHooks {
 		bufferBuilderIn.finishDrawing();
 	}
 
+	// public static RenderBlockRenderLayerEvent onRenderBlockRenderLayerEvent(final RenderGlobal renderGlobal, final BlockRenderLayer blockRenderLayer, final double partialTicks, final int pass, final Entity entity, final int chunksRendered) {
+	// final RenderBlockRenderLayerEvent event = new RenderBlockRenderLayerEvent(renderGlobal, blockRenderLayer, partialTicks, pass, entity, chunksRendered);
+	// MinecraftForge.EVENT_BUS.post(event);
+	// return event;
+	// }
+
 	public static boolean canRenderInLayer(final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockState, blockRenderLayer);
 		MinecraftForge.EVENT_BUS.post(event);
