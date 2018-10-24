@@ -317,6 +317,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		public void visitCode() {
 //			super.visitCode();
 
+			LogManager.getLogger().info("Preparing to inject...");
+
 			final int FLOAD = Opcodes.FLOAD;
 			final int ALOAD = Opcodes.ALOAD;
 			final int GETFIELD = Opcodes.GETFIELD;
@@ -328,6 +330,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			// noop the exisiting MethodVisitor to stop the normal method being generated
 			this.mv = new MethodVisitor(Opcodes.ASM5) {
 			};
+
+			LogManager.getLogger().info("Starting injection.");
 
 			mv.visitCode();
 			final Label l0 = new Label();
@@ -364,6 +368,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			mv.visitMaxs(10, 5);
 			mv.visitEnd();
 			this.visitEnd();
+
+			LogManager.getLogger().info("Finished injection.");
+
 		}
 
 	}
