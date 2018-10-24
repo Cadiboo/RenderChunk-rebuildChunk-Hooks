@@ -5,8 +5,10 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.renderer.chunk.RenderChunk;
+import com.google.common.eventbus.EventBus;
+
 import net.minecraftforge.fml.common.DummyModContainer;
+import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.ModMetadata;
 
 //@Mod(modid = RenderChunkRebuildChunkHooks.MODID, name = RenderChunkRebuildChunkHooks.NAME, version = RenderChunkRebuildChunkHooks.VERSION)
@@ -29,12 +31,16 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		meta.authorList = Arrays.asList("Cadiboo");
 		meta.description = "";
 		meta.url = "https://github.com/Cadiboo/RenderChunkRebuildChunkHooks";
-		meta.updateUrl = "";
+		meta.updateJSON = "https://github.com/Cadiboo/RenderChunkRebuildChunkHooks/update.json";
 		meta.screenshots = new String[0];
-		meta.logoFile = "";
+		meta.logoFile = "/logo.png";
 
-		RenderChunk.class.getName();
+	}
 
+	@Override
+	public boolean registerBus(final EventBus bus, final LoadController controller) {
+		bus.register(this);
+		return true;
 	}
 
 }
