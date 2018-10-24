@@ -34,11 +34,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ChunkCache;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber
-@Mod(modid = RebuildChunkBlocksEventTest.MODID, name = "RebuildChunkBlocksEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
+//@Mod.EventBusSubscriber
+//@Mod(modid = RebuildChunkBlocksEventTest.MODID, name = "RebuildChunkBlocksEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
 public class RebuildChunkBlocksEventTest {
 
 	public static final String	MODID	= "rebuild_chunk_blocks_event_test";
