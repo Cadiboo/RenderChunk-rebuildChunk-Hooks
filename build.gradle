@@ -63,7 +63,7 @@ dependencies {
 processResources {
 
 	//exclude debug mods
-	exclude "debug/"
+	exclude "*debug*"
 	// exclude "cadiboo/renderchunkrebuildchunkhooks/debug/*"
 
     // this will ensure that this task is redone when the versions change.
