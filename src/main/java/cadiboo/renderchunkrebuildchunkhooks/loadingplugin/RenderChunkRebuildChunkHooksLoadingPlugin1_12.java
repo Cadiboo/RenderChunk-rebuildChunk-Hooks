@@ -1,7 +1,8 @@
 package cadiboo.renderchunkrebuildchunkhooks.loadingplugin;
 
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
 
 import cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
 import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
@@ -18,7 +19,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadin
 	public static final String CORE_MARKER = "RenderChunkRebuildChunkHooksLoaded";
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12() {
-		Logger.getLogger(RenderChunkRebuildChunkHooksDummyContainer.MOD_ID).info("RenderChunkRebuildChunkHooksLoadingPlugin at version " + this.getVersion());
+		LogManager.getLogger().info("RenderChunkRebuildChunkHooksLoadingPlugin at version " + this.getVersion());
 		Launch.blackboard.put(CORE_MARKER, this.getVersion());
 	}
 
