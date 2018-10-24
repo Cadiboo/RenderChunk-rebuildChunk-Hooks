@@ -19,7 +19,7 @@
 
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 //@Mod.EventBusSubscriber
@@ -31,7 +31,7 @@ public class RebuildChunkEventTest {
 	private static final boolean ENABLED = false;
 
 	@SubscribeEvent
-	public static void onRebuildChunkEvent(final RebuildChunkEvent event) {
+	public static void onRebuildChunkEvent(final RebuildChunkPreEvent event) {
 		if (!ENABLED) {
 			return;
 		}

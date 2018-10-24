@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * Canceling this event prevents all Blocks and Tile Entities from being rebuilt to the chunk (and therefore rendered)
  */
 @Cancelable
-public class RebuildChunkEvent extends Event {
+public class RebuildChunkPreEvent extends Event {
 
 	private final RenderGlobal				context;
 	private final ChunkCache				worldView;
@@ -25,7 +25,7 @@ public class RebuildChunkEvent extends Event {
 	private final float						y;
 	private final float						z;
 
-	public RebuildChunkEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
+	public RebuildChunkPreEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
 		this.context = renderGlobal;
 		this.worldView = worldView;
 		this.generator = generator;
