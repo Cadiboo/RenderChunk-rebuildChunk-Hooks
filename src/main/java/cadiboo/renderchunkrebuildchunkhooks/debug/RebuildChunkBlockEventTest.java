@@ -1,5 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
+import java.util.Random;
+
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -17,8 +19,10 @@ public class RebuildChunkBlockEventTest {
 			return;
 		}
 
-		event.setCanceled(true);
-		System.out.println("eh? cancelled event!");
+		if (new Random().nextBoolean()) {
+			event.setCanceled(true);
+			System.out.println("eh? cancelled event!");
+		}
 
 	}
 
