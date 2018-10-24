@@ -11,7 +11,6 @@ import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockGrassPath;
 import net.minecraft.block.BlockGravel;
-import net.minecraft.block.BlockIce;
 import net.minecraft.block.BlockOre;
 import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.BlockSand;
@@ -98,7 +97,6 @@ public class RebuildChunkBlocksEventTest {
 		smooth |= state.getBlock() instanceof BlockDirt;
 		smooth |= state.getBlock() instanceof BlockClay;
 		smooth |= state.getBlock() instanceof BlockSnow;
-		smooth |= state.getBlock() instanceof BlockIce;
 
 		return smooth;
 	}
