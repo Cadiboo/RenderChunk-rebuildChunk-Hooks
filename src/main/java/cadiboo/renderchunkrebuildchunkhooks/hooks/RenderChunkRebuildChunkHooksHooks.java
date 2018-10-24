@@ -36,6 +36,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+/**
+ * @author Cadiboo
+ */
 public final class RenderChunkRebuildChunkHooksHooks {
 
 	public static final Method			COMPILED_CHUNK_SET_LAYER_USED			= getMethodAndMakeItAccessable();
@@ -202,6 +205,9 @@ public final class RenderChunkRebuildChunkHooksHooks {
 		bufferBuilderIn.finishDrawing();
 	}
 
+	/**
+	 * @return if the block can render in the layer
+	 */
 	public static boolean canRenderInLayer(final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockState, blockRenderLayer);
 		MinecraftForge.EVENT_BUS.post(event);
@@ -217,12 +223,18 @@ public final class RenderChunkRebuildChunkHooksHooks {
 		return event.isCanceled();
 	}
 
+	/**
+	 * @return the posted event
+	 */
 	public static RebuildChunkBlocksEvent onRebuildChunkBlocksEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final Iterable<MutableBlockPos> chunkBlockPositions, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z, final HashSet tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 		final RebuildChunkBlocksEvent event = new RebuildChunkBlocksEvent(renderGlobal, worldView, generator, compiledChunk, chunkBlockPositions, blockRendererDispatcher, renderChunkPosition, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 		MinecraftForge.EVENT_BUS.post(event);
 		return event;
 	}
 
+	/**
+	 * @return the posted event
+	 */
 	public static RebuildChunkBlockEvent onRebuildChunkBlockEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z, final HashSet tileEntitiesWithGlobalRenderers,
 			final VisGraph visGraph) {
 		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderGlobal, worldView, generator, compiledChunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
