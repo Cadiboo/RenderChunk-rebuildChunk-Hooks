@@ -42,7 +42,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RebuildChunkBlocksEventTest {
 
 	public static final String	MODID	= "rebuild_chunk_blocks_event_test";
-	public static final boolean	ENABLED	= true;
+	public static final boolean	ENABLED	= false;
 
 	public static final int	SURFACE_NETS_CUBE_EDGES_SIZE	= 24;
 	public static final int	SURFACE_NETS_EDGE_TABLE_SIZE	= 256;
