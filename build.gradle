@@ -62,9 +62,13 @@ dependencies {
 
 processResources {
 
+	//TODO exclude entire /debug/ package
 	//exclude debug mods
-	exclude "*debug*"
-	// exclude "cadiboo/renderchunkrebuildchunkhooks/debug/*"
+	from(sourceSets.main.java.srcDirs) {
+        exclude 'RebuildChunkBlockEventTest.java'
+		exclude 'RebuildChunkBlocksEventTest.java'
+		exclude 'RebuildChunkEventTest.java'
+    }
 
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
