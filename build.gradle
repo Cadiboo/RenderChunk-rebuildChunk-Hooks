@@ -86,12 +86,16 @@ processResources {
         exclude 'mcmod.info'
     }
 
+    exclude '*.'
+
     //move out Access Transformer to META-INF
     rename '(.+_at.cfg)', 'META-INF/$1'
     
 }
 
 jar {
+
+    exclude '*.'
 
     manifest {
         attributes 'FMLAT': 'renderchunkrebuildchunkhooks_at.cfg'

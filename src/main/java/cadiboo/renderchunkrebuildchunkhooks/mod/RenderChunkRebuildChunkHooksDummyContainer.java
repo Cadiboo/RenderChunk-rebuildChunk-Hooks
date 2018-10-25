@@ -11,11 +11,11 @@ import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.ModMetadata;
 
-//@Mod(modid = RenderChunkRebuildChunkHooks.MODID, name = RenderChunkRebuildChunkHooks.NAME, version = RenderChunkRebuildChunkHooks.VERSION)
 public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContainer {
 
 	public static final String	MOD_ID		= "renderchunkrebuildchunkhooks";
 	public static final String	MOD_NAME	= "RenderChunk rebuild Chunk Hooks";
+	public static final String	MOD_VERSION	= "1.0.0.0";
 
 	// Directly reference a log4j logger.
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -26,7 +26,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		final ModMetadata meta = this.getMetadata();
 		meta.modId = MOD_ID;
 		meta.name = MOD_NAME;
-		meta.version = "1.0.0.0";
+		meta.version = MOD_VERSION;
 		meta.credits = "Me, Myself and I";
 		meta.authorList = Arrays.asList("Cadiboo");
 		meta.description = "";
