@@ -60,14 +60,27 @@ dependencies {
 
 }
 
-processResources {
+jar {
 
-	//TODO exclude entire /debug/ package
-	//exclude debug mods
-    exclude 'RebuildChunkBlockEventTest.java'
-	exclude 'RebuildChunkBlocksEventTest.java'
-	exclude 'RebuildChunkEventTest.java'
-    exclude '*.'
+    sourceSets {
+        main {
+            java {
+                exclude '**/debug/**'
+            }
+        }
+    }
+
+    manifest {
+        attributes 'FMLAT': 'renderchunkrebuildchunkhooks_at.cfg'
+        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12'
+        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12_1'
+        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2'
+        attributes 'FMLCorePluginContainsMod': 'true'
+    }
+}
+
+
+processResources {
 
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
@@ -91,17 +104,4 @@ processResources {
     //move out Access Transformer to META-INF
     rename '(.+_at.cfg)', 'META-INF/$1'
     
-}
-
-jar {
-
-    exclude '*.'
-
-    manifest {
-        attributes 'FMLAT': 'renderchunkrebuildchunkhooks_at.cfg'
-        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12'
-        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12_1'
-        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2'
-        attributes 'FMLCorePluginContainsMod': 'true'
-    }
 }
