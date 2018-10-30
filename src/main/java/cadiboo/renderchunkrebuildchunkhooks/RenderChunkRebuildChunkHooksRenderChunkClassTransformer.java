@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 
@@ -31,17 +32,15 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final int FLAGS = ClassWriter.COMPUTE_MAXS;
 
-	public static boolean isDeobfuscated = false;
+	public static final boolean DEOBFUSCATED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
 	@Override
-	public byte[] transform(final String name, final String transformedName, final byte[] basicClass) {
-		if (!name.equals("net.minecraft.client.renderer.chunk.RenderChunk") && !name.equals("cws")) {
+	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
+		if (!transformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk")) {
 			return basicClass;
 		}
 
-		this.isDeobfuscated = name.equals("net.minecraft.client.renderer.chunk.RenderChunk");
-
-		LogManager.getLogger().info("redirecting minecraft.client.renderer.chunk.RenderChunk#rebuildChunk to cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk");
+		LogManager.getLogger().info("Preparing to redirect minecraft.client.renderer.chunk.RenderChunk#rebuildChunk to cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk");
 
 		final ClassReader classReader = new ClassReader(basicClass);
 		final ClassWriter classWriter = new ClassWriter(classReader, FLAGS);
@@ -64,8 +63,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static class RebuildChunkHooksClassVisitor extends ClassVisitor {
 
-		public final Type	REBUILD_CHUNK_TYPE			= Type.getMethodType(Type.VOID_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)));
-		public final String	REBUILD_CHUNK_DESCRIPTOR	= this.REBUILD_CHUNK_TYPE.getDescriptor();
+		public static final Type	REBUILD_CHUNK_TYPE			= Type.getMethodType(Type.VOID_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)));
+		public static final String	REBUILD_CHUNK_DESCRIPTOR	= REBUILD_CHUNK_TYPE.getDescriptor();
 
 		public RebuildChunkHooksClassVisitor(final ClassVisitor classVisitor) {
 			super(Opcodes.ASM5, classVisitor);
@@ -76,9 +75,16 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			final MethodVisitor originalVisitor = super.visitMethod(access, name, desc, signature, exceptions);
 
-			if (!name.equals("rebuildChunk") && !name.equals("func_178581_b")) {
+			LogManager.getLogger().info(REBUILD_CHUNK_TYPE);
+			LogManager.getLogger().info(REBUILD_CHUNK_DESCRIPTOR);
+			LogManager.getLogger().info(name);
+			LogManager.getLogger().info(desc);
+
+			if (!desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
 				return originalVisitor;
 			}
+
+			LogManager.getLogger().info("Attempting to overwrite method " + name + " (rebuildChunk) with descriptor " + desc + "...");
 
 			return new RebuildChunkHooksMethodVisitor(originalVisitor);
 
@@ -88,16 +94,16 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static class RebuildChunkHooksMethodVisitor extends MethodVisitor {
 
-		public final Type	VIS_GRAPH_TYPE				= Type.getObjectType(Type.getInternalName(VisGraph.class));
-		public final String	VIS_GRAPH_INTERNAL_NAME		= Type.getInternalName(VisGraph.class);
-		public final String	HOOKS_CLASS_INTERNAL_NAME	= Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
-		// cant reference renderChunk because the class loader is still loading it at this time
-		public final String	RENDER_CHUNK_INTERNAL_NAME		= RenderChunkRebuildChunkHooksRenderChunkClassTransformer.isDeobfuscated ? "net/minecraft/client/renderer/chunk/RenderChunk" : "bxp";
-		public final String	RENDER_GLOBAL_INTERNAL_NAME		= Type.getInternalName(RenderGlobal.class);
-		public final String	CHUNK_CACHE_INTERNAL_NAME		= Type.getInternalName(ChunkCache.class);
-		public final String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= Type.getInternalName(MutableBlockPos.class);
+		public static final Type	VIS_GRAPH_TYPE				= Type.getObjectType(Type.getInternalName(VisGraph.class));
+		public static final String	VIS_GRAPH_INTERNAL_NAME		= Type.getInternalName(VisGraph.class);
+		public static final String	HOOKS_CLASS_INTERNAL_NAME	= Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
+		// can't reference renderChunk because the class loader is still loading it at this time
+		public static final String	RENDER_CHUNK_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/client/renderer/chunk/RenderChunk" : "bxp";
+		public static final String	RENDER_GLOBAL_INTERNAL_NAME		= Type.getInternalName(RenderGlobal.class);
+		public static final String	CHUNK_CACHE_INTERNAL_NAME		= Type.getInternalName(ChunkCache.class);
+		public static final String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= Type.getInternalName(MutableBlockPos.class);
 
-		public final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(this.RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(this.CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)), Type.getObjectType(Type.getInternalName(CompiledChunk.class)), Type.getObjectType(this.MUTABLE_BLOCK_POS_INTERNAL_NAME));
+		public static final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)), Type.getObjectType(Type.getInternalName(CompiledChunk.class)), Type.getObjectType(MUTABLE_BLOCK_POS_INTERNAL_NAME));
 
 		public static final String	COMPILED_CHUNK_CLASS	= "net/minecraft/client/renderer/chunk/CompiledChunk";
 		public static final String	RENDER_CHUNK_CLASS		= "net/minecraft/client/renderer/chunk/RenderChunk";
@@ -108,54 +114,52 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		public static final String	BLOCKS_EVENT_CLASS	= "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkBlocksEvent";
 		public static final String	BLOCK_EVENT			= "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkBlockEvent";
 
-		public static final boolean IS_DEOBF = isDeobfuscated;
+		public static final String	FIELD_POSITION_NAME			= DEOBFUSCATED ? "position" : "field_178586_f";
+		public static final String	FIELD_RENDER_GLOBAL_NAME	= DEOBFUSCATED ? "renderGlobal" : "field_178589_e";
+		public static final String	FIELD_WORLD_VIEW_NAME		= DEOBFUSCATED ? "worldView" : "field_189564_r";
+		public static final String	FIELD_lockCompileTask		= DEOBFUSCATED ? "lockCompileTask" : "field_178587_g";
+		public static final String	FIELD_setTileEntities		= DEOBFUSCATED ? "setTileEntities" : "field_181056_j";
 
-		public static final String	FIELD_POSITION_NAME			= IS_DEOBF ? "position" : "field_178586_f";
-		public static final String	FIELD_RENDER_GLOBAL_NAME	= IS_DEOBF ? "renderGlobal" : "field_178589_e";
-		public static final String	FIELD_WORLD_VIEW_NAME		= IS_DEOBF ? "worldView" : "field_189564_r";
-		public static final String	FIELD_lockCompileTask		= IS_DEOBF ? "lockCompileTask" : "field_178587_g";
-		public static final String	FIELD_setTileEntities		= IS_DEOBF ? "setTileEntities" : "field_181056_j";
-
-		public static final String	STATIC_FIELD_renderChunksUpdated	= IS_DEOBF ? "renderChunksUpdated" : "field_178592_a";
-		public static final String	STATIC_FIELD_TERD_instance			= IS_DEOBF ? "instance" : "field_147556_a";
+		public static final String	STATIC_FIELD_renderChunksUpdated	= DEOBFUSCATED ? "renderChunksUpdated" : "field_178592_a";
+		public static final String	STATIC_FIELD_TERD_instance			= DEOBFUSCATED ? "instance" : "field_147556_a";
 
 		// methods
-		public static final String	RENDER_CHUNK_preRenderBlocks							= IS_DEOBF ? "preRenderBlocks" : "func_178573_a";
-		public static final String	RENDER_CHUNK_postRenderBlocks							= IS_DEOBF ? "postRenderBlocks" : "func_178584_a";
-		public static final String	ChunkCompileTaskGenerator_getLock						= IS_DEOBF ? "getLock" : "func_178540_f";
-		public static final String	BLOCKPOS_add_III										= IS_DEOBF ? "add" : "func_177982_a";
-		public static final String	ChunkCompileTaskGenerator_getStatus						= IS_DEOBF ? "getStatus" : "func_178546_a";
-		public static final String	ChunkCompileTaskGenerator_setCompiledChunk				= IS_DEOBF ? "setCompiledChunk" : "func_178543_a";
-		public static final String	CHUNK_CACHE_isEmpty										= IS_DEOBF ? "isEmpty" : "func_72806_N";
-		public static final String	MINECRAFT_getBlockRendererDispatcher					= IS_DEOBF ? "getBlockRendererDispatcher" : "func_175602_ab";
-		public static final String	CHUNK_CACHE_getBlockState								= IS_DEOBF ? "getBlockState" : "func_180495_p";					// uhh... Forge Bot says no info for 1.12, using 1.13 name
-		public static final String	BLOCK_hasTileEntity_IBlockState							= "hasTileEntity";												// forge added method
-		public static final String	VIS_GRAPH_setOpaqueCube									= IS_DEOBF ? "setOpaqueCube" : "func_178606_a";
-		public static final String	CHUNK_CACHE_getTileEntity								= IS_DEOBF ? "getTileEntity" : "func_190300_a";
-		public static final String	TileEntityRendererDispatcher_getRenderer_TE_TESR		= IS_DEOBF ? "getRenderer" : "func_147547_b";
-		public static final String	TileEntitySpecialRenderer_isGlobalRenderer				= "isGlobalRenderer";											// uhh... Forge Bot says no info for the entire TileEntitySpecialRenderer class
-		public static final String	COMPILED_CHUNK_addTileEntity							= IS_DEOBF ? "addTileEntity" : "func_178490_a";
-		public static final String	BLOCK_canRenderInLayer									= "canRenderInLayer";											// forge added method
-		public static final String	BLOCK_getDefaultState									= IS_DEOBF ? "getDefaultState" : "func_176223_P";
-		public static final String	ChunkCompileTaskGenerator_getRegionRenderCacheBuilder	= IS_DEOBF ? "getRegionRenderCacheBuilder" : "func_178545_d";
-		public static final String	RegionRenderCacheBuilder_getWorldRendererByLayerId		= IS_DEOBF ? "getWorldRendererByLayerId" : "func_179039_a";
-		public static final String	COMPILED_CHUNK_isLayerStarted							= IS_DEOBF ? "isLayerStarted" : "func_178492_d";
-		public static final String	COMPILED_CHUNK_setLayerStarted							= IS_DEOBF ? "setLayerStarted" : "func_178493_c";
-		public static final String	COMPILED_CHUNK_setLayerUsed								= IS_DEOBF ? "setLayerUsed" : "func_178486_a";
-		public static final String	BlockRendererDispatcher_renderBlock						= IS_DEOBF ? "renderBlock" : "func_175018_a";
-		public static final String	RegionRenderCacheBuilder_getWorldRendererByLayer		= IS_DEOBF ? "getWorldRendererByLayer" : "func_179038_a";
-		public static final String	VIS_GRAPH_computeVisibility								= IS_DEOBF ? "computeVisibility" : "func_178607_a";
-		public static final String	COMPILED_CHUNK_setVisibility							= IS_DEOBF ? "setVisibility" : "func_178488_a";
-		public static final String	RENDER_GLOBAL_updateTileEntities						= IS_DEOBF ? "updateTileEntities" : "func_181023_a";
+		public static final String	RENDER_CHUNK_preRenderBlocks							= DEOBFUSCATED ? "preRenderBlocks" : "func_178573_a";
+		public static final String	RENDER_CHUNK_postRenderBlocks							= DEOBFUSCATED ? "postRenderBlocks" : "func_178584_a";
+		public static final String	ChunkCompileTaskGenerator_getLock						= DEOBFUSCATED ? "getLock" : "func_178540_f";
+		public static final String	BLOCKPOS_add_III										= DEOBFUSCATED ? "add" : "func_177982_a";
+		public static final String	ChunkCompileTaskGenerator_getStatus						= DEOBFUSCATED ? "getStatus" : "func_178546_a";
+		public static final String	ChunkCompileTaskGenerator_setCompiledChunk				= DEOBFUSCATED ? "setCompiledChunk" : "func_178543_a";
+		public static final String	CHUNK_CACHE_isEmpty										= DEOBFUSCATED ? "isEmpty" : "func_72806_N";
+		public static final String	MINECRAFT_getBlockRendererDispatcher					= DEOBFUSCATED ? "getBlockRendererDispatcher" : "func_175602_ab";
+		public static final String	CHUNK_CACHE_getBlockState								= DEOBFUSCATED ? "getBlockState" : "func_180495_p";					// uhh... Forge Bot says no info for 1.12, using 1.13 name
+		public static final String	BLOCK_hasTileEntity_IBlockState							= "hasTileEntity";													// forge added method
+		public static final String	VIS_GRAPH_setOpaqueCube									= DEOBFUSCATED ? "setOpaqueCube" : "func_178606_a";
+		public static final String	CHUNK_CACHE_getTileEntity								= DEOBFUSCATED ? "getTileEntity" : "func_190300_a";
+		public static final String	TileEntityRendererDispatcher_getRenderer_TE_TESR		= DEOBFUSCATED ? "getRenderer" : "func_147547_b";
+		public static final String	TileEntitySpecialRenderer_isGlobalRenderer				= "isGlobalRenderer";												// uhh... Forge Bot says no info for the entire TileEntitySpecialRenderer class
+		public static final String	COMPILED_CHUNK_addTileEntity							= DEOBFUSCATED ? "addTileEntity" : "func_178490_a";
+		public static final String	BLOCK_canRenderInLayer									= "canRenderInLayer";												// forge added method
+		public static final String	BLOCK_getDefaultState									= DEOBFUSCATED ? "getDefaultState" : "func_176223_P";
+		public static final String	ChunkCompileTaskGenerator_getRegionRenderCacheBuilder	= DEOBFUSCATED ? "getRegionRenderCacheBuilder" : "func_178545_d";
+		public static final String	RegionRenderCacheBuilder_getWorldRendererByLayerId		= DEOBFUSCATED ? "getWorldRendererByLayerId" : "func_179039_a";
+		public static final String	COMPILED_CHUNK_isLayerStarted							= DEOBFUSCATED ? "isLayerStarted" : "func_178492_d";
+		public static final String	COMPILED_CHUNK_setLayerStarted							= DEOBFUSCATED ? "setLayerStarted" : "func_178493_c";
+		public static final String	COMPILED_CHUNK_setLayerUsed								= DEOBFUSCATED ? "setLayerUsed" : "func_178486_a";
+		public static final String	BlockRendererDispatcher_renderBlock						= DEOBFUSCATED ? "renderBlock" : "func_175018_a";
+		public static final String	RegionRenderCacheBuilder_getWorldRendererByLayer		= DEOBFUSCATED ? "getWorldRendererByLayer" : "func_179038_a";
+		public static final String	VIS_GRAPH_computeVisibility								= DEOBFUSCATED ? "computeVisibility" : "func_178607_a";
+		public static final String	COMPILED_CHUNK_setVisibility							= DEOBFUSCATED ? "setVisibility" : "func_178488_a";
+		public static final String	RENDER_GLOBAL_updateTileEntities						= DEOBFUSCATED ? "updateTileEntities" : "func_181023_a";
 
 		// INVOKESTATIC
-		public static final String	BlockPos_getAllInBoxMutable_BP_BP_Iterable	= IS_DEOBF ? "getAllInBoxMutable" : "";
-		public static final String	Minecraft_getMinecraft						= IS_DEOBF ? "getMinecraft" : "func_71410_x";
+		public static final String	BlockPos_getAllInBoxMutable_BP_BP_Iterable	= DEOBFUSCATED ? "getAllInBoxMutable" : "";
+		public static final String	Minecraft_getMinecraft						= DEOBFUSCATED ? "getMinecraft" : "func_71410_x";
 
 		// INVOKEINTERFACE
-		public static final String	IBlockState_getBlock		= IS_DEOBF ? "getBlock" : "func_177230_c";
-		public static final String	IBlockState_isOpaqueCube	= IS_DEOBF ? "isOpaqueCube" : "func_185914_p";	// from IBlockProperties
-		public static final String	IBlockState_getRenderType	= IS_DEOBF ? "getRenderType" : "func_185901_i";	// from IBlockProperties
+		public static final String	IBlockState_getBlock		= DEOBFUSCATED ? "getBlock" : "func_177230_c";
+		public static final String	IBlockState_isOpaqueCube	= DEOBFUSCATED ? "isOpaqueCube" : "func_185914_p";	// from IBlockProperties
+		public static final String	IBlockState_getRenderType	= DEOBFUSCATED ? "getRenderType" : "func_185901_i";	// from IBlockProperties
 
 		public RebuildChunkHooksMethodVisitor(final MethodVisitor mv) {
 			super(Opcodes.ASM5, mv);

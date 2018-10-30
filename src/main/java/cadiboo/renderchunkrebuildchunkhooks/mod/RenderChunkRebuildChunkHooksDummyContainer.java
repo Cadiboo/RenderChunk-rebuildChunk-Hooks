@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.ModMetadata;
 public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContainer {
 
 	public static final String	MOD_ID		= "renderchunkrebuildchunkhooks";
-	public static final String	MOD_NAME	= "RenderChunk rebuild Chunk Hooks";
+	public static final String	MOD_NAME	= "RenderChunk rebuildChunk Hooks";
 	public static final String	MOD_VERSION	= "1.0.0.0";
 
 	// Directly reference a log4j logger.
