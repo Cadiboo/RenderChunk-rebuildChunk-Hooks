@@ -36,6 +36,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
+//		LogManager.getLogger().info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk") + ", transformedName equals: " + transformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk"));
+
 		if (!transformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk")) {
 			return basicClass;
 		}
@@ -63,8 +65,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static class RebuildChunkHooksClassVisitor extends ClassVisitor {
 
-		public static final Type	REBUILD_CHUNK_TYPE			= Type.getMethodType(Type.VOID_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)));
-		public static final String	REBUILD_CHUNK_DESCRIPTOR	= REBUILD_CHUNK_TYPE.getDescriptor();
+		public static final String	ChunkCompileTaskGenerator_INTERNAL_NAME	= DEOBFUSCATED ? Type.getInternalName(ChunkCompileTaskGenerator.class) : "bxl";
+		public static final Type	REBUILD_CHUNK_TYPE						= Type.getMethodType(Type.VOID_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.getObjectType(ChunkCompileTaskGenerator_INTERNAL_NAME));
+		public static final String	REBUILD_CHUNK_DESCRIPTOR				= REBUILD_CHUNK_TYPE.getDescriptor();
 
 		public RebuildChunkHooksClassVisitor(final ClassVisitor classVisitor) {
 			super(Opcodes.ASM5, classVisitor);
@@ -75,16 +78,23 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			final MethodVisitor originalVisitor = super.visitMethod(access, name, desc, signature, exceptions);
 
-			LogManager.getLogger().info(REBUILD_CHUNK_TYPE);
-			LogManager.getLogger().info(REBUILD_CHUNK_DESCRIPTOR);
-			LogManager.getLogger().info(name);
-			LogManager.getLogger().info(desc);
+//			LogManager.getLogger().info("+++++++++");
+//			LogManager.getLogger().info(REBUILD_CHUNK_TYPE);
+//			LogManager.getLogger().info(REBUILD_CHUNK_DESCRIPTOR);
+//			LogManager.getLogger().info(name);
+//			LogManager.getLogger().info(desc);
+//			LogManager.getLogger().info("---------");
 
 			if (!desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
 				return originalVisitor;
 			}
 
-			LogManager.getLogger().info("Attempting to overwrite method " + name + " (rebuildChunk) with descriptor " + desc + "...");
+			// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
+			if (!name.equals("b")) {
+				return originalVisitor;
+			}
+
+			LogManager.getLogger().info("Attempting to overwrite method \"" + name + "\" (rebuildChunk) with descriptor \"" + desc + "\"...");
 
 			return new RebuildChunkHooksMethodVisitor(originalVisitor);
 
@@ -92,6 +102,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	}
 
+	@SuppressWarnings("javadoc")
 	public static class RebuildChunkHooksMethodVisitor extends MethodVisitor {
 
 		public static final Type	VIS_GRAPH_TYPE				= Type.getObjectType(Type.getInternalName(VisGraph.class));
@@ -99,33 +110,25 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		public static final String	HOOKS_CLASS_INTERNAL_NAME	= Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
 		// can't reference renderChunk because the class loader is still loading it at this time
 		public static final String	RENDER_CHUNK_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/client/renderer/chunk/RenderChunk" : "bxp";
-		public static final String	RENDER_GLOBAL_INTERNAL_NAME		= Type.getInternalName(RenderGlobal.class);
-		public static final String	CHUNK_CACHE_INTERNAL_NAME		= Type.getInternalName(ChunkCache.class);
-		public static final String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= Type.getInternalName(MutableBlockPos.class);
+		public static final String	RENDER_GLOBAL_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(RenderGlobal.class) : "buw";
+		public static final String	CHUNK_CACHE_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(ChunkCache.class) : "anb";
+		public static final String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= DEOBFUSCATED ? Type.getInternalName(MutableBlockPos.class) : "et$a";
+		private static final String	CompiledChunk_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(CompiledChunk.class) : "bxm";
 
-		public static final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(Type.getInternalName(ChunkCompileTaskGenerator.class)), Type.getObjectType(Type.getInternalName(CompiledChunk.class)), Type.getObjectType(MUTABLE_BLOCK_POS_INTERNAL_NAME));
+		public static final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(RebuildChunkHooksClassVisitor.ChunkCompileTaskGenerator_INTERNAL_NAME), Type.getObjectType(CompiledChunk_INTERNAL_NAME), Type.getObjectType(MUTABLE_BLOCK_POS_INTERNAL_NAME));
 
-		public static final String	COMPILED_CHUNK_CLASS	= "net/minecraft/client/renderer/chunk/CompiledChunk";
-		public static final String	RENDER_CHUNK_CLASS		= "net/minecraft/client/renderer/chunk/RenderChunk";
-		public static final String	RENDER_GLOBAL_CLASS		= "net/minecraft/client/renderer/RenderGlobal";
-		public static final String	CLIENT_MINECRAFT_CLASS	= "net/minecraft/client/Minecraft";
-
-		public static final String	HOOKS_CLASS			= "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks";
-		public static final String	BLOCKS_EVENT_CLASS	= "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkBlocksEvent";
-		public static final String	BLOCK_EVENT			= "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkBlockEvent";
-
-		public static final String	FIELD_POSITION_NAME			= DEOBFUSCATED ? "position" : "field_178586_f";
-		public static final String	FIELD_RENDER_GLOBAL_NAME	= DEOBFUSCATED ? "renderGlobal" : "field_178589_e";
-		public static final String	FIELD_WORLD_VIEW_NAME		= DEOBFUSCATED ? "worldView" : "field_189564_r";
-		public static final String	FIELD_lockCompileTask		= DEOBFUSCATED ? "lockCompileTask" : "field_178587_g";
-		public static final String	FIELD_setTileEntities		= DEOBFUSCATED ? "setTileEntities" : "field_181056_j";
+		public static final String	FIELD_POSITION_NAME			= DEOBFUSCATED ? "position" : "field_178586_f";			// o
+		public static final String	FIELD_RENDER_GLOBAL_NAME	= DEOBFUSCATED ? "renderGlobal" : "field_178589_e";		// e
+		public static final String	FIELD_WORLD_VIEW_NAME		= DEOBFUSCATED ? "worldView" : "field_189564_r";		// r
+		public static final String	FIELD_lockCompileTask		= DEOBFUSCATED ? "lockCompileTask" : "field_178587_g";	// f
+		public static final String	FIELD_setTileEntities		= DEOBFUSCATED ? "setTileEntities" : "field_181056_j";	// i //why i not j
 
 		public static final String	STATIC_FIELD_renderChunksUpdated	= DEOBFUSCATED ? "renderChunksUpdated" : "field_178592_a";
 		public static final String	STATIC_FIELD_TERD_instance			= DEOBFUSCATED ? "instance" : "field_147556_a";
 
 		// methods
-		public static final String	RENDER_CHUNK_preRenderBlocks							= DEOBFUSCATED ? "preRenderBlocks" : "func_178573_a";
-		public static final String	RENDER_CHUNK_postRenderBlocks							= DEOBFUSCATED ? "postRenderBlocks" : "func_178584_a";
+		public static final String	RENDER_CHUNK_preRenderBlocks							= DEOBFUSCATED ? "preRenderBlocks" : "func_178573_a";				// a
+		public static final String	RENDER_CHUNK_postRenderBlocks							= DEOBFUSCATED ? "postRenderBlocks" : "func_178584_a";				// a
 		public static final String	ChunkCompileTaskGenerator_getLock						= DEOBFUSCATED ? "getLock" : "func_178540_f";
 		public static final String	BLOCKPOS_add_III										= DEOBFUSCATED ? "add" : "func_177982_a";
 		public static final String	ChunkCompileTaskGenerator_getStatus						= DEOBFUSCATED ? "getStatus" : "func_178546_a";
@@ -353,7 +356,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;");
 			mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", STATIC_FIELD_renderChunksUpdated, "I");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "lockCompileTask", "Ljava/util/concurrent/locks/ReentrantLock;");
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_lockCompileTask, "Ljava/util/concurrent/locks/ReentrantLock;");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_setTileEntities, "Ljava/util/Set;");
 			mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunk", "(FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I", false);
