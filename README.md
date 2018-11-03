@@ -9,5 +9,8 @@ Either 100% or 0%. If another core-mod tries to tamper with RenderChunk#rebuildC
 ## Why coremod?
 I submitted a [PR to forge](https://github.com/MinecraftForge/MinecraftForge/pull/5166) that didn't get accepted and with the 1.13 update imminent I decided to push out something that worked for 1.12.x. I will be trying to [work with other people to get similar hooks (with better performance etc.) into Forge](https://github.com/MinecraftForge/MinecraftForge/pull/5166#issuecomment-427589440).
 
+###### See Also
+[MinecraftForge Forums - [1.12.2] Replace world renderer](http://www.minecraftforge.net/forum/topic/66516-1122-replace-world-renderer/)
+
 ###### Known Users:
 NoCubes (1.12.x) https://github.com/Cadiboo/NoCubes
