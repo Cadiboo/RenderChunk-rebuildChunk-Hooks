@@ -93,12 +93,26 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			}
 
 			if (!desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
+				if (DEBUG_EVERYTHING) {
+					LogManager.getLogger().info("Method with name \"" + name + "\" and description \"" + desc + "\" did not match");
+				}
 				return originalVisitor;
 			}
 
+			if (DEBUG_EVERYTHING) {
+				LogManager.getLogger().info("Method with name \"" + name + "\" and description \"" + desc + "\" matched!");
+			}
+
 			// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
-			if (!name.equals("b")) {
+			if (name.equals("a") || name.equals("resortTransparency")) {
+				if (DEBUG_EVERYTHING) {
+					LogManager.getLogger().info("Method with name \"" + name + "\" and description \"" + desc + "\" was rejected");
+				}
 				return originalVisitor;
+			}
+
+			if (DEBUG_EVERYTHING) {
+				LogManager.getLogger().info("Method with name \"" + name + "\" and description \"" + desc + "\" matched and passed");
 			}
 
 			LogManager.getLogger().info("Attempting to overwrite method \"" + name + "\" (rebuildChunk) with descriptor \"" + desc + "\"...");
