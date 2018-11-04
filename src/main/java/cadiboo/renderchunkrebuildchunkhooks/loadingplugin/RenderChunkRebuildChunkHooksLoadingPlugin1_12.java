@@ -18,7 +18,8 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions
 @MCVersion("1.12")
 @TransformerExclusions(value = "cadiboo.renderchunkrebuildchunkhooks.")
 /** How early your core mod is called - Use > 1000 to work with srg names */
-@SortingIndex(value = 1001)
+//@SortingIndex(value = 1001)
+@SortingIndex(value = 0xBADC0DE)
 public class RenderChunkRebuildChunkHooksLoadingPlugin1_12 implements IFMLLoadingPlugin {
 
 	public static final String CORE_MARKER = "RenderChunkRebuildChunkHooksLoaded";

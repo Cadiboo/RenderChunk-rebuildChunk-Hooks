@@ -166,7 +166,6 @@ public final class RenderChunkRebuildChunkHooksHooks {
 								usedBlockRenderLayers[blockRenderLayerId] |= blockRendererDispatcher.renderBlock(blockState, currentPos, worldView, bufferbuilder);
 							}
 						}
-						rebuildBlocksEvent.isCanceled();
 					}
 				}
 				net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
@@ -175,13 +174,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 			for (final BlockRenderLayer blockRenderLayer : BlockRenderLayer.values()) {
 				if (usedBlockRenderLayers[blockRenderLayer.ordinal()]) {
 //					compiledChunk.setLayerUsed(blockRenderLayer);
-					try {
-						COMPILED_CHUNK_SET_LAYER_USED_HANDLE.invokeExact(compiledChunk, blockRenderLayer);
-					} catch (final Throwable e) {
-						e.printStackTrace();
-						// throw an error
-						((Object) null).getClass();
-					}
+					compiledChunkSetLayerUsed(compiledChunk, blockRenderLayer);
 				}
 
 				if (compiledChunk.isLayerStarted(blockRenderLayer)) {
@@ -209,12 +202,44 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	}
 
-	private static void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
+	/**
+	 * FOR INTERNAL USE ONLY
+	 *
+	 * @param compiledChunk    the {@link CompiledChunk}
+	 * @param blockRenderLayer the {@link BlockRenderLayer}
+	 */
+	public static void compiledChunkSetLayerUsed(final CompiledChunk compiledChunk, final BlockRenderLayer blockRenderLayer) {
+		try {
+			COMPILED_CHUNK_SET_LAYER_USED_HANDLE.invokeExact(compiledChunk, blockRenderLayer);
+		} catch (final Throwable e) {
+			e.printStackTrace();
+			// throw an error
+			((Object) null).getClass();
+		}
+	}
+
+	/**
+	 * FOR INTERNAL USE ONLY
+	 *
+	 * @param bufferBuilderIn the {@link BufferBuilder}
+	 * @param pos             the {@link BlockPos} passed in that is used for translation
+	 */
+	public static void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
 		bufferBuilderIn.begin(7, DefaultVertexFormats.BLOCK);
 		bufferBuilderIn.setTranslation((-pos.getX()), (-pos.getY()), (-pos.getZ()));
 	}
 
-	private static void postRenderBlocks(final BlockRenderLayer layer, final float x, final float y, final float z, final BufferBuilder bufferBuilderIn, final CompiledChunk compiledChunkIn) {
+	/**
+	 * FOR INTERNAL USE ONLY
+	 *
+	 * @param layer           the {@link BlockRenderLayer}
+	 * @param x               the translation X passed in
+	 * @param y               the translation Y passed in
+	 * @param z               the translation Z passed in
+	 * @param bufferBuilderIn the {@link BufferBuilder}
+	 * @param compiledChunkIn the {@link CompiledChunk}
+	 */
+	public static void postRenderBlocks(final BlockRenderLayer layer, final float x, final float y, final float z, final BufferBuilder bufferBuilderIn, final CompiledChunk compiledChunkIn) {
 		if ((layer == BlockRenderLayer.TRANSLUCENT) && !compiledChunkIn.isLayerEmpty(layer)) {
 			bufferBuilderIn.sortVertexData(x, y, z);
 			compiledChunkIn.setState(bufferBuilderIn.getVertexState());
