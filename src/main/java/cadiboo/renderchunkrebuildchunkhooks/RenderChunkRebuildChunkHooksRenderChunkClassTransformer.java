@@ -34,9 +34,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final boolean DEOBFUSCATED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
+	public static final boolean DEBUG_EVERYTHING = true;
+
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
-//		LogManager.getLogger().info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk") + ", transformedName equals: " + transformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk"));
+
+		if (DEBUG_EVERYTHING) {
+			LogManager.getLogger().info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk") + ", transformedName equals: " + transformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk"));
+		}
 
 		if (!transformedName.equals("net.minecraft.client.renderer.chunk.RenderChunk")) {
 			return basicClass;
@@ -78,12 +83,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			final MethodVisitor originalVisitor = super.visitMethod(access, name, desc, signature, exceptions);
 
-//			LogManager.getLogger().info("+++++++++");
-//			LogManager.getLogger().info(REBUILD_CHUNK_TYPE);
-//			LogManager.getLogger().info(REBUILD_CHUNK_DESCRIPTOR);
-//			LogManager.getLogger().info(name);
-//			LogManager.getLogger().info(desc);
-//			LogManager.getLogger().info("---------");
+			if (DEBUG_EVERYTHING) {
+				LogManager.getLogger().info("+++++++++");
+				LogManager.getLogger().info(REBUILD_CHUNK_TYPE);
+				LogManager.getLogger().info(REBUILD_CHUNK_DESCRIPTOR);
+				LogManager.getLogger().info(name);
+				LogManager.getLogger().info(desc);
+				LogManager.getLogger().info("---------");
+			}
 
 			if (!desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
 				return originalVisitor;
