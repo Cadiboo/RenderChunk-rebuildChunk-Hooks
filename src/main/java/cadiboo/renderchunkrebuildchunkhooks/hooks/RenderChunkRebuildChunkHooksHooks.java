@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
+import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -72,6 +73,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	/**
 	 * FOR INTERNAL USE ONLY, CALLED BY INJECTED CODE IN RenderChunk#rebuildChunk
 	 *
+	 * @param renderChunk               the {@link RenderChunk} we are hooking into
 	 * @param x                         the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                         the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                         the translation Z passed in from RenderChunk#rebuildChunk
@@ -84,7 +86,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param setTileEntities           the {@link HashSet} of {@link TileEntity TileEntities} passed in from RenderChunk#rebuildChunk
 	 * @return renderChunksUpdated the amount of Render Chunks Updated (usually renderChunksUpdated+1)
 	 */
-	public static int rebuildChunk(final float x, final float y, final float z, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final MutableBlockPos renderChunkPosition, final ChunkCache worldView, final RenderGlobal renderGlobal, int renderChunksUpdated, final ReentrantLock lockCompileTask, final Set<TileEntity> setTileEntities) {
+	public static int rebuildChunk(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final MutableBlockPos renderChunkPosition, final ChunkCache worldView, final RenderGlobal renderGlobal, int renderChunksUpdated, final ReentrantLock lockCompileTask, final Set<TileEntity> setTileEntities) {
 
 		final CompiledChunk compiledChunk = new CompiledChunk();
 

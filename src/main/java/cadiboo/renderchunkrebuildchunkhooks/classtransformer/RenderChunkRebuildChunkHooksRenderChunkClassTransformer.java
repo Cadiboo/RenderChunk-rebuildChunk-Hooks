@@ -1,5 +1,9 @@
-package cadiboo.renderchunkrebuildchunkhooks;
+package cadiboo.renderchunkrebuildchunkhooks.classtransformer;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +14,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 import com.google.common.collect.ImmutableList;
 
@@ -22,17 +27,33 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
+import net.minecraftforge.fml.common.Loader;
+
+// https://stackoverflow.com/questions/4016305/how-to-emit-and-execute-java-bytecode-at-runtime
+// ^^ WOW thats a good thread
 
 /**
  * @author Cadiboo
  */
-public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer {
+public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes {
 
 	public static final List<String> IGNORED_PREFIXES = ImmutableList.of("cpw", "net.minecraftforge", "io", "org", "gnu", "com", "joptsimple");
 
 	public static final int FLAGS = ClassWriter.COMPUTE_MAXS;
 
 	public static final boolean DEOBFUSCATED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+	public static final boolean OPTIFINE;
+	static {
+		boolean optifine = false;
+		try {
+			Class.forName("Config", false, Loader.instance().getModClassLoader());
+			optifine = true;
+		} catch (final Exception e) {
+			optifine = false;
+		}
+		OPTIFINE = optifine;
+	}
 
 	public static final boolean DEBUG_EVERYTHING = false;
 
@@ -53,6 +74,22 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		final ClassWriter classWriter = new ClassWriter(classReader, FLAGS);
 
 		final ClassVisitor classVisitor = new RebuildChunkHooksClassVisitor(classWriter);
+
+		try {
+			final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/optifine.txt");
+			final PrintWriter printer = new PrintWriter(pathToFile.toFile());
+			final TraceClassVisitor tracingVisitor = new TraceClassVisitor(classWriter, printer);
+			classReader.accept(tracingVisitor, 0);
+
+			final byte[] bytesToWrite = classWriter.toByteArray();
+			final Path pathToClassFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/optifine.class");
+			final FileOutputStream fileOutputStream = new FileOutputStream(pathToClassFile.toFile());
+			fileOutputStream.write(bytesToWrite);
+			fileOutputStream.close();
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
 
 		LogManager.getLogger().info("Attempting to redirect...");
 
@@ -75,7 +112,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		public static final String	REBUILD_CHUNK_DESCRIPTOR				= REBUILD_CHUNK_TYPE.getDescriptor();
 
 		public RebuildChunkHooksClassVisitor(final ClassVisitor classVisitor) {
-			super(Opcodes.ASM5, classVisitor);
+			super(ASM5, classVisitor);
 		}
 
 		@Override
@@ -117,13 +154,83 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			LogManager.getLogger().info("Attempting to overwrite method \"" + name + "\" (rebuildChunk) with descriptor \"" + desc + "\"...");
 
+			if (OPTIFINE) {
+				LogManager.getLogger().info("Detected Optifine! Using compatible MethodVisitor");
+				return new RebuildChunkHooksMethodVisitorOptifine(originalVisitor);
+			}
+
 			return new RebuildChunkHooksMethodVisitor(originalVisitor);
 
 		}
 
 	}
 
-	@SuppressWarnings("javadoc")
+	public static class RebuildChunkHooksMethodVisitorOptifine extends RebuildChunkHooksMethodVisitor {
+
+		public RebuildChunkHooksMethodVisitorOptifine(final MethodVisitor mv) {
+			super(mv);
+		}
+
+		@Override
+		public void visitCode() {
+			this.mv.visitCode();
+
+			if (true) {
+				LogManager.getLogger().info("NOOP-ing Injection!!!!");
+				return;
+			}
+
+			LogManager.getLogger().info("Preparing to inject...");
+
+			final MethodVisitor mv = this.mv;
+			// noop the exisiting MethodVisitor to stop the normal method being generated
+			this.mv = new MethodVisitor(ASM5) {
+			};
+
+			LogManager.getLogger().info("Starting injection.");
+
+			mv.visitCode();
+			final Label l0 = new Label();
+			mv.visitLabel(l0);
+			mv.visitLineNumber(127, l0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(FLOAD, 1);
+			mv.visitVarInsn(FLOAD, 2);
+			mv.visitVarInsn(FLOAD, 3);
+			mv.visitVarInsn(ALOAD, 4);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("position"), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("worldView"), "Lnet/minecraft/world/ChunkCache;");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("renderGlobal"), "Lnet/minecraft/client/renderer/RenderGlobal;");
+			mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("renderChunksUpdated"), "I");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("lockCompileTask"), "Ljava/util/concurrent/locks/ReentrantLock;");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("setTileEntities"), "Ljava/util/Set;");
+			mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunkOptifine", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I", false);
+			mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("renderChunksUpdated"), "I");
+			final Label l1 = new Label();
+			mv.visitLabel(l1);
+			mv.visitLineNumber(128, l1);
+			mv.visitInsn(RETURN);
+			final Label l2 = new Label();
+			mv.visitLabel(l2);
+			mv.visitLocalVariable("this", "Lnet/minecraft/client/renderer/chunk/RenderChunk;", null, l0, l2, 0);
+			mv.visitLocalVariable("x", "F", null, l0, l2, 1);
+			mv.visitLocalVariable("y", "F", null, l0, l2, 2);
+			mv.visitLocalVariable("z", "F", null, l0, l2, 3);
+			mv.visitLocalVariable("generator", "Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;", null, l0, l2, 4);
+			mv.visitMaxs(11, 5);
+			mv.visitEnd();
+
+			LogManager.getLogger().info("Finished injection.");
+
+		}
+
+	}
+
 	public static class RebuildChunkHooksMethodVisitor extends MethodVisitor {
 
 		public static final Type	VIS_GRAPH_TYPE				= Type.getObjectType(Type.getInternalName(VisGraph.class));
@@ -137,15 +244,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		private static final String	CompiledChunk_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(CompiledChunk.class) : "bxm";
 
 		public static final String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(RebuildChunkHooksClassVisitor.ChunkCompileTaskGenerator_INTERNAL_NAME), Type.getObjectType(CompiledChunk_INTERNAL_NAME), Type.getObjectType(MUTABLE_BLOCK_POS_INTERNAL_NAME));
-
-		public static final String	FIELD_POSITION_NAME			= DEOBFUSCATED ? "position" : "field_178586_f";			// o
-		public static final String	FIELD_RENDER_GLOBAL_NAME	= DEOBFUSCATED ? "renderGlobal" : "field_178589_e";		// e
-		public static final String	FIELD_WORLD_VIEW_NAME		= DEOBFUSCATED ? "worldView" : "field_189564_r";		// r
-		public static final String	FIELD_lockCompileTask		= DEOBFUSCATED ? "lockCompileTask" : "field_178587_g";	// f
-		public static final String	FIELD_setTileEntities		= DEOBFUSCATED ? "setTileEntities" : "field_181056_j";	// i //why i not j
-
-		public static final String	STATIC_FIELD_renderChunksUpdated	= DEOBFUSCATED ? "renderChunksUpdated" : "field_178592_a";
-		public static final String	STATIC_FIELD_TERD_instance			= DEOBFUSCATED ? "instance" : "field_147556_a";
 
 		// methods
 		public static final String	RENDER_CHUNK_preRenderBlocks							= DEOBFUSCATED ? "preRenderBlocks" : "func_178573_a";				// a
@@ -186,7 +284,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		public static final String	IBlockState_getRenderType	= DEOBFUSCATED ? "getRenderType" : "func_185901_i";	// from IBlockProperties
 
 		public RebuildChunkHooksMethodVisitor(final MethodVisitor mv) {
-			super(Opcodes.ASM5, mv);
+			super(ASM5, mv);
 		}
 
 //		public void rebuildChunk(float x, float y, float z, ChunkCompileTaskGenerator generator)
@@ -199,7 +297,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 //		public void rebuildChunk(final float x, final float y, final float z, final ChunkCompileTaskGenerator generator)
 //	    {
-//>	    	renderChunksUpdated = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.rebuildChunk(x,y,z ,generator,  this.position,  this.worldView,  this.renderGlobal, renderChunksUpdated, this.lockCompileTask, this.setTileEntities);
+//>	    	renderChunksUpdated = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.rebuildChunk(this, x, y, z, generator, this.position, this.worldView, this.renderGlobal, renderChunksUpdated, this.lockCompileTask, this.setTileEntities);
 //>	    	if (true) return; //Everything below this is dead code and the compiler doesn't generate instructions for it
 //	        CompiledChunk compiledchunk = new CompiledChunk();
 //	        int i = 1;
@@ -239,8 +337,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //	    INVOKEVIRTUAL net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator.getLock()Ljava/util/concurrent/locks/ReentrantLock;
 //	    INVOKEVIRTUAL java/util/concurrent/locks/ReentrantLock.lock()V
 
-//>		L0
-//>	    LINENUMBER 112 L0
+//>	   L0
+//>	    LINENUMBER 127 L0
+//>	    ALOAD 0
 //>	    FLOAD 1
 //>	    FLOAD 2
 //>	    FLOAD 3
@@ -256,10 +355,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //>	    GETFIELD net/minecraft/client/renderer/chunk/RenderChunk.lockCompileTask : Ljava/util/concurrent/locks/ReentrantLock;
 //>	    ALOAD 0
 //>	    GETFIELD net/minecraft/client/renderer/chunk/RenderChunk.setTileEntities : Ljava/util/Set;
-//>	    INVOKESTATIC cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks.rebuildChunk(FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I
+//>	    INVOKESTATIC cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks.rebuildChunk(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I
 //>	    PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
 //>	   L1
-//>	    LINENUMBER 113 L1
+//>	    LINENUMBER 128 L1
 //>	    RETURN
 
 //		mv.visitCode();
@@ -310,6 +409,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //		Label l0 = new Label();
 //		mv.visitLabel(l0);
 //		mv.visitLineNumber(127, l0);
+//		mv.visitVarInsn(ALOAD, 0);
 //		mv.visitVarInsn(FLOAD, 1);
 //		mv.visitVarInsn(FLOAD, 2);
 //		mv.visitVarInsn(FLOAD, 3);
@@ -325,7 +425,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "lockCompileTask", "Ljava/util/concurrent/locks/ReentrantLock;");
 //		mv.visitVarInsn(ALOAD, 0);
 //		mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "setTileEntities", "Ljava/util/Set;");
-//		mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunk", "(FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I", false);
+//		mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunk", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I", false);
 //		mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", "renderChunksUpdated", "I");
 //		Label l1 = new Label();
 //		mv.visitLabel(l1);
@@ -338,7 +438,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //		mv.visitLocalVariable("y", "F", null, l0, l2, 2);
 //		mv.visitLocalVariable("z", "F", null, l0, l2, 3);
 //		mv.visitLocalVariable("generator", "Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;", null, l0, l2, 4);
-//		mv.visitMaxs(10, 5);
+//		mv.visitMaxs(11, 5);
 //		mv.visitEnd();
 
 		@Override
@@ -347,16 +447,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			LogManager.getLogger().info("Preparing to inject...");
 
-			final int FLOAD = Opcodes.FLOAD;
-			final int ALOAD = Opcodes.ALOAD;
-			final int GETFIELD = Opcodes.GETFIELD;
-			final int GETSTATIC = Opcodes.GETSTATIC;
-			final int INVOKESTATIC = Opcodes.INVOKESTATIC;
-			final int PUTSTATIC = Opcodes.PUTSTATIC;
-			final int RETURN = Opcodes.RETURN;
 			final MethodVisitor mv = this.mv;
 			// noop the exisiting MethodVisitor to stop the normal method being generated
-			this.mv = new MethodVisitor(Opcodes.ASM5) {
+			this.mv = new MethodVisitor(ASM5) {
 			};
 
 			LogManager.getLogger().info("Starting injection.");
@@ -365,23 +458,24 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			final Label l0 = new Label();
 			mv.visitLabel(l0);
 			mv.visitLineNumber(127, l0);
+			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(FLOAD, 1);
 			mv.visitVarInsn(FLOAD, 2);
 			mv.visitVarInsn(FLOAD, 3);
 			mv.visitVarInsn(ALOAD, 4);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("position"), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;");
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("worldView"), "Lnet/minecraft/world/ChunkCache;");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;");
-			mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", STATIC_FIELD_renderChunksUpdated, "I");
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("renderGlobal"), "Lnet/minecraft/client/renderer/RenderGlobal;");
+			mv.visitFieldInsn(GETSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("renderChunksUpdated"), "I");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_lockCompileTask, "Ljava/util/concurrent/locks/ReentrantLock;");
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("lockCompileTask"), "Ljava/util/concurrent/locks/ReentrantLock;");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_setTileEntities, "Ljava/util/Set;");
-			mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunk", "(FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I", false);
-			mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", STATIC_FIELD_renderChunksUpdated, "I");
+			mv.visitFieldInsn(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("setTileEntities"), "Ljava/util/Set;");
+			mv.visitMethodInsn(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunk", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/RenderGlobal;ILjava/util/concurrent/locks/ReentrantLock;Ljava/util/Set;)I", false);
+			mv.visitFieldInsn(PUTSTATIC, "net/minecraft/client/renderer/chunk/RenderChunk", NameHelper.getName("renderChunksUpdated"), "I");
 			final Label l1 = new Label();
 			mv.visitLabel(l1);
 			mv.visitLineNumber(128, l1);
@@ -393,9 +487,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			mv.visitLocalVariable("y", "F", null, l0, l2, 2);
 			mv.visitLocalVariable("z", "F", null, l0, l2, 3);
 			mv.visitLocalVariable("generator", "Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;", null, l0, l2, 4);
-			mv.visitMaxs(10, 5);
+			mv.visitMaxs(11, 5);
 			mv.visitEnd();
-			this.visitEnd();
 
 			LogManager.getLogger().info("Finished injection.");
 
