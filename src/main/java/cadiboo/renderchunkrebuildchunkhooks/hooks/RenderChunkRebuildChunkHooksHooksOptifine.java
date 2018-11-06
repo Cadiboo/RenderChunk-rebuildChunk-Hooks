@@ -57,11 +57,8 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	public static MethodHandle getMethod() {
 		try {
 			return MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(OPTIFINE_CONFIG, "isShaders", null));
-		} catch (final IllegalAccessException e) {
-			e.printStackTrace();
-			// throw an error
-			((Object) null).getClass();
-			return null;
+		} catch (final IllegalAccessException illegalAccessException) {
+			throw new RuntimeException(illegalAccessException);
 		}
 	}
 
@@ -69,13 +66,12 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 //		return Config.isShaders();
 		try {
 			return (boolean) OPTIFINE_CONFIG_IS_SHADERS.invokeExact();
-		} catch (final Throwable e) {
-			e.printStackTrace();
-			// throw an error
-			((Object) null).getClass();
-			return false;
+		} catch (final Throwable throwable) {
+			throw new RuntimeException(throwable);
 		}
 	}
+
+	// TODO: Optimisations
 
 	/**
 	 * FOR INTERNAL USE ONLY, CALLED BY INJECTED CODE IN RenderChunk#rebuildChunk if Optifine is present
@@ -86,14 +82,18 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	 * @param z                         the translation Z passed in from RenderChunk#rebuildChunk
 	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param worldViewOptifine         the {@link ChunkCacheOF} passed in from RenderChunk#rebuildChunk (made through <code>this.makeChunkCacheOF(position)</code>)
 	 * @param renderGlobal              the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
 	 * @param renderChunksUpdated       the "renderChunksUpdated" variable passed in from RenderChunk#rebuildChunk
 	 * @param lockCompileTask           the {@link ReentrantLock} passed in from RenderChunk#rebuildChunk
 	 * @param setTileEntities           the {@link HashSet} of {@link TileEntity TileEntities} passed in from RenderChunk#rebuildChunk
 	 * @return renderChunksUpdated the amount of Render Chunks Updated (usually renderChunksUpdated+1)
 	 */
-	public static int rebuildChunkOptifine(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final MutableBlockPos renderChunkPosition, final ChunkCache worldView, final RenderGlobal renderGlobal, int renderChunksUpdated, final ReentrantLock lockCompileTask, final Set<TileEntity> setTileEntities) {
+
+	/*
+	 * cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine.rebuildChunkOptifine( Lnet/minecraft/client/renderer/chunk/RenderChunk; F F F Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator; Lnet/minecraft/util/math/BlockPos$MutableBlockPos; Lnet/optifine/override/ChunkCacheOF; Lnet/minecraft/client/renderer/RenderGlobal; I Ljava/util/concurrent/locks/ReentrantLock; Ljava/util/Set; )I
+	 */
+	public static int rebuildChunkOptifine(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final MutableBlockPos renderChunkPosition, final ChunkCacheOF worldViewOptifine, final RenderGlobal renderGlobal, int renderChunksUpdated, final ReentrantLock lockCompileTask, final Set<TileEntity> setTileEntities) {
 
 		final CompiledChunk compiledChunk = new CompiledChunk();
 
@@ -107,6 +107,8 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 			chunkCompileTaskGenerator.getLock().unlock();
 		}
 
+		final ChunkCache worldView = worldViewOptifine.chunkCache;
+
 		if (RenderChunkRebuildChunkHooksHooks.onRebuildChunkEvent(renderGlobal, worldView, chunkCompileTaskGenerator, compiledChunk, renderChunkPosition, x, y, z)) {
 			return renderChunksUpdated;
 		}
@@ -117,7 +119,8 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 		if (!renderChunk.isChunkRegionEmpty(renderChunkPosition)) {
 			renderChunksUpdated += 1;
 
-			final ChunkCacheOF blockAccess = renderChunk.makeChunkCacheOF(renderChunkPosition);
+//			final ChunkCacheOF blockAccess = renderChunk.makeChunkCacheOF(renderChunkPosition);
+			final ChunkCacheOF blockAccess = worldViewOptifine;
 
 			blockAccess.renderStart();
 
