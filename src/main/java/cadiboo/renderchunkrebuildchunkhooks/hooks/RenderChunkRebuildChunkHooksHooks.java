@@ -61,11 +61,8 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	static MethodHandle getMethodHandle() {
 		try {
 			return MethodHandles.publicLookup().unreflect(COMPILED_CHUNK_SET_LAYER_USED);
-		} catch (final IllegalAccessException e) {
-			e.printStackTrace();
-			// throw an error
-			((Object) null).getClass();
-			return null;
+		} catch (final IllegalAccessException illegalAccessException) {
+			throw new RuntimeException(illegalAccessException);
 		}
 	}
 
@@ -211,10 +208,8 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	public static void compiledChunkSetLayerUsed(final CompiledChunk compiledChunk, final BlockRenderLayer blockRenderLayer) {
 		try {
 			COMPILED_CHUNK_SET_LAYER_USED_HANDLE.invokeExact(compiledChunk, blockRenderLayer);
-		} catch (final Throwable e) {
-			e.printStackTrace();
-			// throw an error
-			((Object) null).getClass();
+		} catch (final Throwable throwable) {
+			throw new RuntimeException(throwable);
 		}
 	}
 
