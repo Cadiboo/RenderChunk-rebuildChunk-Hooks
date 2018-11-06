@@ -8,10 +8,14 @@ import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlocksEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockDirt;
+import net.minecraft.block.BlockGlowstone;
 import net.minecraft.block.BlockGrass;
 import net.minecraft.block.BlockGrassPath;
 import net.minecraft.block.BlockGravel;
+import net.minecraft.block.BlockMycelium;
+import net.minecraft.block.BlockNetherrack;
 import net.minecraft.block.BlockOre;
+import net.minecraft.block.BlockRedSandstone;
 import net.minecraft.block.BlockRedstoneOre;
 import net.minecraft.block.BlockSand;
 import net.minecraft.block.BlockSandStone;
@@ -42,7 +46,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RebuildChunkBlocksEventTest {
 
 	public static final String	MODID	= "rebuild_chunk_blocks_event_test";
-	public static final boolean	ENABLED	= false;
+	public static final boolean	ENABLED	= true;
 
 	public static final int	SURFACE_NETS_CUBE_EDGES_SIZE	= 24;
 	public static final int	SURFACE_NETS_EDGE_TABLE_SIZE	= 256;
@@ -88,7 +92,8 @@ public class RebuildChunkBlocksEventTest {
 		smooth |= state.getBlock() instanceof BlockGrass;
 		smooth |= state.getBlock() instanceof BlockStone;
 		smooth |= state.getBlock() instanceof BlockSand;
-		smooth |= state.getBlock() instanceof BlockSandStone;
+		smooth |= state == Blocks.SANDSTONE.getDefaultState().withProperty(BlockSandStone.TYPE, BlockSandStone.EnumType.DEFAULT);
+		smooth |= state == Blocks.RED_SANDSTONE.getDefaultState().withProperty(BlockRedSandstone.TYPE, BlockRedSandstone.EnumType.DEFAULT);
 		smooth |= state.getBlock() instanceof BlockGravel;
 		smooth |= state.getBlock() instanceof BlockOre;
 		smooth |= state.getBlock() instanceof BlockRedstoneOre;
@@ -97,29 +102,27 @@ public class RebuildChunkBlocksEventTest {
 		smooth |= state.getBlock() instanceof BlockDirt;
 		smooth |= state.getBlock() instanceof BlockClay;
 		smooth |= state.getBlock() instanceof BlockSnow;
+		smooth |= state.getBlock() == Blocks.BEDROCK;
+
+		smooth |= state.getBlock() instanceof BlockNetherrack;
+		smooth |= state.getBlock() instanceof BlockGlowstone;
+
+		smooth |= state.getBlock() == Blocks.END_STONE;
+
+		smooth |= state.getBlock() instanceof BlockMycelium;
 
 		return smooth;
 	}
 
-	public static float getBlockDensity(final BlockPos pos, final IBlockAccess cache) {
+	public static float getBlockDensity(final BlockPos startPos, final IBlockAccess cache) {
 		float density = 0.0F;
 
-		final MutableBlockPos mutablePos = new MutableBlockPos(pos);
-
-		for (int x = 0; x < 2; ++x) {
-			for (int y = 0; y < 2; ++y) {
-				for (int z = 0; z < 2; ++z) {
-					mutablePos.setPos(pos.getX() - x, pos.getY() - y, pos.getZ() - z);
-
-					final IBlockState state = cache.getBlockState(mutablePos);
-
-					if (shouldSmooth(state)) {
-						density += state.getBoundingBox(cache, mutablePos).maxY - y;
-					} else {
-						density -= 1;
-					}
-
-				}
+		for (final MutableBlockPos pos : BlockPos.getAllInBoxMutable(startPos.add(-1, -1, -1), startPos.add(1, 1, 1))) {
+			final IBlockState state = cache.getBlockState(pos);
+			if (shouldSmooth(state)) {
+				density += state.getBoundingBox(cache, pos).maxY;
+			} else {
+				density -= 1;
 			}
 		}
 
