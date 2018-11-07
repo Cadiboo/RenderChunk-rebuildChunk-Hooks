@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
+import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
@@ -68,12 +69,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * </pre>
  *
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
- * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
  * @author Cadiboo
  */
 @Cancelable
 public class RebuildChunkAllBlocksEvent extends Event {
 
+	private final RenderChunk				renderChunk;
 	private final RenderGlobal				context;
 	private final ChunkCache				worldView;
 	private final ChunkCompileTaskGenerator	generator;
@@ -90,6 +91,7 @@ public class RebuildChunkAllBlocksEvent extends Event {
 	private final boolean[] usedBlockRenderLayers = new boolean[BlockRenderLayer.values().length];
 
 	/**
+	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
 	 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
@@ -103,7 +105,8 @@ public class RebuildChunkAllBlocksEvent extends Event {
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
 	 */
-	public RebuildChunkAllBlocksEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final Iterable<MutableBlockPos> chunkBlockPositions, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+	public RebuildChunkAllBlocksEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final Iterable<MutableBlockPos> chunkBlockPositions, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+		this.renderChunk = renderChunk;
 		this.context = renderGlobal;
 		this.worldView = worldView;
 		this.generator = generator;
@@ -116,6 +119,13 @@ public class RebuildChunkAllBlocksEvent extends Event {
 		this.z = z;
 		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
 		this.visGraph = visGraph;
+	}
+
+	/**
+	 * @return the instance of {@link RenderChunk} the event is being fired for
+	 */
+	public RenderChunk getRenderChunk() {
+		return this.renderChunk;
 	}
 
 	/**

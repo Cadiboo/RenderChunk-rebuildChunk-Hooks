@@ -3,6 +3,7 @@ package cadiboo.renderchunkrebuildchunkhooks.event;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
+import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
@@ -14,12 +15,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * Canceling this event prevents all Blocks and Tile Entities from being rebuilt to the chunk (and therefore rendered)
  *
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
- * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
  * @author Cadiboo
  */
 @Cancelable
 public class RebuildChunkPreEvent extends Event {
 
+	private final RenderChunk				renderChunk;
 	private final RenderGlobal				context;
 	private final ChunkCache				worldView;
 	private final ChunkCompileTaskGenerator	generator;
@@ -30,6 +31,7 @@ public class RebuildChunkPreEvent extends Event {
 	private final float						z;
 
 	/**
+	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
 	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
@@ -39,7 +41,8 @@ public class RebuildChunkPreEvent extends Event {
 	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 	 * @param compiledChunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 */
-	public RebuildChunkPreEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
+	public RebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
+		this.renderChunk = renderChunk;
 		this.context = renderGlobal;
 		this.worldView = worldView;
 		this.generator = generator;
@@ -48,6 +51,13 @@ public class RebuildChunkPreEvent extends Event {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	/**
+	 * @return the instance of {@link RenderChunk} the event is being fired for
+	 */
+	public RenderChunk getRenderChunk() {
+		return this.renderChunk;
 	}
 
 	/**

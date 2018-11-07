@@ -2,9 +2,9 @@ package cadiboo.renderchunkrebuildchunkhooks.event;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
+import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
@@ -19,12 +19,12 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
  * You can perform your own rendering in this event.<br>
  *
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
- * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
  * @author Cadiboo
  */
 @HasResult
 public class RebuildChunkBlockRenderInLayerEvent extends Event {
 
+	private final RenderChunk				renderChunk;
 	private final ChunkCache				worldView;
 	private final ChunkCompileTaskGenerator	generator;
 	private final CompiledChunk				compiledChunk;
@@ -36,6 +36,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	private final BlockRenderLayer			blockRenderLayer;
 
 	/**
+	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
 	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
@@ -46,7 +47,8 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
 	 */
-	public RebuildChunkBlockRenderInLayerEvent(final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+		this.renderChunk = renderChunk;
 		this.worldView = worldView;
 		this.generator = chunkCompileTaskGenerator;
 		this.compiledChunk = compiledChunk;
@@ -56,6 +58,13 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 		this.blockPos = blockPos;
 		this.blockState = blockState;
 		this.blockRenderLayer = blockRenderLayer;
+	}
+
+	/**
+	 * @return the instance of {@link RenderChunk} the event is being fired for
+	 */
+	public RenderChunk getRenderChunk() {
+		return this.renderChunk;
 	}
 
 	/**

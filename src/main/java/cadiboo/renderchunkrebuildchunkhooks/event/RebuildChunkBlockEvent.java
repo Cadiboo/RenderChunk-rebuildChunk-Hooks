@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
+import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
@@ -24,12 +25,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * Canceling this event prevents the block from being rebuilt to the chunk (and therefore rendered).<br>
  *
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
- * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
  * @author Cadiboo
  */
 @Cancelable
 public class RebuildChunkBlockEvent extends Event {
 
+	private final RenderChunk				renderChunk;
 	private final RenderGlobal				context;
 	private final ChunkCache				worldView;
 	private final ChunkCompileTaskGenerator	generator;
@@ -49,6 +50,7 @@ public class RebuildChunkBlockEvent extends Event {
 	private final boolean[] usedBlockRenderLayers = new boolean[BlockRenderLayer.values().length];
 
 	/**
+	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
 	 * @param renderGlobal                    the {@link RenderGlobal} passed in
 	 * @param worldView                       the {@link ChunkCache} passed in
 	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in
@@ -65,8 +67,9 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in
 	 * @param visGraph                        the {@link VisGraph} passed in
 	 */
-	public RebuildChunkBlockEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, final BlockRenderLayer blockRenderLayer, final float x, final float y, final float z,
+	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, final BlockRenderLayer blockRenderLayer, final float x, final float y, final float z,
 			final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+		this.renderChunk = renderChunk;
 		this.context = renderGlobal;
 		this.worldView = worldView;
 		this.generator = generator;
@@ -82,6 +85,13 @@ public class RebuildChunkBlockEvent extends Event {
 		this.z = z;
 		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
 		this.visGraph = visGraph;
+	}
+
+	/**
+	 * @return the instance of {@link RenderChunk} the event is being fired for
+	 */
+	public RenderChunk getRenderChunk() {
+		return this.renderChunk;
 	}
 
 	/**
