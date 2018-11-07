@@ -9,7 +9,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.MethodNode;
 
 import com.google.common.collect.ImmutableList;
 
@@ -48,25 +47,38 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			return basicClass;
 		}
 
-		final ClassReader renderChunkReader = new ClassReader(basicClass);
-		final ClassWriter renderChunkWriter = new ClassWriter(renderChunkReader, CLASS_WRITER_FLAGS);
+//		// read in, build classNode
+//		final ClassNode classNode = new ClassNode();
+//		final ClassReader cr = new ClassReader(basicClass);
+//		cr.accept(classNode, CLASS_READER_FLAGS);
+//
+//		// peek at classNode and modifier
+//		final List<MethodNode> methods = classNode.methods;
+//		for (final MethodNode method : methods) {
+//			LOGGER.info("name=" + method.name + " desc=" + method.desc);
+//			final InsnList insnList = method.instructions;
+//			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
+//			while (ite.hasNext()) {
+//				final AbstractInsnNode insn = ite.next();
+//				final int opcode = insn.getOpcode();
+//				// add before return: System.out.println("Returning ... ")
+//				if (opcode == RETURN) {
+//					final InsnList tempList = new InsnList();
+//					tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+//					tempList.add(new LdcInsnNode("Returning ... "));
+//					tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+//					insnList.insert(insn.getPrevious(), tempList);
+//					method.maxStack += 2;
+//				}
+//			}
+//		}
+//
+//		// write classNode
+//		final ClassWriter out = new ClassWriter(CLASS_WRITER_FLAGS);
+//		classNode.accept(out);
+//		return out.toByteArray();
 
-		final ClassVisitor renderChunkVisitor = new RenderChunkClassVisitor(ASM5, renderChunkWriter);
-
-		try {
-			// make renderChunkVisitor visit all the code in renderChunkReader
-			renderChunkReader.accept(renderChunkVisitor, CLASS_READER_FLAGS);
-
-			LOGGER.info("Injected hooks sucessfully!");
-			return renderChunkWriter.toByteArray();
-		} catch (final Exception e) {
-			e.printStackTrace();
-			LOGGER.error("FAILED to inject hooks!!! Discarding changes.");
-			return basicClass;
-		}
-
-//		final MethodNode renderChunk_rebuildChunkNode = new MethodNode(ASM5);
-//		final InsnList renderChunk_rebuildChunkInstructions = renderChunk_rebuildChunkNode.accept(renderChunkVisitor, 0);
+		return basicClass;
 
 	}
 
@@ -115,14 +127,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				LOGGER.info("Method with name \"" + name + "\" and description \"" + desc + "\" matched and passed");
 			}
 
-			return new MethodNode(this.api, access, name, desc, signature, exceptions) {
-				@Override
-				public void visitEnd() {
-					LOGGER.info(this.instructions);
-					this.accept(RenderChunkClassVisitor.this.cv);
-					LOGGER.info(this.instructions);
-				}
-			};
+			return originalVisitor;
 
 		};
 
