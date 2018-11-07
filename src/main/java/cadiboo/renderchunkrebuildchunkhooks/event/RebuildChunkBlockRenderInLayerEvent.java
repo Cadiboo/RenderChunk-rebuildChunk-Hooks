@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
-import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
@@ -20,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
  * You can perform your own rendering in this event.<br>
  *
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
- * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(RenderChunk, float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
+ * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
  * @author Cadiboo
  */
 @HasResult

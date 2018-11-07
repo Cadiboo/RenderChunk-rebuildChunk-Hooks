@@ -1,40 +1,57 @@
 package cadiboo.renderchunkrebuildchunkhooks.classtransformer;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
+import java.util.HashMap;
+
+import net.minecraft.util.Tuple;
 
 public class NameHelper {
 
-	// Deobfuscated Name | SRG Name | Obfuscated Name (Optifine Name)
-	public static final Table<String, String, String> names = HashBasedTable.create();
+	// Deobfuscated Name, SRG Name, Obfuscated Name (Optifine Name)
+	public static final HashMap<String, Tuple<String, String>>	names			= new HashMap<>();
+	private static boolean										optifineExists	= false;
 
 	static {
 		/** fields */
 		{
 			// net/minecraft/client/renderer/chunk/RenderChunk.position
-			names.put("position", "field_178586_f", "o");
+			names.put("position", new Tuple<>("field_178586_f", "o"));
 			// net/minecraft/client/renderer/chunk/RenderChunk.renderGlobal
-			names.put("renderGlobal", "field_178589_e", "e");
+			names.put("renderGlobal", new Tuple<>("field_178589_e", "e"));
 			// net/minecraft/client/renderer/chunk/RenderChunk.worldView
-			names.put("worldView", "field_189564_r", "r");
+			names.put("worldView", new Tuple<>("field_189564_r", "r"));
 			// net/minecraft/client/renderer/chunk/RenderChunk.lockCompileTask
-			names.put("lockCompileTask", "field_178587_g", "f");
+			names.put("lockCompileTask", new Tuple<>("field_178587_g", "f"));
 			// net/minecraft/client/renderer/chunk/RenderChunk.setTileEntities
-			names.put("setTileEntities", "field_181056_j", "i");
+			names.put("setTileEntities", new Tuple<>("field_181056_j", "i"));
 		}
 
 		/** static fields */
 		{
 			// net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated
-			names.put("renderChunksUpdated", "field_178592_a", "a");
+			names.put("renderChunksUpdated", new Tuple<>("field_178592_a", "a"));
 			// net/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher.instance
-			names.put("instance", "field_147556_a", "a");
+			names.put("instance", new Tuple<>("field_147556_a", "a"));
 		}
 
 	}
 
 	public static String getName(final String deObfName) {
-		return deObfName;
+		final Tuple<String, String> namePair = names.get(deObfName);
+
+		if (namePair == null) {
+			return deObfName;
+		}
+
+		if (optifineExists) {
+			return namePair.getSecond();
+		}
+
+		if (RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEOBFUSCATED) {
+			return deObfName;
+		}
+
+		return namePair.getFirst();
+
 	}
 
 }

@@ -6,14 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 
-import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraftforge.fml.common.DummyModContainer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContainer {
 
@@ -39,20 +35,6 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		meta.screenshots = new String[0];
 		meta.logoFile = "/" + MOD_ID + "_logo.png";
 
-	}
-
-	@Override
-	public boolean shouldLoadInEnvironment() {
-		return FMLCommonHandler.instance().getSide().isClient();
-	}
-
-	@Subscribe
-	public void preInit(final FMLPreInitializationEvent event) {
-		if (event.getSide().isClient()) {
-			LOGGER.info("Preloading RenderChunk...");
-			RenderChunk.class.getName();
-			LOGGER.info("Sucessfully preloaded RenderChunk!");
-		}
 	}
 
 	@Override

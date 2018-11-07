@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
-import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
@@ -25,7 +24,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * Canceling this event prevents the block from being rebuilt to the chunk (and therefore rendered).<br>
  *
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
- * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(RenderChunk, float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
+ * @see cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks#rebuildChunk(float, float, float, ChunkCompileTaskGenerator, MutableBlockPos, ChunkCache, RenderGlobal, int, java.util.concurrent.locks.ReentrantLock, java.util.Set)
  * @author Cadiboo
  */
 @Cancelable
