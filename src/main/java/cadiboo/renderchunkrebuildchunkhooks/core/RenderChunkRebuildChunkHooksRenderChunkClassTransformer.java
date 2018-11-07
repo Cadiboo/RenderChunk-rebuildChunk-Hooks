@@ -1,4 +1,4 @@
-package cadiboo.renderchunkrebuildchunkhooks;
+package cadiboo.renderchunkrebuildchunkhooks.core;
 
 import java.util.List;
 

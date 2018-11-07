@@ -1,10 +1,9 @@
-package cadiboo.renderchunkrebuildchunkhooks.loadingplugin;
+package cadiboo.renderchunkrebuildchunkhooks.core;
 
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 
-import cadiboo.renderchunkrebuildchunkhooks.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
 import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -19,7 +18,7 @@ import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions
 /** How early your core mod is called - Use > 1000 to work with srg names */
 //@SortingIndex(value = 1001)
 @SortingIndex(value = 0xBADC0DE)
-//put in _VM_ arguments -Dfml.coreMods.load=cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
+//put in _VM_ arguments -Dfml.coreMods.load=cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
 public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoadingPlugin {
 
 	public static final String CORE_MARKER = RenderChunkRebuildChunkHooksDummyContainer.MOD_NAME + " Loaded";
@@ -30,7 +29,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	}
 
 	public String getVersion() {
-		return this.getClass().getSimpleName().replace(this.getClass().getSimpleName().split("1")[1], "").replace("_", ".");
+		return "1.12.2";
 	}
 
 	@Override
