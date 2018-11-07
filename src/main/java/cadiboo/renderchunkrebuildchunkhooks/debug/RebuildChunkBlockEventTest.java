@@ -1,8 +1,8 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
+import java.util.Random;
+
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
-import net.minecraft.block.BlockGlass;
-import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RebuildChunkBlockEventTest {
 
 	public static final String	MODID	= "rebuild_chunk_block_event_test";
-	public static final boolean	ENABLED	= true;
+	public static final boolean	ENABLED	= false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
@@ -20,9 +20,9 @@ public class RebuildChunkBlockEventTest {
 			return;
 		}
 
-		if (event.getBlockState().getBlock() instanceof BlockGlass) {
+		if (new Random().nextBoolean()) {
 			event.setCanceled(true);
-			event.getBlockRendererDispatcher().renderBlock(Blocks.GLASS.getDefaultState(), event.getBlockPos(), event.getWorldView(), event.getBufferBuilder());
+			System.out.println("eh? cancelled event!");
 		}
 
 	}
