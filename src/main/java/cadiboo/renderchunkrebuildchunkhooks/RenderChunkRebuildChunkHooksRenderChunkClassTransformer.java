@@ -34,7 +34,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final boolean DEOBFUSCATED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-	public static final boolean DEBUG_EVERYTHING = false;
+	public static final boolean DEBUG_EVERYTHING = true;
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
