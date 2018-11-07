@@ -193,8 +193,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 			}
 			for (final BlockRenderLayer blockrenderlayer2 : RenderChunk.ENUM_WORLD_BLOCK_LAYERS) {
 				if (usedBlockRenderLayers[blockrenderlayer2.ordinal()]) {
-//					compiledChunk.setLayerUsed(blockrenderlayer2);
-					RenderChunkRebuildChunkHooksHooks.compiledChunkSetLayerUsed(compiledChunk, blockrenderlayer2);
+					compiledChunk.setLayerUsed(blockrenderlayer2);
 				}
 				if (compiledChunk.isLayerStarted(blockrenderlayer2)) {
 //					if (Config.isShaders()) {
