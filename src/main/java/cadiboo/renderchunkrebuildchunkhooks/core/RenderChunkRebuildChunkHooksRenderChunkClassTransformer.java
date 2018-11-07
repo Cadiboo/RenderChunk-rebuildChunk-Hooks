@@ -1,22 +1,31 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.util.Printer;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
 
 import com.google.common.collect.ImmutableList;
 
@@ -37,10 +46,27 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	public static final boolean DEBUG_EVERYTHING = true;
 
 	public static final int CLASS_WRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
-	// skip class reader reading frames if the class writer is going to compute them for us (you should get a warning that this being 0 is dead code)
+	// skip class reader reading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
 	public static final int CLASS_READER_FLAGS = (CLASS_WRITER_FLAGS & ClassWriter.COMPUTE_FRAMES) == ClassWriter.COMPUTE_FRAMES ? ClassReader.SKIP_FRAMES : 0;
 
 	public static final Logger LOGGER = LogManager.getLogger();
+
+	static {
+		if (DEBUG_EVERYTHING) {
+			for (final Field field : Names.class.getFields()) {
+				Object value;
+				try {
+					value = field.get(Names.class);
+
+					LOGGER.info(field.getName() + ": " + value);
+
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					LOGGER.error("Error in <clinit>!");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
@@ -55,6 +81,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			return basicClass;
 		}
 
+		LOGGER.info("Preparing to inject hooks into \"" + transformedName + "\" (RenderChunk)");
+
 		// read in, build classNode
 		final ClassNode classNode = new ClassNode();
 		final ClassReader cr = new ClassReader(basicClass);
@@ -62,23 +90,42 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		// peek at classNode and modifier
 		final List<MethodNode> methods = classNode.methods;
+		if (DEBUG_EVERYTHING) {
+			LOGGER.info("RebuildChunk type: " + REBUILD_CHUNK_TYPE);
+			LOGGER.info("RebuildChunk descriptor: " + REBUILD_CHUNK_DESCRIPTOR);
+		}
 		for (final MethodNode method : methods) {
-			LOGGER.info("name=" + method.name + " desc=" + method.desc);
-			final InsnList insnList = method.instructions;
-			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
-			while (ite.hasNext()) {
-				final AbstractInsnNode insn = ite.next();
-				final int opcode = insn.getOpcode();
-				// add before return: System.out.println("Returning...")
-				if (opcode == RETURN) {
-					final InsnList tempList = new InsnList();
-					tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-					tempList.add(new LdcInsnNode("Returning..."));
-					tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
-					insnList.insert(insn.getPrevious(), tempList);
-					method.maxStack += 2;
+
+			if (!method.desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
+				if (DEBUG_EVERYTHING) {
+					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" did not match");
 				}
+				continue;
 			}
+
+			if (DEBUG_EVERYTHING) {
+				LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" matched!");
+			}
+
+			// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
+			if (method.name.equals("a") || method.name.equals("resortTransparency")) {
+				if (DEBUG_EVERYTHING) {
+					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" was rejected");
+				}
+				continue;
+			}
+
+			if (DEBUG_EVERYTHING) {
+				LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" matched and passed");
+			}
+
+			final InsnList insnList = method.instructions;
+
+			this.injectRebuildChunkPreEvent(insnList);
+			this.injectRebuildChunkAllBlocksEvent(insnList);
+			this.injectRebuildChunkBlockRenderInLayerEvent(insnList);
+			this.injectRebuildChunkBlockEvent(insnList);
+
 		}
 
 		// write classNode
@@ -99,55 +146,104 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	}
 
-	public static class RenderChunkClassVisitor extends ClassVisitor {
+//	generator.getLock().unlock();
+//	}
+//>	if(cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkPreEvent(this, renderGlobal, worldView, generator, compiledchunk, position, x, y, z))return;
+//	VisGraph lvt_9_1_ = new VisGraph();
+	private void injectRebuildChunkPreEvent(final InsnList instructionList) {
 
-		public static final Logger LOGGER = LogManager.getLogger();
+		final ListIterator<AbstractInsnNode> instructions = instructionList.iterator();
 
-		public RenderChunkClassVisitor(final int api, final ClassVisitor cv) {
-			super(api, cv);
+		TypeInsnNode NEW_VisGraph_Node = null;
 
-			if (DEBUG_EVERYTHING) {
-				LOGGER.info("RebuildChunk type: " + REBUILD_CHUNK_TYPE);
-				LOGGER.info("RebuildChunk descriptor: " + REBUILD_CHUNK_DESCRIPTOR);
+		while (instructions.hasNext()) {
+			final AbstractInsnNode instruction = instructions.next();
+
+//			L16
+//		    LINENUMBER 146 L16
+//#		    NEW net/minecraft/client/renderer/chunk/VisGraph //injection point
+//		    DUP
+
+			if (instruction.getOpcode() == NEW) {
+				if (instruction.getType() == AbstractInsnNode.TYPE_INSN) {
+					if (((TypeInsnNode) instruction).desc.equals(VIS_GRAPH_INTERNAL_NAME)) {
+						NEW_VisGraph_Node = (TypeInsnNode) instruction;
+						break;
+					}
+				}
 			}
+
 		}
 
-		@Override
-		public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
+		if (NEW_VisGraph_Node == null) {
+			new RuntimeException("couldn't find injection point").printStackTrace();
+			return;
+		}
 
-			final MethodVisitor originalVisitor = super.visitMethod(access, name, desc, signature, exceptions);
+		final InsnList tempInstructionList = new InsnList();
 
-			if (!desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
-				if (DEBUG_EVERYTHING) {
-					LOGGER.info("Method with name \"" + name + "\" and description \"" + desc + "\" did not match");
-				}
-				return originalVisitor;
-			}
+		// add label
+		final LabelNode executionLabelNode = new LabelNode();
+		tempInstructionList.add(executionLabelNode);
+		// add line number
+		final int line = ((LineNumberNode) NEW_VisGraph_Node.getPrevious()).line - 1;
+		tempInstructionList.add(new LineNumberNode(line, executionLabelNode));
 
-			if (DEBUG_EVERYTHING) {
-				LOGGER.info("Method with name \"" + name + "\" and description \"" + desc + "\" matched!");
-			}
+		// execute method
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 4));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 5));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new VarInsnNode(FLOAD, 1));
+		tempInstructionList.add(new VarInsnNode(FLOAD, 2));
+		tempInstructionList.add(new VarInsnNode(FLOAD, 3));
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkPreEvent", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Z", false));
 
-			// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
-			if (name.equals("a") || name.equals("resortTransparency")) {
-				if (DEBUG_EVERYTHING) {
-					LOGGER.info("Method with name \"" + name + "\" and description \"" + desc + "\" was rejected");
-				}
-				return originalVisitor;
-			}
+		// return if required
+		final LabelNode continueLabelNode = (LabelNode) NEW_VisGraph_Node.getPrevious().getPrevious();
 
-			if (DEBUG_EVERYTHING) {
-				LOGGER.info("Method with name \"" + name + "\" and description \"" + desc + "\" matched and passed");
-			}
+		tempInstructionList.add(new JumpInsnNode(IFEQ, continueLabelNode));
+		tempInstructionList.add(new InsnNode(RETURN));
 
-			if (DEBUG_EVERYTHING) {
-				LOGGER.info("Method with name \"" + name + "\" and description \"" + desc + "\" matched and passed");
-			}
+		// inject instructions
+		final AbstractInsnNode injectionPoint = NEW_VisGraph_Node.getPrevious().getPrevious().getPrevious();
+		instructionList.insert(injectionPoint, tempInstructionList);
 
-			return originalVisitor;
-
-		};
+		for (int i = 0; i < instructionList.size(); i++) {
+			LOGGER.info(insnToString(instructionList.get(i)));
+		}
 
 	}
+
+	private void injectRebuildChunkAllBlocksEvent(final InsnList instructionList) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void injectRebuildChunkBlockRenderInLayerEvent(final InsnList instructionList) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void injectRebuildChunkBlockEvent(final InsnList instructionList) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static String insnToString(final AbstractInsnNode insn) {
+		insn.accept(mp);
+		final StringWriter sw = new StringWriter();
+		printer.print(new PrintWriter(sw));
+		printer.getText().clear();
+		return sw.toString();
+	}
+
+	private static final Printer			printer	= new Textifier();
+	private static final TraceMethodVisitor	mp		= new TraceMethodVisitor(printer);
 
 }
