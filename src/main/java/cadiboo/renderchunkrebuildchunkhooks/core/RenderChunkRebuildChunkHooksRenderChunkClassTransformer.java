@@ -61,11 +61,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //			while (ite.hasNext()) {
 //				final AbstractInsnNode insn = ite.next();
 //				final int opcode = insn.getOpcode();
-//				// add before return: System.out.println("Returning ... ")
+//				// add before return: System.out.println("Returning...")
 //				if (opcode == RETURN) {
 //					final InsnList tempList = new InsnList();
 //					tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-//					tempList.add(new LdcInsnNode("Returning ... "));
+//					tempList.add(new LdcInsnNode("Returning..."));
 //					tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
 //					insnList.insert(insn.getPrevious(), tempList);
 //					method.maxStack += 2;
@@ -74,11 +74,20 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //		}
 //
 //		// write classNode
-//		final ClassWriter out = new ClassWriter(CLASS_WRITER_FLAGS);
-//		classNode.accept(out);
-//		return out.toByteArray();
-
+//		try {
+//			final ClassWriter out = new ClassWriter(CLASS_WRITER_FLAGS);
+//
+//			// make the ClassWriter visit all the code in classNode
+//			classNode.accept(out);
+//
+//			LOGGER.info("Injected hooks sucessfully!");
+//			return out.toByteArray();
+//		} catch (final Exception e) {
+//			e.printStackTrace();
+//			LOGGER.error("FAILED to inject hooks!!! Discarding changes.");
+//			LOGGER.warn("Any mods that depend on the hooks provided by this mod will break");
 		return basicClass;
+//		}
 
 	}
 
