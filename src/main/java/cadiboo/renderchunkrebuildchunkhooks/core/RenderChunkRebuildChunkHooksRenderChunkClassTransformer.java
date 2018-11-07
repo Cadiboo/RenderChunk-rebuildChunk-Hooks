@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +10,13 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import com.google.common.collect.ImmutableList;
 
@@ -47,47 +55,47 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			return basicClass;
 		}
 
-//		// read in, build classNode
-//		final ClassNode classNode = new ClassNode();
-//		final ClassReader cr = new ClassReader(basicClass);
-//		cr.accept(classNode, CLASS_READER_FLAGS);
-//
-//		// peek at classNode and modifier
-//		final List<MethodNode> methods = classNode.methods;
-//		for (final MethodNode method : methods) {
-//			LOGGER.info("name=" + method.name + " desc=" + method.desc);
-//			final InsnList insnList = method.instructions;
-//			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
-//			while (ite.hasNext()) {
-//				final AbstractInsnNode insn = ite.next();
-//				final int opcode = insn.getOpcode();
-//				// add before return: System.out.println("Returning...")
-//				if (opcode == RETURN) {
-//					final InsnList tempList = new InsnList();
-//					tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-//					tempList.add(new LdcInsnNode("Returning..."));
-//					tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
-//					insnList.insert(insn.getPrevious(), tempList);
-//					method.maxStack += 2;
-//				}
-//			}
-//		}
-//
-//		// write classNode
-//		try {
-//			final ClassWriter out = new ClassWriter(CLASS_WRITER_FLAGS);
-//
-//			// make the ClassWriter visit all the code in classNode
-//			classNode.accept(out);
-//
-//			LOGGER.info("Injected hooks sucessfully!");
-//			return out.toByteArray();
-//		} catch (final Exception e) {
-//			e.printStackTrace();
-//			LOGGER.error("FAILED to inject hooks!!! Discarding changes.");
-//			LOGGER.warn("Any mods that depend on the hooks provided by this mod will break");
-		return basicClass;
-//		}
+		// read in, build classNode
+		final ClassNode classNode = new ClassNode();
+		final ClassReader cr = new ClassReader(basicClass);
+		cr.accept(classNode, CLASS_READER_FLAGS);
+
+		// peek at classNode and modifier
+		final List<MethodNode> methods = classNode.methods;
+		for (final MethodNode method : methods) {
+			LOGGER.info("name=" + method.name + " desc=" + method.desc);
+			final InsnList insnList = method.instructions;
+			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
+			while (ite.hasNext()) {
+				final AbstractInsnNode insn = ite.next();
+				final int opcode = insn.getOpcode();
+				// add before return: System.out.println("Returning...")
+				if (opcode == RETURN) {
+					final InsnList tempList = new InsnList();
+					tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+					tempList.add(new LdcInsnNode("Returning..."));
+					tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+					insnList.insert(insn.getPrevious(), tempList);
+					method.maxStack += 2;
+				}
+			}
+		}
+
+		// write classNode
+		try {
+			final ClassWriter out = new ClassWriter(CLASS_WRITER_FLAGS);
+
+			// make the ClassWriter visit all the code in classNode
+			classNode.accept(out);
+
+			LOGGER.info("Injected hooks sucessfully!");
+			return out.toByteArray();
+		} catch (final Exception e) {
+			e.printStackTrace();
+			LOGGER.error("FAILED to inject hooks!!! Discarding changes.");
+			LOGGER.warn("Any mods that depend on the hooks provided by this mod will break");
+			return basicClass;
+		}
 
 	}
 
