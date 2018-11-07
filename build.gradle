@@ -74,7 +74,7 @@ jar {
 
     manifest {
         attributes 'FMLAT': 'renderchunkrebuildchunkhooks_at.cfg'
-        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.loadingplugin.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2'
+        attributes 'FMLCorePlugin': 'cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2'
         attributes 'FMLCorePluginContainsMod': 'true'
     }
 }
