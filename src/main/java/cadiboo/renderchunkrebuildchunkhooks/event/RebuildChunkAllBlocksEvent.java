@@ -27,9 +27,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * for each block you want to render<br>
  * 1) get the Block's BlockRenderLayer<br>
  * 2) call {@link net.minecraftforge.client.ForgeHooksClient#setRenderLayer(BlockRenderLayer) net.minecraftforge.client.ForgeHooksClient#setRenderLayer(Block's BlockRenderLayer)};<br>
- * 3) get a BufferBuilder instance with {@link RebuildChunkBlocksEvent#startOrContinueLayer(BlockRenderLayer) RebuildChunkBlocksEvent#startOrContinueLayer(Block's BlockRenderLayer)};<br>
+ * 3) get a BufferBuilder instance with {@link RebuildChunkAllBlocksEvent#startOrContinueLayer(BlockRenderLayer) RebuildChunkBlocksEvent#startOrContinueLayer(Block's BlockRenderLayer)};<br>
  * 4) put any data into the BufferBuilder<br>
- * 5) call {@link RebuildChunkBlocksEvent#setBlockRenderLayerUsed(BlockRenderLayer, boolean) RebuildChunkBlocksEvent#setBlockRenderLayerUsed(Block's BlockRenderLayer, boolean)} with true if you want all the data in this BlockRenderLayer to be rendered or with false if you want none of the data in this BlockRenderLayer to be rendered<br>
+ * 5) call {@link RebuildChunkAllBlocksEvent#setBlockRenderLayerUsed(BlockRenderLayer, boolean) RebuildChunkBlocksEvent#setBlockRenderLayerUsed(Block's BlockRenderLayer, boolean)} with true if you want all the data in this BlockRenderLayer to be rendered or with false if you want none of the data in this BlockRenderLayer to be rendered<br>
  * 6) call {@link net.minecraftforge.client.ForgeHooksClient#setRenderLayer(BlockRenderLayer) net.minecraftforge.client.ForgeHooksClient#setRenderLayer(null)};<br>
  * Here is an example of how to replace vanilla's rendering with a function using this event that does the exact same thing<br>
  *
@@ -72,7 +72,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * @author Cadiboo
  */
 @Cancelable
-public class RebuildChunkBlocksEvent extends Event {
+public class RebuildChunkAllBlocksEvent extends Event {
 
 	private final RenderGlobal				context;
 	private final ChunkCache				worldView;
@@ -103,7 +103,7 @@ public class RebuildChunkBlocksEvent extends Event {
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
 	 */
-	public RebuildChunkBlocksEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final Iterable<MutableBlockPos> chunkBlockPositions, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+	public RebuildChunkAllBlocksEvent(final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final Iterable<MutableBlockPos> chunkBlockPositions, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 		this.context = renderGlobal;
 		this.worldView = worldView;
 		this.generator = generator;
