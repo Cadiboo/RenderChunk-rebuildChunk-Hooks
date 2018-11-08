@@ -108,13 +108,120 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		final ClassReader cr = new ClassReader(basicClass);
 		cr.accept(classNode, CLASS_READER_FLAGS);
 
-		// peek at classNode and modifier
-		final List<MethodNode> methods = classNode.methods;
+//		for (final MethodNode method : classNode.methods) {
+//			LOGGER.info("name=" + method.name + " desc=" + method.desc);
+//			final InsnList insnList = method.instructions;
+//			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
+//			while (ite.hasNext()) {
+//				final AbstractInsnNode insn = ite.next();
+//				final int opcode = insn.getOpcode();
+//				// add before return: System.out.println("Returning...")
+//				if (opcode == RETURN) {
+//					final InsnList tempList = new InsnList();
+//					tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+//					tempList.add(new LdcInsnNode("Returning..."));
+//					tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+//					insnList.insert(insn.getPrevious(), tempList);
+//				}
+//			}
+//		}
+
+//		for (final MethodNode method : classNode.methods) {
+//			LOGGER.info("name=" + method.name + " desc=" + method.desc);
+//			final InsnList insnList = method.instructions;
+//			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
+//			AbstractInsnNode injectInsn = null;
+//			while (ite.hasNext()) {
+//				final AbstractInsnNode insn = ite.next();
+//
+//				if (insn.getOpcode() == NEW) {
+//					if (insn.getType() == AbstractInsnNode.TYPE_INSN) {
+//						if (((TypeInsnNode) insn).desc.equals(VIS_GRAPH_INTERNAL_NAME)) {
+//							injectInsn = insn;
+//							break;
+//						}
+//					}
+//				}
+//			}
+//
+//			if (injectInsn == null) {
+//				continue;
+//			}
+//
+//			final InsnList tempList = new InsnList();
+//			tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+//			tempList.add(new LdcInsnNode("VIS_GRAPH_NEW..."));
+//			tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+//			insnList.insert(injectInsn.getPrevious(), tempList);
+//		}
+
+		for (final MethodNode method : classNode.methods) {
+			LOGGER.info("name=" + method.name + " desc=" + method.desc);
+			final InsnList insnList = method.instructions;
+			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
+			AbstractInsnNode injectInsn = null;
+			while (ite.hasNext()) {
+				final AbstractInsnNode insn = ite.next();
+
+				if (insn.getOpcode() == NEW) {
+					if (insn.getType() == AbstractInsnNode.TYPE_INSN) {
+						if (((TypeInsnNode) insn).desc.equals(VIS_GRAPH_INTERNAL_NAME)) {
+							injectInsn = insn;
+							break;
+						}
+					}
+				}
+			}
+
+			if (injectInsn == null) {
+				continue;
+			}
+
+			final InsnList tempList = new InsnList();
+
+			// add label
+//			final LabelNode executionLabelNode = new LabelNode();
+//			tempList.add(executionLabelNode);
+//			// add line number
+//			final int line = ((LineNumberNode) NEW_VisGraph_Node.getPrevious()).line - 1;
+//			tempList.add(new LineNumberNode(line, executionLabelNode));
+
+			tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+			tempList.add(new LdcInsnNode("Jeff"));
+			tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+
+//			// execute method
+//			tempList.add(new VarInsnNode(ALOAD, 0));
+//			tempList.add(new VarInsnNode(ALOAD, 0));
+//			tempList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+//			tempList.add(new VarInsnNode(ALOAD, 0));
+//			tempList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+//			tempList.add(new VarInsnNode(ALOAD, 4));
+//			tempList.add(new VarInsnNode(ALOAD, 5));
+//			tempList.add(new VarInsnNode(ALOAD, 0));
+//			tempList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+//			tempList.add(new VarInsnNode(FLOAD, 1));
+//			tempList.add(new VarInsnNode(FLOAD, 2));
+//			tempList.add(new VarInsnNode(FLOAD, 3));
+//			tempList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkPreEvent", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Z", false));
+//
+//			// return if required
+//			final LabelNode continueLabelNode = (LabelNode) injectInsn.getPrevious().getPrevious();
+//
+//			tempList.add(new JumpInsnNode(IFEQ, continueLabelNode));
+//			tempList.add(new InsnNode(RETURN));
+
+			// PREVIOUS PREVIOUS PREVIOUS DOESNT WORK!!!!!!!!!!!
+			insnList.insert(injectInsn.getPrevious(), tempList);
+		}
+
 		if (DEBUG_EVERYTHING) {
 			LOGGER.info("RebuildChunk type: " + REBUILD_CHUNK_TYPE);
 			LOGGER.info("RebuildChunk descriptor: " + REBUILD_CHUNK_DESCRIPTOR);
 		}
-		for (final MethodNode method : methods) {
+
+		// peek at classNode and modifier
+		for (final MethodNode method : classNode.methods) {
 
 			if (!method.desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
 				if (DEBUG_EVERYTHING) {
@@ -139,31 +246,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" matched and passed");
 			}
 
-			this.injectRebuildChunkPreEvent(method.instructions);
-			this.injectRebuildChunkAllBlocksEvent(method.instructions);
-			this.injectRebuildChunkBlockRenderInLayerEvent(method.instructions);
-			this.injectRebuildChunkBlockEvent(method.instructions);
+//			this.injectRebuildChunkPreEvent(method.instructions);
+//			this.injectRebuildChunkAllBlocksEvent(method.instructions);
+//			this.injectRebuildChunkBlockRenderInLayerEvent(method.instructions);
+//			this.injectRebuildChunkBlockEvent(method.instructions);
 
 		}
-
-//		try {
-//			final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".txt");
-//			final PrintWriter printer = new PrintWriter(pathToFile.toFile());
-//			final ClassWriter tempClassWriter = new ClassWriter(cr, CLASS_WRITER_FLAGS);
-//			final TraceClassVisitor tracingVisitor = new TraceClassVisitor(printer);
-//			classNode.accept(tracingVisitor);
-//
-//			tempClassWriter.
-//
-//			final byte[] bytesToWrite = tempClassWriter.toByteArray();
-//			final Path pathToClassFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".class");
-//			final FileOutputStream fileOutputStream = new FileOutputStream(pathToClassFile.toFile());
-//			fileOutputStream.write(bytesToWrite);
-//			fileOutputStream.close();
-//
-//		} catch (final Exception e) {
-//			e.printStackTrace();
-//		}
 
 		// write classNode
 		try {
