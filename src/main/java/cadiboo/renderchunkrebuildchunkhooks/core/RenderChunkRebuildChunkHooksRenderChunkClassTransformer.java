@@ -1,8 +1,11 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -26,6 +29,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceClassVisitor;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
 import com.google.common.collect.ImmutableList;
@@ -82,6 +86,21 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			return basicClass;
 		}
 
+		try {
+			final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + (System.nanoTime() & 0xFF) + ".txt");
+			final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+			final ClassReader reader = new ClassReader(basicClass);
+			final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+			reader.accept(tracingVisitor, 0);
+
+			final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + (System.nanoTime() & 0xFF) + ".class");
+			final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+			fileOutputStream.write(basicClass);
+			fileOutputStream.close();
+		} catch (final Exception e) {
+			// TODO: handle exception
+		}
+
 		LOGGER.info("Preparing to inject hooks into \"" + transformedName + "\" (RenderChunk)");
 
 		// read in, build classNode
@@ -120,14 +139,31 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" matched and passed");
 			}
 
-			final InsnList insnList = method.instructions;
-
-			this.injectRebuildChunkPreEvent(insnList);
-			this.injectRebuildChunkAllBlocksEvent(insnList);
-			this.injectRebuildChunkBlockRenderInLayerEvent(insnList);
-			this.injectRebuildChunkBlockEvent(insnList);
+			this.injectRebuildChunkPreEvent(method.instructions);
+			this.injectRebuildChunkAllBlocksEvent(method.instructions);
+			this.injectRebuildChunkBlockRenderInLayerEvent(method.instructions);
+			this.injectRebuildChunkBlockEvent(method.instructions);
 
 		}
+
+//		try {
+//			final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".txt");
+//			final PrintWriter printer = new PrintWriter(pathToFile.toFile());
+//			final ClassWriter tempClassWriter = new ClassWriter(cr, CLASS_WRITER_FLAGS);
+//			final TraceClassVisitor tracingVisitor = new TraceClassVisitor(printer);
+//			classNode.accept(tracingVisitor);
+//
+//			tempClassWriter.
+//
+//			final byte[] bytesToWrite = tempClassWriter.toByteArray();
+//			final Path pathToClassFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".class");
+//			final FileOutputStream fileOutputStream = new FileOutputStream(pathToClassFile.toFile());
+//			fileOutputStream.write(bytesToWrite);
+//			fileOutputStream.close();
+//
+//		} catch (final Exception e) {
+//			e.printStackTrace();
+//		}
 
 		// write classNode
 		try {
@@ -137,6 +173,24 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			classNode.accept(out);
 
 			LOGGER.info("Injected hooks sucessfully!");
+
+			try {
+				final byte[] bytes = out.toByteArray();
+
+				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".txt");
+				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+				final ClassReader reader = new ClassReader(bytes);
+				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+				reader.accept(tracingVisitor, 0);
+
+				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".class");
+				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+				fileOutputStream.write(bytes);
+				fileOutputStream.close();
+			} catch (final Exception e) {
+				// TODO: handle exception
+			}
+
 			return out.toByteArray();
 		} catch (final Exception e) {
 			e.printStackTrace();
