@@ -18,6 +18,7 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -176,11 +177,15 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		}
 
 		if (NEW_VisGraph_Node == null) {
-			new RuntimeException("couldn't find injection point").printStackTrace();
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
 			return;
 		}
 
 		final InsnList tempInstructionList = new InsnList();
+
+		tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+		tempInstructionList.add(new LdcInsnNode("Derek"));
+		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
 
 		// add label
 		final LabelNode executionLabelNode = new LabelNode();
@@ -188,6 +193,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		// add line number
 		final int line = ((LineNumberNode) NEW_VisGraph_Node.getPrevious()).line - 1;
 		tempInstructionList.add(new LineNumberNode(line, executionLabelNode));
+
+		tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+		tempInstructionList.add(new LdcInsnNode("Jeff"));
+		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
 
 		// execute method
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
@@ -210,9 +219,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		tempInstructionList.add(new JumpInsnNode(IFEQ, continueLabelNode));
 		tempInstructionList.add(new InsnNode(RETURN));
 
+//#		whatever instruction is here
+//		L16
+//	    LINENUMBER 146 L16
+//	    NEW net/minecraft/client/renderer/chunk/VisGraph //injection point
+//	    DUP
 		// inject instructions
-		final AbstractInsnNode injectionPoint = NEW_VisGraph_Node.getPrevious().getPrevious().getPrevious();
-		instructionList.insert(injectionPoint, tempInstructionList);
+		final AbstractInsnNode injectInstructionsAfter = NEW_VisGraph_Node.getPrevious().getPrevious().getPrevious();
+		instructionList.insert(injectInstructionsAfter, tempInstructionList);
 
 		for (int i = 0; i < instructionList.size(); i++) {
 			LOGGER.info(insnToString(instructionList.get(i)));
@@ -240,7 +254,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		final StringWriter sw = new StringWriter();
 		printer.print(new PrintWriter(sw));
 		printer.getText().clear();
-		return sw.toString();
+		return sw.toString().trim();
 	}
 
 	private static final Printer			printer	= new Textifier();
