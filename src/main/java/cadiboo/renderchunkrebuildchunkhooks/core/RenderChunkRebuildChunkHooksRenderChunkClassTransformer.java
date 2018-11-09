@@ -13,10 +13,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
@@ -87,13 +89,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		}
 
 		try {
-			final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + (System.nanoTime() & 0xFF) + ".txt");
+			final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
 			final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
 			final ClassReader reader = new ClassReader(basicClass);
 			final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
 			reader.accept(tracingVisitor, 0);
 
-			final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + (System.nanoTime() & 0xFF) + ".class");
+			final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
 			final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
 			fileOutputStream.write(basicClass);
 			fileOutputStream.close();
@@ -160,14 +162,15 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			final InsnList insnList = method.instructions;
 			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
 			AbstractInsnNode injectInsn = null;
-			while (ite.hasNext()) {
+			int injectIndex = 0;
+			getInjectionPoint: while (ite.hasNext()) {
 				final AbstractInsnNode insn = ite.next();
-
+				injectIndex++;
 				if (insn.getOpcode() == NEW) {
 					if (insn.getType() == AbstractInsnNode.TYPE_INSN) {
 						if (((TypeInsnNode) insn).desc.equals(VIS_GRAPH_INTERNAL_NAME)) {
 							injectInsn = insn;
-							break;
+							break getInjectionPoint;
 						}
 					}
 				}
@@ -180,15 +183,22 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			final InsnList tempList = new InsnList();
 
 			// add label
-//			final LabelNode executionLabelNode = new LabelNode();
-//			tempList.add(executionLabelNode);
-//			// add line number
-//			final int line = ((LineNumberNode) NEW_VisGraph_Node.getPrevious()).line - 1;
-//			tempList.add(new LineNumberNode(line, executionLabelNode));
+			final LabelNode executionLabelNode = new LabelNode(new Label());
+			tempList.add(executionLabelNode);
+			// add line number
+			final int line = ((LineNumberNode) injectInsn.getPrevious()).line - 1;
+			tempList.add(new LineNumberNode(line, executionLabelNode));
 
-			tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-			tempList.add(new LdcInsnNode("Jeff"));
-			tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+//			mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			tempList.add(new FrameNode(F_SAME, 0, null, 0, null));
+//			mv.visitTypeInsn(NEW, "java/lang/String");
+			tempList.add(new TypeInsnNode(NEW, "java/lang/String"));
+//			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/String", "<init>", "()V", false);
+			tempList.add(new MethodInsnNode(INVOKESPECIAL, "java/lang/String", "<init>", "()V", false));
+
+//			tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+//			tempList.add(new LdcInsnNode("Jeff"));
+//			tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
 
 //			// execute method
 //			tempList.add(new VarInsnNode(ALOAD, 0));
@@ -212,7 +222,17 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 //			tempList.add(new InsnNode(RETURN));
 
 			// PREVIOUS PREVIOUS PREVIOUS DOESNT WORK!!!!!!!!!!!
-			insnList.insert(injectInsn.getPrevious(), tempList);
+			AbstractInsnNode injectionPoint = null;
+
+			for (int i = injectIndex; i > 0; i--) {
+				if (insnList.get(i).getType() != AbstractInsnNode.LABEL) {
+					continue;
+				}
+				injectionPoint = insnList.get(i);
+				break;
+			}
+
+			insnList.insertBefore(injectionPoint, tempList);
 		}
 
 		if (DEBUG_EVERYTHING) {
@@ -265,13 +285,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			try {
 				final byte[] bytes = out.toByteArray();
 
-				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".txt");
+				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
 				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
 				final ClassReader reader = new ClassReader(bytes);
 				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
 				reader.accept(tracingVisitor, 0);
 
-				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + (System.nanoTime() & 0xFF) + ".class");
+				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
 				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
 				fileOutputStream.write(bytes);
 				fileOutputStream.close();
