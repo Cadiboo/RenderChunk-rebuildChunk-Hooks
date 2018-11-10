@@ -20,12 +20,14 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -40,6 +42,7 @@ import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.BlockRenderLayer;
 
 /**
  * @author Cadiboo
@@ -278,9 +281,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		TypeInsnNode NEW_VisGraph_Node = null;
 
 		// Find the bytecode instruction for "new VisGraph()" ("NEW net/minecraft/client/renderer/chunk/VisGraph")
-		final ListIterator<AbstractInsnNode> instructions = instructionList.iterator();
-		while (instructions.hasNext()) {
-			final AbstractInsnNode instruction = instructions.next();
+		final ListIterator<AbstractInsnNode> instructionsIterator = instructionList.iterator();
+		while (instructionsIterator.hasNext()) {
+			final AbstractInsnNode instruction = instructionsIterator.next();
 
 			// L16
 			// LINENUMBER 146 L16
@@ -386,6 +389,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	 * 4) Injecting a new Label(L2) for the instructions following our instructions<br>
 	 * 5) Setting the Label(L3) of the Line Number for the instructions following our instructions to the Label(L2) we injected for the instructions following our instructions<br>
 	 * 6) Injecting our instructions right AFTER the Label(L1) for the "<code>++renderChunksUpdated</code>" instruction<br>
+	 * <br>
+	 * 7) Finding the bytecode instruction for "<code>new boolean[BlockRenderLayer.values().length]</code>" ("<code>NEWARRAY T_BOOLEAN</code>")<br>
+	 * 8) Injecting a call to {@link RebuildChunkAllBlocksEvent#getUsedBlockRenderLayers() rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers()} BEFORE the call to {@link BlockRenderLayer#values()}<br>
+	 * 9) Removing the call to {@link BlockRenderLayer#values()} and the next 2 instructions<br>
 	 *
 	 * @param instructionList the instruction list of RenderChunk#rebuildChunk
 	 */
@@ -394,9 +401,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		FieldInsnNode GETSTATIC_renderChunksUpdated_Node = null;
 
 		// Find the bytecode instruction for "++renderChunksUpdated" ("GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I")
-		final ListIterator<AbstractInsnNode> instructions = instructionList.iterator();
-		while (instructions.hasNext()) {
-			final AbstractInsnNode instruction = instructions.next();
+		final ListIterator<AbstractInsnNode> instructionsIterator = instructionList.iterator();
+		while (instructionsIterator.hasNext()) {
+			final AbstractInsnNode instruction = instructionsIterator.next();
 
 			// L21
 			// LINENUMBER 154 L21
@@ -482,6 +489,71 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		// Inject our instructions right AFTER the Label for the "GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I" instruction
 		instructionList.insert(preExistingLabelNodeForIfStatementThatWeRepurpose, tempInstructionList);
+
+		// steps 7-9
+
+		IntInsnNode NEWARRAY_T_BOOLEAN_Node = null;
+
+		// Find the bytecode instruction for "new boolean[BlockRenderLayer.values().length]" ("NEWARRAY T_BOOLEAN")
+		final ListIterator<AbstractInsnNode> instructionsIterator2 = instructionList.iterator();
+		while (instructionsIterator2.hasNext()) {
+			final AbstractInsnNode instruction = instructionsIterator2.next();
+
+			// L22
+			// LINENUMBER 155 L22
+			// INVOKESTATIC net/minecraft/util/BlockRenderLayer.values()[Lnet/minecraft/util/BlockRenderLayer;
+			// ARRAYLENGTH
+			// # NEWARRAY T_BOOLEAN //INJECTION POINT
+			// ASTORE 12
+
+			if (instruction.getOpcode() == NEWARRAY) {
+				if (instruction.getType() == AbstractInsnNode.INT_INSN) {
+					final IntInsnNode fieldInsnNode = (IntInsnNode) instruction;
+					if (fieldInsnNode.operand == T_BOOLEAN) {
+						NEWARRAY_T_BOOLEAN_Node = fieldInsnNode;
+						break;
+					}
+				}
+			}
+
+		}
+
+		if (NEWARRAY_T_BOOLEAN_Node == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return;
+		}
+
+		MethodInsnNode INVOKESTATIC_BlockRenderLayer_values_Node = null;
+
+		// go back up the instructions until we find the MethodInsn for the BlockRenderLayer.values() call
+		for (int i = instructionList.indexOf(NEWARRAY_T_BOOLEAN_Node) - 1; i >= 0; i--) {
+			if (instructionList.get(i).getType() != AbstractInsnNode.METHOD_INSN) {
+				continue;
+			}
+			INVOKESTATIC_BlockRenderLayer_values_Node = (MethodInsnNode) instructionList.get(i);
+			break;
+		}
+
+		final InsnList tempInstructionList2 = new InsnList();
+
+		// L22
+		// LINENUMBER 155 L22
+		// ALOAD 11
+		// INVOKEVIRTUAL cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent.getUsedBlockRenderLayers()[Z
+		// ASTORE 12
+
+		// Inject a call to rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers() BEFORE the call to BlockRenderLayer.values()
+		tempInstructionList2.add(new VarInsnNode(ALOAD, 11));
+		tempInstructionList2.add(new MethodInsnNode(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false));
+
+		instructionList.insertBefore(INVOKESTATIC_BlockRenderLayer_values_Node, tempInstructionList);
+
+		final AbstractInsnNode ARRAYLENGTH_Node = INVOKESTATIC_BlockRenderLayer_values_Node.getNext();
+
+		// Remove the call to BlockRenderLayer.values() and the next 2 instructions
+		instructionList.remove(INVOKESTATIC_BlockRenderLayer_values_Node);
+		instructionList.remove(ARRAYLENGTH_Node);
+		instructionList.remove(NEWARRAY_T_BOOLEAN_Node);
 
 	}
 
