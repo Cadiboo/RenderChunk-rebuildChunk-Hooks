@@ -190,7 +190,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			}
 
 			this.injectRebuildChunkPreEvent(method.instructions);
-			this.injectRebuildChunkAllBlocksEventLocalVariable(method.instructions);
+			this.injectRebuildChunkAllBlocksEventLocalVariableAndRenderLayersUsedChange(method.instructions);
 			this.injectRebuildChunkBlockRenderInLayerEvent(method.instructions);
 			this.injectRebuildChunkAllBlocksEventAndRebuildChunkBlockEventLogic(method.instructions);
 
@@ -359,7 +359,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	 *
 	 * if (!this.worldView.isEmpty())
 	 * {
-	 *	++renderChunksUpdated;
+	 *     ++renderChunksUpdated;
+	 *     boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
+	 *     BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	 * </pre>
 	 *
 	 * <br>
@@ -371,7 +373,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	 * final RebuildChunkAllBlocksEvent rebuildChunkAllBlocksEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkAllBlocksEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, BlockPos.getAllInBoxMutable(blockpos, blockpos1), Minecraft.getMinecraft().getBlockRendererDispatcher(), this.position, x, y, z, lvt_10_1_, lvt_9_1_);
 	 * if (!this.worldView.isEmpty())
 	 * {
-	 *	++renderChunksUpdated;
+	 *     ++renderChunksUpdated;
+	 *     boolean[] aboolean = rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers();
+	 *     BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	 * </pre>
 	 *
 	 * <br>
@@ -385,7 +389,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	 *
 	 * @param instructionList the instruction list of RenderChunk#rebuildChunk
 	 */
-	private void injectRebuildChunkAllBlocksEventLocalVariable(final InsnList instructionList) {
+	private void injectRebuildChunkAllBlocksEventLocalVariableAndRenderLayersUsedChange(final InsnList instructionList) {
 
 		FieldInsnNode GETSTATIC_renderChunksUpdated_Node = null;
 
