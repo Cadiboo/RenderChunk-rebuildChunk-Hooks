@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 
-public interface Names {
+public interface INames {
 
 	boolean DEOBFUSCATED = RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEOBFUSCATED;
 
