@@ -306,7 +306,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		LabelNode preExistingLabelNodeThatWeRepurpose = null;
 
 		// go back up the instructions until we find the Label for the "NEW net/minecraft/client/renderer/chunk/VisGraph" instruction
-		for (int i = instructionList.indexOf(NEW_VisGraph_Node); i > 0; i--) {
+		for (int i = instructionList.indexOf(NEW_VisGraph_Node) - 1; i >= 0; i--) {
 			if (instructionList.get(i).getType() != AbstractInsnNode.LABEL) {
 				continue;
 			}
@@ -317,7 +317,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		LineNumberNode preExistingLineNumberNode = null;
 
 		// go back up the instructions until we find the Line Number for the "NEW VisGraph" instruction
-		for (int i = instructionList.indexOf(NEW_VisGraph_Node); i > 0; i--) {
+		for (int i = instructionList.indexOf(NEW_VisGraph_Node) - 1; i >= 0; i--) {
 			if (instructionList.get(i).getType() != AbstractInsnNode.LINE) {
 				continue;
 			}
@@ -404,7 +404,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			if (instruction.getOpcode() == GETSTATIC) {
 				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
 					final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
-					if (fieldInsnNode.desc.equals(Type.INT_TYPE)) {
+					if (fieldInsnNode.desc.equals(Type.INT_TYPE.getDescriptor())) {
 						if (fieldInsnNode.name.equals(STATIC_FIELD_renderChunksUpdated)) {
 							GETSTATIC_renderChunksUpdated_Node = fieldInsnNode;
 							break;
@@ -415,10 +415,15 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		}
 
+		if (GETSTATIC_renderChunksUpdated_Node == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return;
+		}
+
 		LabelNode preExistingLabelNodeFor_renderChunksUpdated = null;
 
 		// go back up the instructions until we find the Label for the "GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I" instruction
-		for (int i = instructionList.indexOf(GETSTATIC_renderChunksUpdated_Node); i > 0; i--) {
+		for (int i = instructionList.indexOf(GETSTATIC_renderChunksUpdated_Node) - 1; i >= 0; i--) {
 			if (instructionList.get(i).getType() != AbstractInsnNode.LABEL) {
 				continue;
 			}
@@ -426,20 +431,26 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			break;
 		}
 
-		LabelNode preExistingLabepreExistingLabelNodeForIfStatementThatWeRepurpose = null;
+		LabelNode preExistingLabelNodeForIfStatementThatWeRepurpose = null;
 
 		// go back up the instructions until we find the Label for the instructions above the renderChunksUpdated Label
-		for (int i = instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated); i > 0; i--) {
+		for (int i = instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated) - 1; i >= 0; i--) {
 			if (instructionList.get(i).getType() != AbstractInsnNode.LABEL) {
 				continue;
 			}
-			preExistingLabepreExistingLabelNodeForIfStatementThatWeRepurpose = (LabelNode) instructionList.get(i);
+			preExistingLabelNodeForIfStatementThatWeRepurpose = (LabelNode) instructionList.get(i);
 			break;
 		}
 
 		LineNumberNode preExistingLineNumberNode = null;
+
+		LOGGER.info(preExistingLabelNodeForIfStatementThatWeRepurpose);
+		LOGGER.info(instructionList.indexOf(preExistingLabelNodeForIfStatementThatWeRepurpose));
+		LOGGER.info(preExistingLabelNodeFor_renderChunksUpdated);
+		LOGGER.info(instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated));
+
 		// go down through the instructions until we find the Line number node
-		for (int i = instructionList.indexOf(preExistingLabepreExistingLabelNodeForIfStatementThatWeRepurpose); i < instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated); i++) {
+		for (int i = instructionList.indexOf(preExistingLabelNodeForIfStatementThatWeRepurpose); i < instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated); i++) {
 			if (instructionList.get(i).getType() != AbstractInsnNode.LINE) {
 				continue;
 			}
@@ -451,11 +462,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		// add a line number node with a line 1 above that of the original instructions
 		final int injectionLineNumber = preExistingLineNumberNode.line - 1;
-		tempInstructionList.add(new LineNumberNode(injectionLineNumber, preExistingLabepreExistingLabelNodeForIfStatementThatWeRepurpose));
+		tempInstructionList.add(new LineNumberNode(injectionLineNumber, preExistingLabelNodeForIfStatementThatWeRepurpose));
 
 		// add our hook (currently debug code)
 		tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-		tempInstructionList.add(new LdcInsnNode("Derek"));
+		tempInstructionList.add(new LdcInsnNode("JEFF"));
 		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
 
 		// Inject a new label for the instructions following our instructions (all the instructions after the Label for the "NEW VisGraph" instruction)
@@ -466,7 +477,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		preExistingLineNumberNode.start = injectedLabelNode;
 
 		// Inject our instructions right AFTER the Label for the "GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I" instruction
-		instructionList.insert(preExistingLabepreExistingLabelNodeForIfStatementThatWeRepurpose, tempInstructionList);
+		instructionList.insert(preExistingLabelNodeForIfStatementThatWeRepurpose, tempInstructionList);
 
 	}
 
