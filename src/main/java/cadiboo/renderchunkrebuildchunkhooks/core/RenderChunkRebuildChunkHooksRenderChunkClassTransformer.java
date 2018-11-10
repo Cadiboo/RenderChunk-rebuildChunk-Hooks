@@ -333,7 +333,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		// add our hook (currently debug code)
 		tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-		tempInstructionList.add(new LdcInsnNode("Derek"));
+		tempInstructionList.add(new LdcInsnNode("RebuildChunkPreEvent Placeholder Code"));
 		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
 
 		// Inject a new label for the instructions following our instructions (all the instructions after the Label for the "NEW VisGraph" instruction)
@@ -470,7 +470,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		// add our hook (currently debug code)
 		tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-		tempInstructionList.add(new LdcInsnNode("JEFF"));
+		tempInstructionList.add(new LdcInsnNode("RebuildChunkAllBlocksEvent Placeholder Code"));
 		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
 
 		// Inject a new label for the instructions following our instructions (all the instructions after the Label for the "NEW VisGraph" instruction)
