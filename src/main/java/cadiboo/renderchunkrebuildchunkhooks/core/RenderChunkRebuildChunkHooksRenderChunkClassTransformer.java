@@ -194,6 +194,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			this.injectRebuildChunkPreEvent(method.instructions);
 			this.injectRebuildChunkAllBlocksEventLocalVariableAndRenderLayersUsedChange(method.instructions);
+			method.maxLocals += 10;
+			method.maxStack += 10;
 			this.injectRebuildChunkBlockRenderInLayerEvent(method.instructions);
 			this.injectRebuildChunkAllBlocksEventAndRebuildChunkBlockEventLogic(method.instructions);
 
@@ -455,11 +457,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		LineNumberNode preExistingLineNumberNode = null;
 
-		LOGGER.info(preExistingLabelNodeForIfStatementThatWeRepurpose);
-		LOGGER.info(instructionList.indexOf(preExistingLabelNodeForIfStatementThatWeRepurpose));
-		LOGGER.info(preExistingLabelNodeFor_renderChunksUpdated);
-		LOGGER.info(instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated));
-
 		// go down through the instructions until we find the Line number node
 		for (int i = instructionList.indexOf(preExistingLabelNodeForIfStatementThatWeRepurpose); i < instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated); i++) {
 			if (instructionList.get(i).getType() != AbstractInsnNode.LINE) {
@@ -475,10 +472,36 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		final int injectionLineNumber = preExistingLineNumberNode.line - 1;
 		tempInstructionList.add(new LineNumberNode(injectionLineNumber, preExistingLabelNodeForIfStatementThatWeRepurpose));
 
-		// add our hook (currently debug code)
+		// add our rebuildChunkAllBlocksEvent local variable hook
 		tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
 		tempInstructionList.add(new LdcInsnNode("RebuildChunkAllBlocksEvent Placeholder Code"));
 		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 4));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 5));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 7));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 8));
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/math/BlockPos", "getAllInBoxMutable", "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;", false));
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false));
+		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new VarInsnNode(FLOAD, 1));
+		tempInstructionList.add(new VarInsnNode(FLOAD, 2));
+		tempInstructionList.add(new VarInsnNode(FLOAD, 3));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 10));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 9));
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkAllBlocksEvent",
+				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Ljava/lang/Iterable;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Lcadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent;",
+				false));
+		tempInstructionList.add(new VarInsnNode(ASTORE, 11));
+
+		// add +1 maxs
 
 		// Inject a new label for the instructions following our instructions (all the instructions after the Label for the "NEW VisGraph" instruction)
 		final LabelNode injectedLabelNode = new LabelNode(new Label());
