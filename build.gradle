@@ -99,8 +99,6 @@ processResources {
         exclude 'mcmod.info'
     }
 
-    exclude '*.'
-
     //move out Access Transformer to META-INF
     rename '(.+_at.cfg)', 'META-INF/$1'
     
