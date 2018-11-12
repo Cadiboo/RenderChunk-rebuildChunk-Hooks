@@ -32,7 +32,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		meta.name = MOD_NAME;
 		meta.version = MOD_VERSION;
 		meta.credits = "Me, Myself and I";
-		meta.authorList = Arrays.asList("Cadiboo");
+		meta.authorList = Arrays.asList("Cadiboo", "CosmicDan");
 		meta.description = "";
 		meta.url = "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks";
 		meta.updateJSON = "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/update.json";
