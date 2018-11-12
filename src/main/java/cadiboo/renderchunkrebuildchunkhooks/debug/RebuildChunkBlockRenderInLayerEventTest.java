@@ -19,6 +19,8 @@
 
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
+import java.util.Random;
+
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -36,7 +38,9 @@ public class RebuildChunkBlockRenderInLayerEventTest {
 		if (!ENABLED) {
 			return;
 		}
-		event.setResult(Event.Result.DENY);
+		if (new Random().nextInt(10) == 0) {
+			event.setResult(Event.Result.DENY);
+		}
 	}
 
 }
