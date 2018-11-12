@@ -32,6 +32,13 @@ public interface INames {
 	String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= DEOBFUSCATED ? Type.getInternalName(MutableBlockPos.class) : "et$a";
 	String	CompiledChunk_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(CompiledChunk.class) : "bxm";
 
+	String I_BLOCK_STATE_INTERNAL_NAME = DEOBFUSCATED ? "net/minecraft/block/state/IBlockState" : "awr";
+
+	String BLOCK_RENDER_LAYER_INTERNAL_NAME = DEOBFUSCATED ? "net/minecraft/util/BlockRenderLayer" : "amk";
+
+	// (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z
+	String Block_canRenderInLayer_DESC = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(I_BLOCK_STATE_INTERNAL_NAME), Type.getObjectType(BLOCK_RENDER_LAYER_INTERNAL_NAME));
+
 	String ON_REBUILD_CHUNK_EVENT_DESCRIPTOR = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(RENDER_GLOBAL_INTERNAL_NAME), Type.getObjectType(CHUNK_CACHE_INTERNAL_NAME), Type.getObjectType(ChunkCompileTaskGenerator_INTERNAL_NAME), Type.getObjectType(CompiledChunk_INTERNAL_NAME), Type.getObjectType(MUTABLE_BLOCK_POS_INTERNAL_NAME));
 
 	String	FIELD_POSITION_NAME			= DEOBFUSCATED ? "position" : "field_178586_f";			// o

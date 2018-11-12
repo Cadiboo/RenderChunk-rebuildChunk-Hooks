@@ -1,7 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
-import net.minecraft.block.BlockGlass;
+import net.minecraft.block.BlockGrass;
 import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -20,7 +20,7 @@ public class RebuildChunkBlockEventTest {
 			return;
 		}
 
-		if (event.getBlockState().getBlock() instanceof BlockGlass) {
+		if (event.getBlockState().getBlock() instanceof BlockGrass) {
 			event.setCanceled(true);
 			event.getBlockRendererDispatcher().renderBlock(Blocks.GLASS.getDefaultState(), event.getBlockPos(), event.getWorldView(), event.getBufferBuilder());
 		}
