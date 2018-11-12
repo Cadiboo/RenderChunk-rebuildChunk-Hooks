@@ -62,6 +62,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
+	private static final boolean DEBUG_DUMP_BYTECODE = true;
+
 	static {
 		if (DEBUG_EVERYTHING) {
 			for (final Field field : INames.class.getFields()) {
@@ -92,74 +94,29 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			return basicClass;
 		}
 
-		try {
-			final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
-			final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
-			final ClassReader reader = new ClassReader(basicClass);
-			final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
-			reader.accept(tracingVisitor, 0);
+		if (DEBUG_DUMP_BYTECODE) {
+			try {
+				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
+				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+				final ClassReader reader = new ClassReader(basicClass);
+				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+				reader.accept(tracingVisitor, 0);
 
-			final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
-			final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
-			fileOutputStream.write(basicClass);
-			fileOutputStream.close();
-		} catch (final Exception e) {
-			// TODO: handle exception
+				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
+				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+				fileOutputStream.write(basicClass);
+				fileOutputStream.close();
+			} catch (final Exception e) {
+				// TODO: handle exception
+			}
 		}
 
 		LOGGER.info("Preparing to inject hooks into \"" + transformedName + "\" (RenderChunk)");
 
-		// read in, build classNode
+		// Build classNode & get instruction list
 		final ClassNode classNode = new ClassNode();
 		final ClassReader cr = new ClassReader(basicClass);
 		cr.accept(classNode, CLASS_READER_FLAGS);
-
-//		for (final MethodNode method : classNode.methods) {
-//			LOGGER.info("name=" + method.name + " desc=" + method.desc);
-//			final InsnList insnList = method.instructions;
-//			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
-//			while (ite.hasNext()) {
-//				final AbstractInsnNode insn = ite.next();
-//				final int opcode = insn.getOpcode();
-//				// add before return: System.out.println("Returning...")
-//				if (opcode == RETURN) {
-//					final InsnList tempList = new InsnList();
-//					tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-//					tempList.add(new LdcInsnNode("Returning..."));
-//					tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
-//					insnList.insert(insn.getPrevious(), tempList);
-//				}
-//			}
-//		}
-
-//		for (final MethodNode method : classNode.methods) {
-//			LOGGER.info("name=" + method.name + " desc=" + method.desc);
-//			final InsnList insnList = method.instructions;
-//			final ListIterator<AbstractInsnNode> ite = insnList.iterator();
-//			AbstractInsnNode injectInsn = null;
-//			while (ite.hasNext()) {
-//				final AbstractInsnNode insn = ite.next();
-//
-//				if (insn.getOpcode() == NEW) {
-//					if (insn.getType() == AbstractInsnNode.TYPE_INSN) {
-//						if (((TypeInsnNode) insn).desc.equals(VIS_GRAPH_INTERNAL_NAME)) {
-//							injectInsn = insn;
-//							break;
-//						}
-//					}
-//				}
-//			}
-//
-//			if (injectInsn == null) {
-//				continue;
-//			}
-//
-//			final InsnList tempList = new InsnList();
-//			tempList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-//			tempList.add(new LdcInsnNode("VIS_GRAPH_NEW..."));
-//			tempList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
-//			insnList.insert(injectInsn.getPrevious(), tempList);
-//		}
 
 		if (DEBUG_EVERYTHING) {
 			LOGGER.info("RebuildChunk type: " + REBUILD_CHUNK_TYPE);
@@ -194,8 +151,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			this.injectRebuildChunkPreEvent(method.instructions);
 			this.injectRebuildChunkAllBlocksEventLocalVariableAndRenderLayersUsedChange(method.instructions);
-			method.maxLocals += 10;
-			method.maxStack += 10;
 			this.injectRebuildChunkBlockRenderInLayerEvent(method.instructions);
 			this.injectRebuildChunkAllBlocksEventAndRebuildChunkBlockEventLogic(method.instructions);
 
@@ -210,21 +165,23 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 			LOGGER.info("Injected hooks sucessfully!");
 
-			try {
-				final byte[] bytes = out.toByteArray();
+			if (DEBUG_DUMP_BYTECODE) {
+				try {
+					final byte[] bytes = out.toByteArray();
 
-				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
-				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
-				final ClassReader reader = new ClassReader(bytes);
-				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
-				reader.accept(tracingVisitor, 0);
+					final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
+					final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+					final ClassReader reader = new ClassReader(bytes);
+					final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+					reader.accept(tracingVisitor, 0);
 
-				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
-				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
-				fileOutputStream.write(bytes);
-				fileOutputStream.close();
-			} catch (final Exception e) {
-				// TODO: handle exception
+					final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
+					final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+					fileOutputStream.write(bytes);
+					fileOutputStream.close();
+				} catch (final Exception e) {
+					// TODO: handle exception
+				}
 			}
 
 			return out.toByteArray();
@@ -260,7 +217,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	 * {
 	 *	generator.getLock().unlock();
 	 * }
-	 * if(cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkPreEvent(this, renderGlobal, worldView, generator, compiledchunk, position, x, y, z))return;
+	 * <font color="#FDCA42">if(cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkPreEvent(this, renderGlobal, worldView, generator, compiledchunk, position, x, y, z))return;</font>
 	 * VisGraph lvt_9_1_ = new VisGraph();
 	 * HashSet lvt_10_1_ = Sets.newHashSet();
 	 * </pre>
@@ -375,11 +332,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	 * <pre>
 	 * VisGraph lvt_9_1_ = new VisGraph();
 	 * HashSet lvt_10_1_ = Sets.newHashSet();
-	 * final RebuildChunkAllBlocksEvent rebuildChunkAllBlocksEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkAllBlocksEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, BlockPos.getAllInBoxMutable(blockpos, blockpos1), Minecraft.getMinecraft().getBlockRendererDispatcher(), this.position, x, y, z, lvt_10_1_, lvt_9_1_);
+	 * <font color="#FDCA42">final RebuildChunkAllBlocksEvent rebuildChunkAllBlocksEvent = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkAllBlocksEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, BlockPos.getAllInBoxMutable(blockpos, blockpos1), Minecraft.getMinecraft().getBlockRendererDispatcher(), this.position, x, y, z, lvt_10_1_, lvt_9_1_);</font>
 	 * if (!this.worldView.isEmpty())
 	 * {
 	 *     ++renderChunksUpdated;
-	 *     boolean[] aboolean = rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers();
+	 *<font color="#FDCA42">     boolean[] aboolean = rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers();</font>
 	 *     BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 	 * </pre>
 	 *
@@ -400,183 +357,194 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	 */
 	private void injectRebuildChunkAllBlocksEventLocalVariableAndRenderLayersUsedChange(final InsnList instructionList) {
 
-		FieldInsnNode GETSTATIC_renderChunksUpdated_Node = null;
+		// add local variable
+		// (steps 1-6)
+		{
+			FieldInsnNode GETSTATIC_renderChunksUpdated_Node = null;
 
-		// Find the bytecode instruction for "++renderChunksUpdated" ("GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I")
-		final ListIterator<AbstractInsnNode> instructionsIterator = instructionList.iterator();
-		while (instructionsIterator.hasNext()) {
-			final AbstractInsnNode instruction = instructionsIterator.next();
+			// Find the bytecode instruction for "++renderChunksUpdated" ("GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I")
+			final ListIterator<AbstractInsnNode> instructionsIterator = instructionList.iterator();
+			while (instructionsIterator.hasNext()) {
+				final AbstractInsnNode instruction = instructionsIterator.next();
 
-			// L21
-			// LINENUMBER 154 L21
-			// # GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I // OPTIFINE CONSCIOUS INECTION POINT
-			// ICONST_1
-			// IADD
-			// PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
+				// L21
+				// LINENUMBER 154 L21
+				// # GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I // OPTIFINE CONSCIOUS INECTION POINT
+				// ICONST_1
+				// IADD
+				// PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
 
-			if (instruction.getOpcode() == GETSTATIC) {
-				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
-					final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
-					if (fieldInsnNode.desc.equals(Type.INT_TYPE.getDescriptor())) {
-						if (fieldInsnNode.name.equals(STATIC_FIELD_renderChunksUpdated)) {
-							GETSTATIC_renderChunksUpdated_Node = fieldInsnNode;
+				if (instruction.getOpcode() == GETSTATIC) {
+					if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
+						final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
+						if (fieldInsnNode.desc.equals(Type.INT_TYPE.getDescriptor())) {
+							if (fieldInsnNode.name.equals(STATIC_FIELD_renderChunksUpdated)) {
+								GETSTATIC_renderChunksUpdated_Node = fieldInsnNode;
+								break;
+							}
+						}
+					}
+				}
+
+			}
+
+			if (GETSTATIC_renderChunksUpdated_Node == null) {
+				new RuntimeException("Couldn't find injection point!").printStackTrace();
+				return;
+			}
+
+			LabelNode preExistingLabelNodeFor_renderChunksUpdated = null;
+
+			// go back up the instructions until we find the Label for the "GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I" instruction
+			for (int i = instructionList.indexOf(GETSTATIC_renderChunksUpdated_Node) - 1; i >= 0; i--) {
+				if (instructionList.get(i).getType() != AbstractInsnNode.LABEL) {
+					continue;
+				}
+				preExistingLabelNodeFor_renderChunksUpdated = (LabelNode) instructionList.get(i);
+				break;
+			}
+
+			LabelNode preExistingLabelNodeForIfStatementThatWeRepurpose = null;
+
+			// go back up the instructions until we find the Label for the instructions above the renderChunksUpdated Label
+			for (int i = instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated) - 1; i >= 0; i--) {
+				if (instructionList.get(i).getType() != AbstractInsnNode.LABEL) {
+					continue;
+				}
+				preExistingLabelNodeForIfStatementThatWeRepurpose = (LabelNode) instructionList.get(i);
+				break;
+			}
+
+			LineNumberNode preExistingLineNumberNode = null;
+
+			// go down through the instructions until we find the Line number node
+			for (int i = instructionList.indexOf(preExistingLabelNodeForIfStatementThatWeRepurpose); i < instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated); i++) {
+				if (instructionList.get(i).getType() != AbstractInsnNode.LINE) {
+					continue;
+				}
+				preExistingLineNumberNode = (LineNumberNode) instructionList.get(i);
+				break;
+			}
+
+			final InsnList tempInstructionList = new InsnList();
+
+			// add a line number node with a line 1 above that of the original instructions
+			final int injectionLineNumber = preExistingLineNumberNode.line - 1;
+			tempInstructionList.add(new LineNumberNode(injectionLineNumber, preExistingLabelNodeForIfStatementThatWeRepurpose));
+
+			// add our rebuildChunkAllBlocksEvent local variable hook
+			tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
+			tempInstructionList.add(new LdcInsnNode("RebuildChunkAllBlocksEvent Placeholder Code"));
+			tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
+
+			// final instructions for when I figure out how
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+			// tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+			// tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 4));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 5));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 7));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 8));
+			// tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/math/BlockPos", "getAllInBoxMutable", "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;", false));
+			// tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false));
+			// tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+			// tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+			// tempInstructionList.add(new VarInsnNode(FLOAD, 1));
+			// tempInstructionList.add(new VarInsnNode(FLOAD, 2));
+			// tempInstructionList.add(new VarInsnNode(FLOAD, 3));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 10));
+			// tempInstructionList.add(new VarInsnNode(ALOAD, 9));
+			// tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkAllBlocksEvent",
+			// "(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Ljava/lang/Iterable;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Lcadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent;",
+			// false));
+			// tempInstructionList.add(new VarInsnNode(ASTORE, 11));
+
+			// FIXME TODO LocalVariablesSorter?
+			// FIXME TODO add +1 maxs?
+
+			// Inject a new label for the instructions following our instructions (all the instructions after the Label for the "NEW VisGraph" instruction)
+			final LabelNode injectedLabelNode = new LabelNode(new Label());
+			tempInstructionList.add(injectedLabelNode);
+
+			// Set the line number of the following instructions to the new node
+			preExistingLineNumberNode.start = injectedLabelNode;
+
+			// Inject our instructions right AFTER the Label for the "GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I" instruction
+			instructionList.insert(preExistingLabelNodeForIfStatementThatWeRepurpose, tempInstructionList);
+		}
+
+		// change
+		// boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
+		// to
+		// boolean[] aboolean = rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers();
+		// (steps 7-9)
+		{
+			IntInsnNode NEWARRAY_T_BOOLEAN_Node = null;
+
+			// Find the bytecode instruction for "new boolean[BlockRenderLayer.values().length]" ("NEWARRAY T_BOOLEAN")
+			final ListIterator<AbstractInsnNode> instructionsIterator2 = instructionList.iterator();
+			while (instructionsIterator2.hasNext()) {
+				final AbstractInsnNode instruction = instructionsIterator2.next();
+
+				// L22
+				// LINENUMBER 155 L22
+				// INVOKESTATIC net/minecraft/util/BlockRenderLayer.values()[Lnet/minecraft/util/BlockRenderLayer;
+				// ARRAYLENGTH
+				// # NEWARRAY T_BOOLEAN //INJECTION POINT
+				// ASTORE 12
+
+				if (instruction.getOpcode() == NEWARRAY) {
+					if (instruction.getType() == AbstractInsnNode.INT_INSN) {
+						final IntInsnNode fieldInsnNode = (IntInsnNode) instruction;
+						if (fieldInsnNode.operand == T_BOOLEAN) {
+							NEWARRAY_T_BOOLEAN_Node = fieldInsnNode;
 							break;
 						}
 					}
 				}
+
 			}
 
-		}
-
-		if (GETSTATIC_renderChunksUpdated_Node == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
-		}
-
-		LabelNode preExistingLabelNodeFor_renderChunksUpdated = null;
-
-		// go back up the instructions until we find the Label for the "GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I" instruction
-		for (int i = instructionList.indexOf(GETSTATIC_renderChunksUpdated_Node) - 1; i >= 0; i--) {
-			if (instructionList.get(i).getType() != AbstractInsnNode.LABEL) {
-				continue;
+			if (NEWARRAY_T_BOOLEAN_Node == null) {
+				new RuntimeException("Couldn't find injection point!").printStackTrace();
+				return;
 			}
-			preExistingLabelNodeFor_renderChunksUpdated = (LabelNode) instructionList.get(i);
-			break;
-		}
 
-		LabelNode preExistingLabelNodeForIfStatementThatWeRepurpose = null;
+			MethodInsnNode INVOKESTATIC_BlockRenderLayer_values_Node = null;
 
-		// go back up the instructions until we find the Label for the instructions above the renderChunksUpdated Label
-		for (int i = instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated) - 1; i >= 0; i--) {
-			if (instructionList.get(i).getType() != AbstractInsnNode.LABEL) {
-				continue;
+			// go back up the instructions until we find the MethodInsn for the BlockRenderLayer.values() call
+			for (int i = instructionList.indexOf(NEWARRAY_T_BOOLEAN_Node) - 1; i >= 0; i--) {
+				if (instructionList.get(i).getType() != AbstractInsnNode.METHOD_INSN) {
+					continue;
+				}
+				INVOKESTATIC_BlockRenderLayer_values_Node = (MethodInsnNode) instructionList.get(i);
+				break;
 			}
-			preExistingLabelNodeForIfStatementThatWeRepurpose = (LabelNode) instructionList.get(i);
-			break;
-		}
 
-		LineNumberNode preExistingLineNumberNode = null;
-
-		// go down through the instructions until we find the Line number node
-		for (int i = instructionList.indexOf(preExistingLabelNodeForIfStatementThatWeRepurpose); i < instructionList.indexOf(preExistingLabelNodeFor_renderChunksUpdated); i++) {
-			if (instructionList.get(i).getType() != AbstractInsnNode.LINE) {
-				continue;
-			}
-			preExistingLineNumberNode = (LineNumberNode) instructionList.get(i);
-			break;
-		}
-
-		final InsnList tempInstructionList = new InsnList();
-
-		// add a line number node with a line 1 above that of the original instructions
-		final int injectionLineNumber = preExistingLineNumberNode.line - 1;
-		tempInstructionList.add(new LineNumberNode(injectionLineNumber, preExistingLabelNodeForIfStatementThatWeRepurpose));
-
-		// add our rebuildChunkAllBlocksEvent local variable hook
-		tempInstructionList.add(new FieldInsnNode(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;"));
-		tempInstructionList.add(new LdcInsnNode("RebuildChunkAllBlocksEvent Placeholder Code"));
-		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false));
-
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 4));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 5));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 7));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 8));
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/math/BlockPos", "getAllInBoxMutable", "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;", false));
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false));
-		tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
-		tempInstructionList.add(new VarInsnNode(FLOAD, 1));
-		tempInstructionList.add(new VarInsnNode(FLOAD, 2));
-		tempInstructionList.add(new VarInsnNode(FLOAD, 3));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 10));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 9));
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkAllBlocksEvent",
-				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Ljava/lang/Iterable;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Lcadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent;",
-				false));
-		tempInstructionList.add(new VarInsnNode(ASTORE, 11));
-
-		// add +1 maxs
-
-		// Inject a new label for the instructions following our instructions (all the instructions after the Label for the "NEW VisGraph" instruction)
-		final LabelNode injectedLabelNode = new LabelNode(new Label());
-		tempInstructionList.add(injectedLabelNode);
-
-		// Set the line number of the following instructions to the new node
-		preExistingLineNumberNode.start = injectedLabelNode;
-
-		// Inject our instructions right AFTER the Label for the "GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I" instruction
-		instructionList.insert(preExistingLabelNodeForIfStatementThatWeRepurpose, tempInstructionList);
-
-		// steps 7-9
-
-		IntInsnNode NEWARRAY_T_BOOLEAN_Node = null;
-
-		// Find the bytecode instruction for "new boolean[BlockRenderLayer.values().length]" ("NEWARRAY T_BOOLEAN")
-		final ListIterator<AbstractInsnNode> instructionsIterator2 = instructionList.iterator();
-		while (instructionsIterator2.hasNext()) {
-			final AbstractInsnNode instruction = instructionsIterator2.next();
+			final InsnList tempInstructionList = new InsnList();
 
 			// L22
 			// LINENUMBER 155 L22
-			// INVOKESTATIC net/minecraft/util/BlockRenderLayer.values()[Lnet/minecraft/util/BlockRenderLayer;
-			// ARRAYLENGTH
-			// # NEWARRAY T_BOOLEAN //INJECTION POINT
+			// ALOAD 11
+			// INVOKEVIRTUAL cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent.getUsedBlockRenderLayers()[Z
 			// ASTORE 12
 
-			if (instruction.getOpcode() == NEWARRAY) {
-				if (instruction.getType() == AbstractInsnNode.INT_INSN) {
-					final IntInsnNode fieldInsnNode = (IntInsnNode) instruction;
-					if (fieldInsnNode.operand == T_BOOLEAN) {
-						NEWARRAY_T_BOOLEAN_Node = fieldInsnNode;
-						break;
-					}
-				}
-			}
+			// Inject a call to rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers() BEFORE the call to BlockRenderLayer.values()
+			tempInstructionList.add(new VarInsnNode(ALOAD, 11));
+			tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false));
 
+			instructionList.insertBefore(INVOKESTATIC_BlockRenderLayer_values_Node, tempInstructionList);
+
+			final AbstractInsnNode ARRAYLENGTH_Node = INVOKESTATIC_BlockRenderLayer_values_Node.getNext();
+
+			// Remove the call to BlockRenderLayer.values() and the next 2 instructions
+			instructionList.remove(INVOKESTATIC_BlockRenderLayer_values_Node);
+			instructionList.remove(ARRAYLENGTH_Node);
+			instructionList.remove(NEWARRAY_T_BOOLEAN_Node);
 		}
-
-		if (NEWARRAY_T_BOOLEAN_Node == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
-		}
-
-		MethodInsnNode INVOKESTATIC_BlockRenderLayer_values_Node = null;
-
-		// go back up the instructions until we find the MethodInsn for the BlockRenderLayer.values() call
-		for (int i = instructionList.indexOf(NEWARRAY_T_BOOLEAN_Node) - 1; i >= 0; i--) {
-			if (instructionList.get(i).getType() != AbstractInsnNode.METHOD_INSN) {
-				continue;
-			}
-			INVOKESTATIC_BlockRenderLayer_values_Node = (MethodInsnNode) instructionList.get(i);
-			break;
-		}
-
-		final InsnList tempInstructionList2 = new InsnList();
-
-		// L22
-		// LINENUMBER 155 L22
-		// ALOAD 11
-		// INVOKEVIRTUAL cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent.getUsedBlockRenderLayers()[Z
-		// ASTORE 12
-
-		// Inject a call to rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers() BEFORE the call to BlockRenderLayer.values()
-		tempInstructionList2.add(new VarInsnNode(ALOAD, 11));
-		tempInstructionList2.add(new MethodInsnNode(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false));
-
-		instructionList.insertBefore(INVOKESTATIC_BlockRenderLayer_values_Node, tempInstructionList);
-
-		final AbstractInsnNode ARRAYLENGTH_Node = INVOKESTATIC_BlockRenderLayer_values_Node.getNext();
-
-		// Remove the call to BlockRenderLayer.values() and the next 2 instructions
-		instructionList.remove(INVOKESTATIC_BlockRenderLayer_values_Node);
-		instructionList.remove(ARRAYLENGTH_Node);
-		instructionList.remove(NEWARRAY_T_BOOLEAN_Node);
 
 	}
 
@@ -591,14 +559,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	}
 
 	public static String insnToString(final AbstractInsnNode insn) {
-		insn.accept(mp);
+		insn.accept(TRACE_METHOD_VISITOR);
 		final StringWriter sw = new StringWriter();
-		printer.print(new PrintWriter(sw));
-		printer.getText().clear();
+		PRINTER.print(new PrintWriter(sw));
+		PRINTER.getText().clear();
 		return sw.toString().trim();
 	}
 
-	private static final Printer			printer	= new Textifier();
-	private static final TraceMethodVisitor	mp		= new TraceMethodVisitor(printer);
+	private static final Printer			PRINTER					= new Textifier();
+	private static final TraceMethodVisitor	TRACE_METHOD_VISITOR	= new TraceMethodVisitor(PRINTER);
 
 }
