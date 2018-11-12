@@ -9,6 +9,7 @@ import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkAllBlocksEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -79,14 +80,21 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
 	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
+	 * @param block                     the {@link Block block} being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
 	 * @return If the block can render in the layer
 	 */
-	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 		MinecraftForge.EVENT_BUS.post(event);
-		return (event.getResult() == Event.Result.ALLOW) || (event.getResult() == Event.Result.DEFAULT);
+		if (event.getResult() == Event.Result.ALLOW) {
+			return true;
+		} else if (event.getResult() == Event.Result.DEFAULT) {
+			return block.canRenderInLayer(blockState, blockRenderLayer);
+		} else {
+			return false;
+		}
 	}
 
 	/**
