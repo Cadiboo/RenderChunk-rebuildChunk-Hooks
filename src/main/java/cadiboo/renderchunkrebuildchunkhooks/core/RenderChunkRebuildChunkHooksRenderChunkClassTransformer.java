@@ -53,7 +53,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final boolean DEOBFUSCATED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-	public static final boolean DEBUG_EVERYTHING = false;
+	public static final boolean DEBUG_EVERYTHING = true;
 
 	public static final int CLASS_WRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
 	// skip class reader reading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
@@ -64,7 +64,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	private static final boolean DEBUG_DUMP_BYTECODE = false;
+	private static final boolean DEBUG_DUMP_BYTECODE = true;
 
 	static {
 		if (DEBUG_EVERYTHING) {
@@ -85,10 +85,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
-
-		if (true) {
-			return basicClass;
-		}
 
 		if (DEBUG_EVERYTHING) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {

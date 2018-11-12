@@ -41,8 +41,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	@Override
 	public String[] getASMTransformerClass() {
-//		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName() };
-		return new String[0];
+		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName() };
 	}
 
 	@Override
