@@ -73,6 +73,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	public static final boolean	DEBUG_CLASSES		= DEBUG_EVERYTHING | false;
 	public static final boolean	DEBUG_TYPES			= DEBUG_EVERYTHING | false;
 	public static final boolean	DEBUG_METHODS		= DEBUG_EVERYTHING | false;
+	public static final boolean	DEBUG_INSTRUCTIONS	= DEBUG_EVERYTHING | true;
 
 	static {
 		if (DEBUG_TYPES) {
@@ -249,6 +250,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		LOGGER.info("injecting RebuildChunkPreEvent Hook...");
 
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
+
 		TypeInsnNode NEW_VisGraph_Node = null;
 
 		// Find the bytecode instruction for "new VisGraph()" ("NEW net/minecraft/client/renderer/chunk/VisGraph")
@@ -347,6 +354,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		LOGGER.info("injected RebuildChunkPreEvent Hook");
 
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
+
 	}
 
 	/**
@@ -397,6 +410,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	private void injectRebuildChunkAllBlocksEventLocalVariableAndRenderLayersUsedChange(final InsnList instructionList) {
 
 		LOGGER.info("injecting RebuildChunkAllBlocksEvent LocalVariable and RenderLayersUsed Changes...");
+
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
 
 		// add local variable
 		// (steps 1-6)
@@ -535,6 +554,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		}
 
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
+
 		// change
 		// boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
 		// to
@@ -619,6 +644,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		LOGGER.info("injected RebuildChunkAllBlocksEvent LocalVariable and RenderLayersUsed Changes");
 
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
+
 	}
 
 	/**
@@ -665,6 +696,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	private void injectRebuildChunkBlockRenderInLayerEvent(final InsnList instructionList) {
 
 		LOGGER.info("injecting RebuildChunkBlockRenderInLayerEvent Hook...");
+
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
 
 		MethodInsnNode INVOKEVIRTUAL_Block_canRenderInLayer_Node = null;
 
@@ -741,6 +778,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		LOGGER.info("injected RebuildChunkBlockRenderInLayerEvent Hook");
 
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
+
 	}
 
 	/**
@@ -809,6 +852,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	private void injectRebuildChunkAllBlocksEventAndRebuildChunkBlockEventLogic(final InsnList instructionList) {
 
 		LOGGER.info("injecting RebuildChunkAllBlocksEvent and RebuildChunkBlockEvent logic...");
+
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
 
 		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
 
@@ -988,6 +1037,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		instructionList.insertBefore(preExistingVarInsNode, tempInstructionList);
 
 		LOGGER.info("injected RebuildChunkAllBlocksEvent and RebuildChunkBlockEvent logic");
+
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructionList.size(); i++) {
+				LOGGER.info(insnToString(instructionList.get(i)));
+			}
+		}
 
 	}
 
