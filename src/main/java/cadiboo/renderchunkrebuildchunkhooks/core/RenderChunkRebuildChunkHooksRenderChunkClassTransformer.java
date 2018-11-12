@@ -27,7 +27,6 @@ import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -485,9 +484,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			IntInsnNode NEWARRAY_T_BOOLEAN_Node = null;
 
 			// Find the bytecode instruction for "new boolean[BlockRenderLayer.values().length]" ("NEWARRAY T_BOOLEAN")
-			final ListIterator<AbstractInsnNode> instructionsIterator2 = instructionList.iterator();
-			while (instructionsIterator2.hasNext()) {
-				final AbstractInsnNode instruction = instructionsIterator2.next();
+			final ListIterator<AbstractInsnNode> instructionsIterator = instructionList.iterator();
+			while (instructionsIterator.hasNext()) {
+				final AbstractInsnNode instruction = instructionsIterator.next();
 
 				// L22
 				// LINENUMBER 155 L22
@@ -533,8 +532,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			// ASTORE 12
 
 			// Inject a call to rebuildChunkAllBlocksEvent.getUsedBlockRenderLayers() BEFORE the call to BlockRenderLayer.values()
-			tempInstructionList.add(new VarInsnNode(ALOAD, 11));
-			tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false));
+//			tempInstructionList.add(new VarInsnNode(ALOAD, 11));
+//			tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "cadiboo/renderchunkrebuildchunkhooks/event/RebuildChunkAllBlocksEvent", "getUsedBlockRenderLayers", "()[Z", false));
 
 			instructionList.insertBefore(INVOKESTATIC_BlockRenderLayer_values_Node, tempInstructionList);
 
