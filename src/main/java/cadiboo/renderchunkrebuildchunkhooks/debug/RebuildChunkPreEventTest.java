@@ -26,15 +26,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber
-@Mod(modid = RebuildChunkEventTest.MODID, name = "RebuildChunkEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
-public class RebuildChunkEventTest {
+@Mod(modid = RebuildChunkPreEventTest.MODID, name = "RebuildChunkPreEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
+public class RebuildChunkPreEventTest {
 
-	public static final String MODID = "rebuild_chunk_event_test";
+	public static final String MODID = "rebuild_chunk_pre_event_test";
 
 	public static final boolean ENABLED = true;
 
 	@SubscribeEvent
-	public static void onRebuildChunkEvent(final RebuildChunkPreEvent event) {
+	public static void onRebuildChunkPreEvent(final RebuildChunkPreEvent event) {
 		if (!ENABLED) {
 			return;
 		}
