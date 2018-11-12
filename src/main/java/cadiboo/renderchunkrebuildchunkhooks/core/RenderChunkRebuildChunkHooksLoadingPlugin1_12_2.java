@@ -3,7 +3,12 @@ package cadiboo.renderchunkrebuildchunkhooks.core;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkAllBlocksEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -23,8 +28,10 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	public static final String CORE_MARKER = RenderChunkRebuildChunkHooksDummyContainer.MOD_NAME + " Loaded";
 
+	public static final Logger LOGGER = LogManager.getLogger();
+
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
-		LogManager.getLogger().info(this.getClass().getSimpleName() + " at version " + this.getVersion());
+		LOGGER.info(this.getClass().getSimpleName() + " at version " + this.getVersion());
 		Launch.blackboard.put(CORE_MARKER, this.getVersion());
 	}
 
@@ -50,8 +57,12 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	@Override
 	public void injectData(final Map<String, Object> data) {
-		// TODO Auto-generated method stub
-
+		LOGGER.info("Pre-loading event classes...");
+		RebuildChunkPreEvent.class.getName();
+		RebuildChunkAllBlocksEvent.class.getName();
+		RebuildChunkBlockRenderInLayerEvent.class.getName();
+		RebuildChunkBlockEvent.class.getName();
+		LOGGER.info("Sucessfully Pre-loaded event classes");
 	}
 
 	@Override
