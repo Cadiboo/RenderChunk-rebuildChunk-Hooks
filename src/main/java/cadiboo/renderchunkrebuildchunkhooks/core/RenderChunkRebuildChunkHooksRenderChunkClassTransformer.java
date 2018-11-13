@@ -19,6 +19,7 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.FrameNode;
 import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -40,6 +41,7 @@ import com.google.common.collect.ImmutableList;
 
 import cadiboo.renderchunkrebuildchunkhooks.core.util.INames;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkAllBlocksEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
@@ -65,7 +67,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	// skip class reader reading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
 	public static final int CLASS_READER_FLAGS = (CLASS_WRITER_FLAGS & ClassWriter.COMPUTE_FRAMES) == ClassWriter.COMPUTE_FRAMES ? ClassReader.SKIP_FRAMES : 0;
 
-	public static final int	rebuildChunkAllBlocksEvent_STACK	= 20;
+	public static final int	rebuildChunkAllBlocksEvent_STACK	= 50;
 	public static final int	rebuildChunkBlockEvent_STACK		= rebuildChunkAllBlocksEvent_STACK + 1;
 
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -76,7 +78,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 	public static final boolean	DEBUG_CLASSES		= DEBUG_EVERYTHING | false;
 	public static final boolean	DEBUG_TYPES			= DEBUG_EVERYTHING | false;
 	public static final boolean	DEBUG_METHODS		= DEBUG_EVERYTHING | false;
-	public static final boolean	DEBUG_INSTRUCTIONS	= DEBUG_EVERYTHING | true;
+	public static final boolean	DEBUG_INSTRUCTIONS	= DEBUG_EVERYTHING | false;
 
 	static {
 		if (DEBUG_TYPES) {
@@ -136,6 +138,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			LOGGER.info("RebuildChunk type: " + REBUILD_CHUNK_TYPE);
 			LOGGER.info("RebuildChunk descriptor: " + REBUILD_CHUNK_DESCRIPTOR);
 		}
+
+		this.injectRebuildChunkAllBlocksEventField(classNode.fields);
+		this.injectRebuildChunkBlockEventField(classNode.fields);
 
 		// peek at classNode and modifier
 		for (final MethodNode method : classNode.methods) {
@@ -206,6 +211,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			return basicClass;
 		}
 
+	}
+
+	private void injectRebuildChunkAllBlocksEventField(final List<FieldNode> fields) {
+		fields.add(new FieldNode(ACC_PUBLIC + ACC_SYNTHETIC, "rebuildChunkAllBlocksEvent", Type.getDescriptor(RebuildChunkAllBlocksEvent.class), null, null));
+	}
+
+	private void injectRebuildChunkBlockEventField(final List<FieldNode> fields) {
+		fields.add(new FieldNode(ACC_PUBLIC + ACC_SYNTHETIC, "rebuildChunkBlockEvent", Type.getDescriptor(RebuildChunkBlockEvent.class), null, null));
 	}
 
 	/**
@@ -767,14 +780,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		tempInstructionList.add(new VarInsnNode(ALOAD, 14));
 
 		// Inject our instructions right BEFORE the Label for the "ALOAD ?: block" instruction
-		tempInstructionList.insertBefore(ALOAD_block_Node, tempInstructionList);
+		instructionList.insertBefore(ALOAD_block_Node, tempInstructionList);
 
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "canBlockRenderInLayer",
 				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z",
 				false));
 
 		// Inject our instructions right AFTER the Label for the "ALOAD ?: blockrenderlayer1" instruction
-		tempInstructionList.insert(ALOAD_blockrenderlayer1_Node, tempInstructionList);
+		instructionList.insert(ALOAD_blockrenderlayer1_Node, tempInstructionList);
 
 		// Remove the call to block.canRenderInLayer()
 		instructionList.remove(INVOKEVIRTUAL_Block_canRenderInLayer_Node);
@@ -951,19 +964,19 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		final LabelNode l54 = new LabelNode(new Label());
 		tempInstructionList.add(l54);
 		tempInstructionList.add(new LineNumberNode(206, l54));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));// this
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));// this
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 4));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));// this
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "compiledChunk", "Lnet/minecraft/client/renderer/chunk/CompiledChunk;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 13));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 16));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 14));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 23));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0));// this
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 18));
 		tempInstructionList.add(new VarInsnNode(FLOAD, 1));
