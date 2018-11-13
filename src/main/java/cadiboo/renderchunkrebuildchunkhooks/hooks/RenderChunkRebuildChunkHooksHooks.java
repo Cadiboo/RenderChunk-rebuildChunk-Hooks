@@ -73,14 +73,14 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	/**
 	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
+	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledChunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledChunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 * @return If vanilla rendering should be stopped
 	 */
 	public static boolean onRebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
@@ -93,11 +93,11 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
 	 * @param renderGlobal                    the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
 	 * @param worldView                       the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition             the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 	 * @param compiledChunk                   the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 * @param chunkBlockPositions             the {@link java.lang.Iterable} of {@link MutableBlockPos} containing all the blocks in the chunk passed in from RenderChunk#rebuildChunk
 	 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition             the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
@@ -114,11 +114,11 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	/**
 	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 	 * @param compiledChunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
 	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
 	 * @param block                     the {@link Block block} being assessed
