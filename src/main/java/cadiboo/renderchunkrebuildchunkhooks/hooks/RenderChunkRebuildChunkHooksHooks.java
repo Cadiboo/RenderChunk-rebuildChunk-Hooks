@@ -72,32 +72,6 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	}
 
 	/**
-	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param compiledChunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
-	 * @param block                     the {@link Block block} being assessed
-	 * @param blockState                the {@link IBlockState state} of the block being assessed
-	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
-	 * @return If the block can render in the layer
-	 */
-	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
-		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
-		MinecraftForge.EVENT_BUS.post(event);
-		if (event.getResult() == Event.Result.ALLOW) {
-			return true;
-		} else if (event.getResult() == Event.Result.DEFAULT) {
-			return block.canRenderInLayer(blockState, blockRenderLayer);
-		} else {
-			return false;
-		}
-	}
-
-	/**
 	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
 	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
@@ -136,6 +110,32 @@ public final class RenderChunkRebuildChunkHooksHooks {
 		final RebuildChunkAllBlocksEvent event = new RebuildChunkAllBlocksEvent(renderChunk, renderGlobal, worldView, generator, compiledChunk, chunkBlockPositions, blockRendererDispatcher, renderChunkPosition, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 		MinecraftForge.EVENT_BUS.post(event);
 		return event;
+	}
+
+	/**
+	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
+	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
+	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param compiledChunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
+	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
+	 * @param block                     the {@link Block block} being assessed
+	 * @param blockState                the {@link IBlockState state} of the block being assessed
+	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
+	 * @return If the block can render in the layer
+	 */
+	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
+		MinecraftForge.EVENT_BUS.post(event);
+		if (event.getResult() == Event.Result.ALLOW) {
+			return true;
+		} else if (event.getResult() == Event.Result.DEFAULT) {
+			return block.canRenderInLayer(blockState, blockRenderLayer);
+		} else {
+			return false;
+		}
 	}
 
 	/**
