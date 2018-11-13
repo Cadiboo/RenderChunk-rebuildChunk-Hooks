@@ -51,6 +51,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 		if (event.getSide().isClient()) {
 			LOGGER.info("Preloading RenderChunk...");
 			RenderChunk.class.getName();
+			final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
 			LOGGER.info("Sucessfully preloaded RenderChunk!");
 		}
 	}

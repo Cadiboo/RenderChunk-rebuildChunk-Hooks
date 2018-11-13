@@ -25,7 +25,7 @@ public class RebuildChunkAllBlocksEventTest {
 			return;
 		}
 
-		event.setCanceled(true);
+//		event.setCanceled(true);
 
 		for (final BlockPos.MutableBlockPos blockpos$mutableblockpos : event.getChunkBlockPositions()) {
 			final IBlockState state = event.getWorldView().getBlockState(blockpos$mutableblockpos);
