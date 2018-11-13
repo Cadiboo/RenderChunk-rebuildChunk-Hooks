@@ -19,8 +19,11 @@
 
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
+import java.util.Random;
+
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod(modid = RebuildChunkBlockRenderInLayerEventTest.MODID, name = "RebuildChunkBlockRenderInLayerEventTest", version = "1.0", acceptableRemoteVersions = "*")
