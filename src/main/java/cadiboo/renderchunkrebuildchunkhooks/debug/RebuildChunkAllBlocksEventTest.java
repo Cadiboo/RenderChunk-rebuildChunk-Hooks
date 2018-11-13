@@ -399,7 +399,7 @@ public class RebuildChunkAllBlocksEventTest {
 						density += 1;
 					} else if (state.isNormalCube()) {
 
-					} else if (state.getBlock().getMaterial(state) == Material.VINE) {
+					} else if (state.getMaterial() == Material.VINE) {
 						density -= 0.75;
 					} else {
 						density -= 1;
