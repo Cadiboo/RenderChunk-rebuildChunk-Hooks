@@ -22,6 +22,8 @@ package cadiboo.renderchunkrebuildchunkhooks.debug;
 import java.util.Random;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import net.minecraft.block.BlockStone;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -31,14 +33,23 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RebuildChunkBlockRenderInLayerEventTest {
 
 	public static final String	MODID	= "rebuild_chunk_block_render_in_layer_event_test";
-	public static final boolean	ENABLED	= true;
+	public static final boolean	ENABLED	= false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
 		if (!ENABLED) {
 			return;
 		}
-		if (new Random().nextInt(10) == 0) {
+
+		if (event.getBlockState().getBlock() instanceof BlockStone) {
+			if (event.getBlockRenderLayer() == BlockRenderLayer.TRANSLUCENT) {
+				event.setResult(Event.Result.ALLOW);
+			} else {
+				event.setResult(Event.Result.DENY);
+			}
+		}
+
+		if (new Random().nextInt(20) == 0) {
 			event.setResult(Event.Result.DENY);
 		}
 	}
