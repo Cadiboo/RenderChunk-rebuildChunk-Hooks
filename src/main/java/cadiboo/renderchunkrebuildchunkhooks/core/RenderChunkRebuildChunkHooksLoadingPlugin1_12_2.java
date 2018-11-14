@@ -30,6 +30,9 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
+	public static boolean	DEOBFUSCATED	= false;
+	public static boolean	OPTIFINE		= false;
+
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
 		LOGGER.info(this.getClass().getSimpleName() + " at version " + this.getVersion());
 		Launch.blackboard.put(CORE_MARKER, this.getVersion());
@@ -41,7 +44,11 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName() };
+//		if (OPTIFINE) {
+		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine.class.getName() };
+//		}
+//		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName() };
+//		return new String[0];
 	}
 
 	@Override
@@ -57,6 +64,17 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	@Override
 	public void injectData(final Map<String, Object> data) {
+
+		DEOBFUSCATED = (boolean) data.get("runtimeDeobfuscationEnabled");
+//		try {
+//			final Class<?> optifineConfig = Class.forName("Config", false, Loader.instance().getModClassLoader());
+//			final String optifineVersion = (String) optifineConfig.getField("VERSION").get(null);
+//			OPTIFINE = true;
+//			LOGGER.info("RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 has detected optifine {}, enabling compatibility features", optifineVersion);
+//		} catch (final Exception e) {
+//			OPTIFINE = false;
+//		}
+
 		LOGGER.info("Pre-loading event classes...");
 		RebuildChunkPreEvent.class.getName();
 		RebuildChunkAllBlocksEvent.class.getName();
