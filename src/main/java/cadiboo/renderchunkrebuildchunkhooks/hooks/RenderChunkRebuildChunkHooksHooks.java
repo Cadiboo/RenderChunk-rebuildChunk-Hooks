@@ -5,6 +5,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 
+import cadiboo.renderchunkrebuildchunkhooks.config.ModConfig;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkAllBlocksEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
@@ -85,7 +86,11 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 */
 	public static boolean onRebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
 		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, renderGlobal, worldView, generator, compiledChunk, renderChunkPosition, x, y, z);
-		MinecraftForge.EVENT_BUS.post(event);
+
+		if (ModConfig.enableRebuildChunkPreEvent) {
+			MinecraftForge.EVENT_BUS.post(event);
+		}
+
 		return event.isCanceled();
 	}
 
@@ -108,7 +113,11 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	public static RebuildChunkAllBlocksEvent onRebuildChunkAllBlocksEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final Iterable<MutableBlockPos> chunkBlockPositions, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
 			final VisGraph visGraph) {
 		final RebuildChunkAllBlocksEvent event = new RebuildChunkAllBlocksEvent(renderChunk, renderGlobal, worldView, generator, compiledChunk, chunkBlockPositions, blockRendererDispatcher, renderChunkPosition, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
-		MinecraftForge.EVENT_BUS.post(event);
+
+		if (ModConfig.enableRebuildChunkAllBlocksEvent) {
+			MinecraftForge.EVENT_BUS.post(event);
+		}
+
 		return event;
 	}
 
@@ -128,7 +137,11 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 */
 	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
-		MinecraftForge.EVENT_BUS.post(event);
+
+		if (ModConfig.enableRebuildChunkBlockRenderInLayerEvent) {
+			MinecraftForge.EVENT_BUS.post(event);
+		}
+
 		if (event.getResult() == Event.Result.ALLOW) {
 			return true;
 		} else if (event.getResult() == Event.Result.DEFAULT) {
@@ -160,7 +173,11 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	public static RebuildChunkBlockEvent onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, final BlockRenderLayer blockRenderLayer, final float x,
 			final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, renderGlobal, worldView, generator, compiledChunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
-		MinecraftForge.EVENT_BUS.post(event);
+
+		if (ModConfig.enableRebuildChunkBlockEvent) {
+			MinecraftForge.EVENT_BUS.post(event);
+		}
+
 		return event;
 	}
 
