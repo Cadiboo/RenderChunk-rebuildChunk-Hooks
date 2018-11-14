@@ -185,7 +185,11 @@
                 }
 
                 for(BlockRenderLayer blockrenderlayer1 : BlockRenderLayer.values()) {
-                     if (!cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.canBlockRenderInLayer(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, null, block, iblockstate, blockrenderlayer1)) continue;
+                    if (this.rebuildChunkAllBlocksEvent.isCanceled())
+                    {
+                        continue;
+                    }
+                    if (!cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.canBlockRenderInLayer(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, null, block, iblockstate, blockrenderlayer1)) continue;
                      net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockrenderlayer1);
                 int j = blockrenderlayer1.ordinal();
 
@@ -198,22 +202,16 @@
                         compiledchunk.setLayerStarted(blockrenderlayer1);
                         this.preRenderBlocks(bufferbuilder, blockpos);
                     }
-
-                    if (this.rebuildChunkAllBlocksEvent.isCanceled())
-                    {
-                        continue;
-                    }
                     
                     this.rebuildChunkBlockEvent = RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, blockrenderlayer1, x, y, z, lvt_10_1_, lvt_9_1_);
 
-                    for (this.rebuildChunkBlockEventBlockRenderLayerIndex = 0; this.rebuildChunkBlockEventBlockRenderLayerIndex < (BlockRenderLayer.values().length - 1); this.rebuildChunkBlockEventBlockRenderLayerIndex++) {
-                        aboolean[this.rebuildChunkBlockEventBlockRenderLayerIndex] |= this.rebuildChunkBlockEvent.getUsedBlockRenderLayers()[this.rebuildChunkBlockEventBlockRenderLayerIndex];
-                    }
+                    if (!this.rebuildChunkBlockEvent.isCanceled()) {
+                        for (this.rebuildChunkBlockEventBlockRenderLayerIndex = 0; this.rebuildChunkBlockEventBlockRenderLayerIndex < (BlockRenderLayer.values().length - 1); this.rebuildChunkBlockEventBlockRenderLayerIndex++) {
+                            aboolean[this.rebuildChunkBlockEventBlockRenderLayerIndex] |= this.rebuildChunkBlockEvent.getUsedBlockRenderLayers()[this.rebuildChunkBlockEventBlockRenderLayerIndex];
+                        }
 
-                    if (this.rebuildChunkBlockEvent.isCanceled()) {
-                        continue;
+                        aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
                     }
-                    aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
                 }
                 }
                 net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
