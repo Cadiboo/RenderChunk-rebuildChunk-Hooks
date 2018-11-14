@@ -203,7 +203,7 @@
                         continue;
                     }
                     
-                    this.rebuildChunkBlockEvent = RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this, this.renderGlobal, this.worldView, generator, this.compiledChunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, blockrenderlayer1, x, y, z, lvt_10_1_, lvt_9_1_);
+                    this.rebuildChunkBlockEvent = RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, blockrenderlayer1, x, y, z, lvt_10_1_, lvt_9_1_);
 
                     for (this.rebuildChunkBlockEventBlockRenderLayerIndex = 0; this.rebuildChunkBlockEventBlockRenderLayerIndex < (BlockRenderLayer.values().length - 1); this.rebuildChunkBlockEventBlockRenderLayerIndex++) {
                         aboolean[this.rebuildChunkBlockEventBlockRenderLayerIndex] |= this.rebuildChunkBlockEvent.getUsedBlockRenderLayers()[this.rebuildChunkBlockEventBlockRenderLayerIndex];

@@ -402,13 +402,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		// add our hook
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 4));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 5));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(FLOAD, 1));
 		tempInstructionList.add(new VarInsnNode(FLOAD, 2));
 		tempInstructionList.add(new VarInsnNode(FLOAD, 3));
@@ -605,18 +605,18 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 			tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
 			tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
 			tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-			tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+			tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
 			tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-			tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+			tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
 			tempInstructionList.add(new VarInsnNode(ALOAD, 4));
 			tempInstructionList.add(new VarInsnNode(ALOAD, 5));
 			tempInstructionList.add(new VarInsnNode(ALOAD, 7));
 			tempInstructionList.add(new VarInsnNode(ALOAD, 8));
-			tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/math/BlockPos", "getAllInBoxMutable", "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;", false));
-			tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/client/Minecraft", "getMinecraft", "()Lnet/minecraft/client/Minecraft;", false));
-			tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", "getBlockRendererDispatcher", "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false));
+			tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/util/math/BlockPos", BlockPos_getAllInBoxMutable_BP_BP_Iterable, "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;", false));
+			tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "net/minecraft/client/Minecraft", Minecraft_getMinecraft, "()Lnet/minecraft/client/Minecraft;", false));
+			tempInstructionList.add(new MethodInsnNode(INVOKEVIRTUAL, "net/minecraft/client/Minecraft", MINECRAFT_getBlockRendererDispatcher, "()Lnet/minecraft/client/renderer/BlockRendererDispatcher;", false));
 			tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-			tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+			tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 			tempInstructionList.add(new VarInsnNode(FLOAD, 1));
 			tempInstructionList.add(new VarInsnNode(FLOAD, 2));
 			tempInstructionList.add(new VarInsnNode(FLOAD, 3));
@@ -857,12 +857,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderChunk - renderChunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // ChunkCache - worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 4)); // chunkCompileTaskGenerator
 		tempInstructionList.add(new VarInsnNode(ALOAD, 5)); // compiledChunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, 12)); // blockRendererDispatcher
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 9)); // visGraph
 		// tempInstructionList.add(new VarInsnNode(ALOAD, 13)); // blockPos
 		// tempInstructionList.add(new InsnNode(ACONST_NULL)); // blockPos
@@ -883,12 +883,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 4));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 5));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 12));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
-//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 9));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 13));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 16));
@@ -1077,12 +1077,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderChunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // ChunkCache
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 4)); // generator
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // compiledChunk
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "compiledChunk", "Lnet/minecraft/client/renderer/chunk/CompiledChunk;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 5)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, 12)); // BlockRendererDispatcher
 		tempInstructionList.add(new VarInsnNode(ALOAD, 15)); // IBlockState
 
@@ -1114,7 +1113,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		tempInstructionList.add(new VarInsnNode(ALOAD, 14)); // blockPos
 		tempInstructionList.add(new VarInsnNode(ALOAD, 22)); // bufferbuilder
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 //		tempInstructionList.add(new VarInsnNode(ALOAD, 17)); // BlockRenderLayer
 		tempInstructionList.add(new VarInsnNode(ALOAD, 20)); // BlockRenderLayer
 		tempInstructionList.add(new VarInsnNode(FLOAD, 1)); // x
