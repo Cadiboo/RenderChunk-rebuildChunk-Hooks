@@ -259,7 +259,7 @@ public class RebuildChunkAllBlocksEvent extends Event {
 
 	/**
 	 * FOR INTERNAL USE ONLY<br>
-	 * Sets translation for and tarts the {@link BufferBuilder}
+	 * Sets translation for and starts the {@link BufferBuilder}
 	 *
 	 * @param bufferBuilderIn the {@link BufferBuilder} to set translation for and start
 	 * @param pos             the pos to get translations from
