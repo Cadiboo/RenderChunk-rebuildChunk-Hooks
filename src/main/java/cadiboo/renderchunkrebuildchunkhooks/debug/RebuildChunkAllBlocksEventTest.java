@@ -256,7 +256,7 @@ public class RebuildChunkAllBlocksEventTest {
 						blueFloat = 1;
 					}
 
-					final BlockRenderLayer blockRenderLayer = state.getBlock().getBlockLayer();
+					final BlockRenderLayer blockRenderLayer = state.getBlock().getRenderLayer();
 					final BufferBuilder bufferBuilder = event.startOrContinueLayer(blockRenderLayer);
 					event.setBlockRenderLayerUsedWithOrOpperation(blockRenderLayer, true);
 
