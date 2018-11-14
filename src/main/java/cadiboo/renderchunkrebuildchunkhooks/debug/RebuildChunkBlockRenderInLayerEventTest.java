@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RebuildChunkBlockRenderInLayerEventTest {
 
 	public static final String	MODID	= "rebuild_chunk_block_render_in_layer_event_test";
-	public static final boolean	ENABLED	= false;
+	public static final boolean	ENABLED	= true;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
