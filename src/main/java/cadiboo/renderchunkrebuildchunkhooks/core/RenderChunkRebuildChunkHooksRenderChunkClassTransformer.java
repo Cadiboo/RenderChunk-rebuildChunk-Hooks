@@ -46,7 +46,6 @@ import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHo
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.BlockRenderLayer;
 
 /**
@@ -60,10 +59,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final List<String> IGNORED_PREFIXES = ImmutableList.of("cpw", "net.minecraftforge", "io", "org", "gnu", "com", "joptsimple");
 
-	public static final boolean DEOBFUSCATED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
-
 	public static final int CLASS_WRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
-	// skip class reader reading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
+	// skip class reader rJeading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
 	public static final int CLASS_READER_FLAGS = (CLASS_WRITER_FLAGS & ClassWriter.COMPUTE_FRAMES) == ClassWriter.COMPUTE_FRAMES ? ClassReader.SKIP_FRAMES : 0;
 
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -72,10 +69,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final boolean	DEBUG_EVERYTHING	= false;
 	public static final boolean	DEBUG_CLASSES		= DEBUG_EVERYTHING | false;
-	public static final boolean	DEBUG_TYPES			= DEBUG_EVERYTHING | false;
-	public static final boolean	DEBUG_METHODS		= DEBUG_EVERYTHING | false;
-	public static final boolean	DEBUG_INSTRUCTIONS	= DEBUG_EVERYTHING | false;
-	public static final boolean	DEBUG_FIELDS		= DEBUG_EVERYTHING | false;
+	public static final boolean	DEBUG_TYPES			= DEBUG_EVERYTHING | true;
+	public static final boolean	DEBUG_METHODS		= DEBUG_EVERYTHING | true;
+	public static final boolean	DEBUG_INSTRUCTIONS	= DEBUG_EVERYTHING | true;
+	public static final boolean	DEBUG_FIELDS		= DEBUG_EVERYTHING | true;
 
 	static {
 		if (DEBUG_TYPES) {
