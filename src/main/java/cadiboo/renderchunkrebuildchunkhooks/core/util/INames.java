@@ -2,35 +2,30 @@ package cadiboo.renderchunkrebuildchunkhooks.core.util;
 
 import org.objectweb.asm.Type;
 
-import cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
 import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
-import net.minecraft.client.renderer.chunk.CompiledChunk;
-import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.util.math.BlockPos.MutableBlockPos;
-import net.minecraft.world.ChunkCache;
+import net.minecraft.launchwrapper.Launch;
 
 public interface INames {
 
-	boolean DEOBFUSCATED = RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEOBFUSCATED;
+	boolean DEOBFUSCATED = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+//	boolean DEOBFUSCATED = RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.DEOBFUSCATED;
 
 	String RENDER_CHUNK_TRANSFORMED_NAME = "net.minecraft.client.renderer.chunk.RenderChunk";
 
-	String	ChunkCompileTaskGenerator_INTERNAL_NAME	= DEOBFUSCATED ? Type.getInternalName(ChunkCompileTaskGenerator.class) : "bxl";
+	String	ChunkCompileTaskGenerator_INTERNAL_NAME	= DEOBFUSCATED ? "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator" : "bxl";
 	Type	REBUILD_CHUNK_TYPE						= Type.getMethodType(Type.VOID_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.FLOAT_TYPE, Type.getObjectType(ChunkCompileTaskGenerator_INTERNAL_NAME));
 	String	REBUILD_CHUNK_DESCRIPTOR				= REBUILD_CHUNK_TYPE.getDescriptor();
 
-	Type	VIS_GRAPH_TYPE				= Type.getObjectType(Type.getInternalName(VisGraph.class));
-	String	VIS_GRAPH_INTERNAL_NAME		= Type.getInternalName(VisGraph.class);
+	String	VIS_GRAPH_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/client/renderer/chunk/VisGraph" : "bxs";
+	Type	VIS_GRAPH_TYPE				= Type.getObjectType(VIS_GRAPH_INTERNAL_NAME);
 	String	HOOKS_CLASS_INTERNAL_NAME	= Type.getInternalName(RenderChunkRebuildChunkHooksHooks.class);
 
 	// can't reference renderChunk because the class loader is still loading it at this time
 	String	RENDER_CHUNK_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/client/renderer/chunk/RenderChunk" : "bxp";
-	String	RENDER_GLOBAL_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(RenderGlobal.class) : "buw";
-	String	CHUNK_CACHE_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(ChunkCache.class) : "anb";
-	String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= DEOBFUSCATED ? Type.getInternalName(MutableBlockPos.class) : "et$a";
-	String	CompiledChunk_INTERNAL_NAME		= DEOBFUSCATED ? Type.getInternalName(CompiledChunk.class) : "bxm";
+	String	RENDER_GLOBAL_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/client/renderer/RenderGlobal" : "buw";
+	String	CHUNK_CACHE_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/world/ChunkCache" : "anb";
+	String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= DEOBFUSCATED ? "net/minecraft/util/math/BlockPos$MutableBlockPos" : "et$a";
+	String	CompiledChunk_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/client/renderer/chunk/CompiledChunk" : "bxm";
 
 	String I_BLOCK_STATE_INTERNAL_NAME = DEOBFUSCATED ? "net/minecraft/block/state/IBlockState" : "awr";
 
