@@ -1,0 +1,362 @@
+OptiFine 1.12.2_HD_U_E2
+ - optimized memory allocation
+ - optimized chunks loading, about 2x faster now
+ - extended Show FPS and debug screen to show minimum FPS
+ - fixed shield and bow model variants (#1516)
+ - fixed distant higher chunks disappearing in multiplayer (#1522)
+ - fixed crash with Voxelmap and Smart Animations (#1524)
+ - fixed shaders to correctly restore custom gbuffers textures after deferred programs
+ - fixed shader uniforms entityId and blockEntityId in shadow program 
+ - fixed handling of relative paths for ZIP shader packs
+ - optimized rendering of item models with many predicates (#1500)
+ - compatible with Forge #2729
+(28.07.2018)
+
+OptiFine 1.12.2_HD_U_E1
+ - fixed armor slots with player on fire and AA/AF enabled (#1495)
+ - fixed fire in first person with Smart Animations (#1487) 
+ - fixed experience bar transparency (#1471)
+ - fixed emissive texture loading
+ - fixed crash in chunk visibility check (#1413)
+ - fixed entities on fire with AA/AF/SmartAnimations (#1415)
+ - fixed shaders custom textures in gbuffers_water (#1425)
+ - increased composite and deferred shader programs to 16 
+ - added interpolate and frame skip to Custom Animations
+ - fixed sign text render distance to depend on screen resolution and FOV  
+ - added system property "log.detail=<true|false>" for extended logging
+ - reduced logging when loading sprites (custom loader, sprite dependency) 
+ - added CTM tile name <default>
+ - added option Smart Animations
+ - added dynamic lights for mods
+ - fixed disabled shader programs in dimension folder
+ - fixed OpenGL error when disabling Fast Render
+ - reorganized shader programs
+ - reorganized source packages
+ - compatible with Forge #2712
+(28.06.2018)
+
+OptiFine 1.12.2_HD_U_D3
+ - fixed sampler binding for programs "gbuffers_beaconbeam", "gbuffers_item" and "gbuffers_armor_glint" 
+ - fixed shaders uniform "isEyeInWater" to work in 3rd person view
+ - compatible with Forge #2691
+(15.05.2018)
+
+OptiFine 1.12.2_HD_U_D2
+ - fixed horse random textures (#1357) 
+ - added CEM support for bed and parrot (#1117)
+ - fixed crash with Galacticraft (#1366)
+ - fixed shaders projection matrix when underwater (#1344, #827)
+ - added option Show OpenGL Errors
+ - added support for geometry shaders ".gsh" (#1355)
+ - extended CIT to check for alternative shield models (#1169)
+ - added shaders uniform blendFunc (#884)
+ - fixed End loading bug (#1326)
+ - removed width and height limits for CTM method "repeat"
+ - fixed shaders uniform "depthtex1" in program "gbuffers_water"
+ - compatible with Forge #2673
+(26.04.2018)
+
+OptiFine 1.12.2_HD_U_D1
+ - extended new version message to include link to optifine.net 
+ - custom shader textures by location (resource pack, dynamic textures) (#1304)
+ - fixed compatibility with PortalGun mod
+ - fixed water fog density/color for Respiration > 3 (#1289)
+ - fixed chunk visibility culling for custom view entity (#1286) 
+ - added shader profile tooltips
+ - fixed a very cool chunk loading bug (http://y2u.be/QUI7iRR9FD8)  
+ - added shaders version check
+ - added shaders property "frustum.culling"
+ - fixed shaders camera position in shadow program
+ - added shaders option "separateAo"
+ - fixed water old lighting with shaders
+ - fixed shader uniform atlasSize in program gbuffers_hand
+ - added full macro processing for #if and #elif expressions
+ - fixed multi-pass CTM with missing intermediate textures (Halcyon Days)
+ - fixed loading of GitHub zipped shader packs with world folders 
+ - optimized shaders shadow culling
+ - fixed shaders to work properly at high coordinate values (#1240)
+ - fixed flickering water bottom texture with AA/AF enabled
+ - extended shader configuration parsing to be affected by preprocessor conditional directives
+ - added option Render Regions
+ - optimized VBO rendering
+ - optimized visibility cullung
+ - optimized loading of visible chunks (F3+L)
+ - compatible with Forge #2627
+(23.03.2018)
+
+OptiFine 1.12.2_HD_U_C9
+ - extended shaders to define custom block render layers (#1210)
+ - added CTM properties "randomLoops" and "innerSeams"
+ - added CTM methods "overlay_fixed", "overlay_random", "overlay_repeat" and "overlay_ctm" (#1145)
+ - added shaders configuration for beacon beam depth (#796)
+ - added shaders configuration for rain/snow depth (#532)
+ - added vector custom uniforms (#1155)
+ - added matrix access for custom uniforms (#1155)
+ - enable or disable programs depending on shader options
+ - added support for shaders in GitHub ZIP files
+ - added configurable buffer flip for composite programs (#1103)
+ - added variable resolution for composite programs (#1103)
+ - fixed option Portal Particles (#1146)
+ - added button Download Shaders, opens "http://shaders.wikia.com/wiki/Shader_Packs" in a browser
+ - added commands "/reloadShaders" and "/reloadChunks"
+ - fixed Forge cloud renderer breaking cloud height and shader clouds (#1141)
+ - fixed normal maps for banner, horse and player models (1140)
+ - compatible with Forge #2615
+(14.02.2018)
+
+OptiFine 1.12.2_HD_U_C8
+ - fixed shaders program fallback (sildurs enhanced redone)
+ - added alpha test and blend mode per shaders program
+ - updated shaders function "smooth" to use automatic ID
+ - optimized shader uniforms (cached location and last value per program)
+ - replaced Random Mobs with Random Entities, extended to support all entities and tile entities
+ - enabled shader uniforms "entityId" and "blockEntityId" for the shadow pass (#1075)
+ - extended CTM to check for named tile entities
+ - fixed crash when disabling shaders (Charset #165)
+ - limit shaders options tooltips to 8 lines
+ - added custom block render layers
+ - added custom loading screens per dimension
+ - fixed parrot on shoulder with random mobs and shaders
+ - compatible with Forge #2587
+(10.01.2018)
+
+OptiFine 1.12.2_HD_U_C7
+ - fixed mob spawning rate (#1055)
+ - fixed underwater color with Forge
+ - extended shaders custom uniforms to access vector components
+ - fixed crash with Botania and CTM (#1037)
+ - fixed shader configuration parsing (vsh, comments)
+ - fixed crash with Chisel when AA/AF is enabled
+ - added Custom Sky options: biomes, heights and transition (#892)
+ - fixed Custom Sky resetting at time 6000 when rotation speed is not an integer (#804)
+ - removed render distance check for vanilla stars when custom sky layers are available
+ - added shaders options tooltips (#980)
+ - extended shaders configuration to re-enable program disabled in parent profile
+ - optimizaed memory allocation
+ - added custom shader uniforms (#924)
+ - fixed race conditions in chunk loading
+ - added CTM property "linked" for double plants and doors
+ - reset shadowmap configuration on shader pack reload  
+ - fixed emissive textures loading, reloading and z-fighting on mob models
+ - added alternative Mooshroom mushroom model, uses "assets/minecraft/textures/entity/cow/mushroom_red.png"
+ - fixed crash when username contains ASCII 0 (#999) 
+ - added option Emissive Textures, moved configuration to "assets/minecraft/optifine/emissive.properties"
+ - added emissive overlays for items, mobs and block entities
+ - extended Custom Colors with support for emissive texture overlays
+ - fixed missing void when VBO enabled and Y > 64
+ - relaxed shaders configuration syntax for DRAWBUFFERS, SHADOWRES, etc.
+ - fixed spider eyes z-fighting
+ - fixed shaders program gbuffers_spidereyes resetting the entity fog color 
+ - added shaders programs deferred_last and composite_last to reset the flipped ping-pong buffers 
+ - added entity parameters for CEM animations
+ - added boolean expressions for CEM animations
+ - added rain and thunder lightmaps (#963)
+ - added Random Mobs check by name (#620)
+ - added CTM property "heights" (#931)
+ - fixed Custom GUIs check by name (#955)
+ - added shaders block mapping for Forge mods
+ - added shaders program "gbuffers_hand_water" for handheld translucent objects
+ - fixed shaders option to skip framebuffer clear
+ - added deferred shader programs
+ - fixed CIT for custom potions
+ - fixed shaders normal/specular animations
+ - optimized chunk loading, speedup 2x
+ - increased maximum Render Distance to 64 chunks
+ - added Lazy Chunk Loading for multi-core CPUs
+ - optimized Load Visible Chunks (F3+L) to work faster 
+ - optimized memory allocation
+ - compatible with Forge #2555
+(13.12.2017)
+
+OptiFine 1.12.2_HD_U_C6
+ - fixed string width calculation for HD fonts
+ - fixed custom texture animations not working in main menu (#920)
+ - updated shaders, added custom noise texture
+ - added Custom GUIs
+ - fixed Load Visible Chunks (F3+L) to avoid conflict with Advancements
+ - optimized shader option parsing
+ - added shader macros for user options (FXAA, Normal Map, Specular Map, Render Quality, etc.)
+ - compatible with Forge #2493
+(03.10.2017)
+
+OptiFine 1.12.2_HD_U_C5
+ - updated to 1.12.2
+(22.09.2017)
+
+OptiFine 1.12.1_HD_U_C5
+ - compatible with Forge #2446
+(07.08.2017)
+
+OptiFine 1.12_HD_U_C5
+ - updated shader options, added configurable screen columns
+ - added shader options value formatting (prefix and suffix)
+ - added support for local player models
+ - fixed Forge custom sprite loading with dependencies (Tinkers Construct)
+ - enabled shaders program "gbuffers_beaconbeam"
+ - fixed Smart Leaves not culling when decayable state is different
+ - fixed memory leak in cape download
+ - fixed shaders to load files only from the shader pack
+ - added font alpha blending
+ - fixed shader options crash on right click
+ - added custom underlava fog colors
+ - fixed Lagometer with Forge
+ - fixed Random Mobs to use entity UUID in multiplayer
+ - added Better Grass option "grass.multilayer"
+ - compatible with Forge #2424
+(27.07.2017)
+
+OptiFine 1.12_HD_U_C4
+ - compatible with Forge #2387
+(29.06.2017)
+
+OptiFine 1.12_HD_U_C3
+ - fixed CTM for observer power state
+ - fixed option Narrator not working
+ - fixed swamp water color when Swamp Colors is OFF
+ - fixed options to be saved in UTF-8 (MC-117449)
+ - fixed conflict with Emojiful
+ - added shader option sliders
+ - added shader texture formats R16F, RG16F, RGB16F, RGBA16F and RGB9_E5
+ - compatible with Forge #2331
+(26.06.2017)
+
+OptiFine 1.12_HD_U_C2
+ - updated to 1.12
+ - compatible with Forge #2331
+(17.06.2017)
+
+OptiFine 1.11.2_HD_U_C2
+ - fixed CTM, Custom Colors and Shaders block matching to better handle missing blocks
+ - added support for CIT models
+ - compatible with Forge #2311
+(03.06.2017)
+
+OptiFine 1.11.2_HD_U_C1
+ - fixed compatibility with Forge key modifiers (#518)
+ - updated installer to use launchwrapper 1.12
+ - fixed Forge compatibility (ChunkCache.isSideSolid)
+ - updated CTM to allow overlays on non-full flocks (farmland, grass path)
+ - fixed CTM compact with translucent textures (stained glass)
+ - extended CIT NBT rules, values starting with "!" perform a negative match (#606)
+ - fixed crash with Forestry when Smart Trees (leaves) is enabled
+ - extended shaders uniform isEyeInWater, added value 2 when the camera is in lava  
+ - added CEM support for husk, stray, wither skeleton, llama, mooshroom and zombie_villager
+ - compatible with Forge #2311
+(02.06.2017)
+
+OptiFine 1.11.2_HD_U_B9
+ - fixed tall grass rendering in the End when mipmaps are enabled
+ - fixed item pickup animation using wrong shaders program
+ - fixed entity shadows using wrong shaders programs (spiders, players, enchanted items)
+ - added shaders compatible rendering for end portals
+ - fixed CEM for zombie_pigman
+ - compatible with Forge #2298
+(18.05.2017)
+
+OptiFine 1.11.2_HD_U_B8
+ - fixed crash when Forge has mod dependency errors and skips the TextureMap loading (Forge #2273+)
+ - added shaders shadow optimization "shadowDistanceRenderMul" (#489) 
+ - fixed shaders loading "block.properties" (#569) 
+ - added shaders uniforms "nightVision", "blindness" and "screenBrightness"
+ - added shaders property "vignette"
+ - fixed enchanted items in hotbar when running with Forge and vignette is disabled (#487) 
+ - added shader macro MC_VERSION
+ - fixed shaders off hand rendering when main hand has echanted item (#481)
+ - compatible with Forge #2294
+(01.05.2017)
+
+OptiFine 1.11.2_HD_U_B7
+ - updated shaders: added gbuffers uniforms gaux1 to gaux4, only used as custom textures
+ - fixed Forge RenderHandEvent to work with shaders 
+ - updated shaders: fixed depth of translucent handheld objects
+ - fixed CIT for elytra on armor stand
+ - updated shaders: added support for custom textures
+ - updated CustomItems: NBT integer as hex color, list size as "count", property "hand=any|main|off"
+ - updated CustomColors to reload banner textures
+ - updated GUI Scale: right click = previous value, Shift + click = reset
+ - fixed FontRender.charWidth causing crash with Forge #2223
+ - updated shader options: added non-numerical values "#define SHADOW_MODE HARD // [HARD SOFT REAL]"
+ - updated shader options: added user friendly values from resources
+ - updated shader options: right click = previous value, Shift + click = reset
+ - added F3+L to force loading of all visible chunks 
+ - added CEM model for shulker_box
+ - added shader macros for OpenGL extensions
+ - added shader macros for OS, OpenGL version, GLSL version, GPU vendor and GPU renderer 
+ - added shader uniform "worldDay"
+ - fixed shader uniform "worldTime" overflow for very old worlds
+ - extended GUI Scale to support 4K displays
+ - optimized resource loading
+ - optimized GUI lists to render only visible slots (resource pack list)
+ - fixed shaders to save options on ESC 
+ - added support for "palette.format" from "color.properties"
+ - compatible with Forge #2227
+(09.02.2017)
+
+OptiFine 1.11.2_HD_U_B6
+ - added fix for MC-98707
+ - fixed crash with Railcraft and AA/AF enabled 
+ - fixed NPE in shaders when renderViewEntity is NULL
+ - fixed transparent hand with shaders when the world border is visible
+ - fixed CEM animation operator "%"
+ - added CEM for donkey, mule, skeleton_horse and zombie_horse
+ - fixed CEM for ender crystal
+ - added Custom Sky option "weather=clear|rain|thunder"
+ - fixed cloud color transitions
+ - fixed Custom Sky not visible for Render Distance below 8 chunks
+ - added support for animated normal and specular textures
+ - added shaders uniforms "frameCounter" and "frameTime" 
+ - added shaders option to skip framebuffer texture clear
+ - fixed fog affecting the debug renderer
+ - fixed CEM models glowing with shaders (spider, enderman, dragon)
+ - compatible with Forge #2214
+(12.01.2017)
+
+OptiFine 1.11.2_HD_U_B5
+ - fixed "nbsp" character to render as space
+ - updated to Minecraft 1.11.2
+(22.12.2016)
+
+OptiFine 1.11_HD_U_B4
+ - fixed shaders bug: centerDepthSmooth not working when gaux4 is active
+ - fixed CEM custom texture overriding TileEntity destroy overlay 
+ - fixed CEM model scale
+ - fixed minecart CEM model
+ - fixed render distance Extreme in The End
+ - reorganized reflection support
+ - compatible with Forge #2188
+(19.12.2016)
+
+OptiFine 1.11_HD_U_B3
+ - added CEM models for evoker, evoker fangs, vex and vindicator 
+ - fixed ambient sounds not playing (vanilla bug MC-91803)
+ - added negative biome check ("biomes=!Biome1 Biome2 ..." - all biomes except the given ones)
+ - fixed shaders using upPosition from previous frame
+ - added block ID mapping for shaders
+ - updated documentation
+ - updated Custom Items to recognize enchantment names 
+ - fixed CEM for ender dragon and enderman
+ - updated shaders to use "gbuffers_armor_glint" for enchanted handheld and dropped items
+ - fixed option Screenshot Size to keep the relative size of toolbar and menus
+ - compatible with Forge #2188
+(19.12.2016)
+
+OptiFine 1.11_HD_U_B2
+ - fixed crash when loading tile entities (flower pot) 
+ - fixed option Screenshot Size to keep the relative size of toolbar and menus
+ - added warning for non-lowercase resource files
+ - fixed custom potion textures
+ - fixed custom potion colors
+ - added option Screenshot Size (1x to 4x)
+ - fixed support for v2 resource packs
+ - compatible with Forge #2157
+(30.11.2016)
+
+OptiFine 1.11_HD_U_B1
+ - fixed invisible entities in multiplayer
+ - fixed crash with ExtraUtilities2 (broken EnderLilly model)
+ - updated entity handling to reflect the Forge rewrite of the entity registry
+ - updated MCP mappings
+ - reorganized options, moved Dynamic Lights and Dynamic FOV to Video Settings
+ - updated to Minecraft 1.11
+ - compatible with Forge #2157
+(24.11.2016)
