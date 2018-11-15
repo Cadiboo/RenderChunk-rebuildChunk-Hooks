@@ -40,7 +40,7 @@ public class RebuildChunkBlockRenderInLayerEventTest {
 			return;
 		}
 
-		if (new Random().nextInt(20) == 0) {
+		if (new Random().nextBoolean()) {
 			event.setResult(Event.Result.DENY);
 		}
 

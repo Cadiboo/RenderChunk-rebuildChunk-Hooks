@@ -1,7 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
-import net.minecraft.init.Blocks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -15,14 +14,16 @@ public class RebuildChunkBlockEventTest {
 	@SubscribeEvent
 	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
 
-		if (!ENABLED) {
+		if (! ENABLED) {
 			return;
 		}
 
-		if (!event.getBlockState().getMaterial().blocksLight()) {
-			event.setCanceled(false);
-			event.getBlockRendererDispatcher().renderBlock(Blocks.GLASS.getDefaultState(), event.getBlockPos(), event.getWorldView(), event.getBufferBuilder());
-		}
+		event.setCanceled(true);
+
+		//		if (!event.getBlockState().getMaterial().blocksLight()) {
+		//			event.setCanceled(false);
+		//			event.getBlockRendererDispatcher().renderBlock(Blocks.GLASS.getDefaultState(), event.getBlockPos(), event.getWorldView(), event.getBufferBuilder());
+		//		}
 
 	}
 

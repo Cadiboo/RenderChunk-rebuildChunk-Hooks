@@ -40,7 +40,7 @@ public class RebuildChunkPreEventTest {
 			return;
 		}
 
-		if (new Random().nextInt(10) == 0) {
+		if (new Random().nextInt(16) == 0) {
 			event.setCanceled(true);
 
 		}
