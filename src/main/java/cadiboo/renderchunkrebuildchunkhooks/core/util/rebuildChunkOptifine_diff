@@ -145,6 +145,9 @@
         if (!this.isChunkRegionEmpty(blockpos)) {
             ++RenderChunk.renderChunksUpdated;
             final ChunkCacheOF blockAccess = this.makeChunkCacheOF(blockpos);
+            if (cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkPreEvent(this, this.renderGlobal, blockAccess, generator, compiledchunk, this.position, x, y, z)) {
+                return;
+            }
             blockAccess.renderStart();
             final boolean[] aboolean = new boolean[RenderChunk.ENUM_WORLD_BLOCK_LAYERS.length];
             final BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
@@ -181,7 +184,7 @@
                 for (int ix = 0; ix < blockLayers.length; ++ix) {
                     BlockRenderLayer blockrenderlayer1 = blockLayers[ix];
                     if (forgeBlockCanRenderInLayerExists) {
-                        final boolean canRenderInLayer = Reflector.callBoolean((Object)block, Reflector.ForgeBlock_canRenderInLayer, new Object[] { iblockstate, blockrenderlayer1 });
+                        final boolean canRenderInLayer = cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.canBlockRenderInLayer(this, blockAccess, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate, blockrenderlayer1);
                         if (!canRenderInLayer) {
                             continue;
                         }
@@ -202,7 +205,9 @@
                         }
                         final boolean[] array = aboolean;
                         final int n = j;
-                        array[n] |= blockrendererdispatcher.renderBlock(iblockstate, (BlockPos)blockpos$mutableblockpos, (IBlockAccess)blockAccess, bufferbuilder);
+                        if (!cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this, this.renderGlobal, blockAccess, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, array, blockrenderlayer1, x, y, z, lvt_10_1_, lvt_9_1_)) {
+                            array[n] |= blockrendererdispatcher.renderBlock(iblockstate, (BlockPos)blockpos$mutableblockpos, (IBlockAccess)blockAccess, bufferbuilder);
+                        }
                         if (renderEnv.isOverlaysRendered()) {
                             this.postRenderOverlays(generator.getRegionRenderCacheBuilder(), compiledchunk, aboolean);
                             renderEnv.setOverlaysRendered(false);
