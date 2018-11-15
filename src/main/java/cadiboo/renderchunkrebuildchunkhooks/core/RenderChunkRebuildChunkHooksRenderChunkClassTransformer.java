@@ -68,7 +68,8 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final Printer            PRINTER              = new Textifier();
 	public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 
-	@Override public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
+	@Override
+	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 
 		if (DEBUG_CLASSES) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {
@@ -76,7 +77,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (!transformedName.equals(RENDER_CHUNK_TRANSFORMED_NAME)) {
+		if (! transformedName.equals(RENDER_CHUNK_TRANSFORMED_NAME)) {
 			return basicClass;
 		}
 
@@ -112,7 +113,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		// peek at classNode and modifier
 		for (final MethodNode method : classNode.methods) {
 
-			if (!method.desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
+			if (! method.desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
 				if (DEBUG_METHODS) {
 					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" did not match");
 				}
@@ -179,9 +180,47 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public void injectHooks(InsnList instructions) {
 
+		LOGGER.info("injecting RebuildChunkPreEvent Hook...");
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructions.size(); i++) {
+				LOGGER.info(insnToString(instructions.get(i)));
+			}
+		}
 		this.injectRebuildChunkPreEventHook(instructions);
+		LOGGER.info("injected RebuildChunkPreEvent Hook");
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructions.size(); i++) {
+				LOGGER.info(insnToString(instructions.get(i)));
+			}
+		}
+
+		LOGGER.info("injecting RebuildChunkBlockRenderInLayerEvent Hook...");
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructions.size(); i++) {
+				LOGGER.info(insnToString(instructions.get(i)));
+			}
+		}
 		this.injectRebuildChunkBlockRenderInLayerEventHook(instructions);
+		LOGGER.info("injected RebuildChunkBlockRenderInLayerEvent Hook");
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructions.size(); i++) {
+				LOGGER.info(insnToString(instructions.get(i)));
+			}
+		}
+
+		LOGGER.info("injecting RebuildRebuildChunkBlockEvent Hook...");
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructions.size(); i++) {
+				LOGGER.info(insnToString(instructions.get(i)));
+			}
+		}
 		this.injectRebuildRebuildChunkBlockEventHook(instructions);
+		LOGGER.info("injected RebuildRebuildChunkBlockEvent Hook");
+		if (DEBUG_INSTRUCTIONS) {
+			for (int i = 0; i < instructions.size(); i++) {
+				LOGGER.info(insnToString(instructions.get(i)));
+			}
+		}
 
 	}
 
@@ -192,6 +231,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public abstract void injectRebuildRebuildChunkBlockEventHook(InsnList instructions);
 
 	public static String insnToString(final AbstractInsnNode insn) {
+
 		insn.accept(TRACE_METHOD_VISITOR);
 		final StringWriter sw = new StringWriter();
 		PRINTER.print(new PrintWriter(sw));
@@ -200,6 +240,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	}
 
 	public static String fieldToString(final FieldNode field) {
+
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		field.accept(new TraceClassVisitor(pw));
