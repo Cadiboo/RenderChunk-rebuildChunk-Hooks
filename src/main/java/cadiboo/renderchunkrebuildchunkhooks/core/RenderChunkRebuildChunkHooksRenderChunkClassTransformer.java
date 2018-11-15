@@ -39,7 +39,6 @@ import org.objectweb.asm.util.TraceMethodVisitor;
 import com.google.common.collect.ImmutableList;
 
 import cadiboo.renderchunkrebuildchunkhooks.core.util.INames;
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkAllBlocksEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;

@@ -47,7 +47,7 @@ public class RebuildChunkBlockEvent extends Event {
 	private final HashSet<TileEntity>		tileEntitiesWithGlobalRenderers;
 	private final VisGraph					visGraph;
 
-	private final boolean[] usedBlockRenderLayers = new boolean[BlockRenderLayer.values().length];
+	private final boolean[] usedBlockRenderLayers;
 
 	/**
 	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
@@ -60,6 +60,7 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param blockPos                        the {@link MutableBlockPos position} of the block being rendered
 	 * @param bufferBuilder                   the {@link BufferBuilder} for the BlockRenderLayer
 	 * @param renderChunkPosition             the {@link MutableBlockPos position} passed in
+	 * @param usedBlockRenderLayers           the array of {@link BlockRenderLayer} that are being used
 	 * @param blockRenderLayer                the {@link BlockRenderLayer} of the block being rendered
 	 * @param x                               the translation X passed in
 	 * @param y                               the translation Y passed in
@@ -67,8 +68,8 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in
 	 * @param visGraph                        the {@link VisGraph} passed in
 	 */
-	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, final BlockRenderLayer blockRenderLayer, final float x, final float y, final float z,
-			final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x, final float y, final float z,
+								  final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 		this.renderChunk = renderChunk;
 		this.context = renderGlobal;
 		this.worldView = worldView;
@@ -79,6 +80,7 @@ public class RebuildChunkBlockEvent extends Event {
 		this.blockPos = blockPos;
 		this.bufferBuilder = bufferBuilder;
 		this.renderChunkPosition = renderChunkPosition;
+		this.usedBlockRenderLayers = usedBlockRenderLayers;
 		this.blockRenderLayer = blockRenderLayer;
 		this.x = x;
 		this.y = y;
@@ -209,7 +211,7 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param used             if the {@link BlockRenderLayer} will be rendered
 	 */
 	public void setBlockRenderLayerUsed(final BlockRenderLayer blockRenderLayer, final boolean used) {
-		this.usedBlockRenderLayers[blockRenderLayer.ordinal()] = used;
+		this.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] = used;
 	}
 
 	/**
@@ -219,7 +221,7 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param used             if the {@link BlockRenderLayer} will be rendered (if false will not make it false if it was previously true)
 	 */
 	public void setBlockRenderLayerUsedWithOrOpperation(final BlockRenderLayer blockRenderLayer, final boolean used) {
-		this.usedBlockRenderLayers[blockRenderLayer.ordinal()] |= used;
+		this.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] |= used;
 	}
 
 	/**
@@ -239,7 +241,7 @@ public class RebuildChunkBlockEvent extends Event {
 
 	/**
 	 * FOR INTERNAL USE ONLY<br>
-	 * Sets translation for and starts the {@link BufferBuilder}
+	 * Sets translation for and tarts the {@link BufferBuilder}
 	 *
 	 * @param bufferBuilderIn the {@link BufferBuilder} to set translation for and start
 	 * @param pos             the pos to get translations from
