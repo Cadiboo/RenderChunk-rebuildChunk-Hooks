@@ -144,6 +144,9 @@
         if (!this.worldView.isEmpty())
         {
             ++renderChunksUpdated;
+            if (cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkPreEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, this.position, x, y, z)) {
+                return;
+            }
             boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
             BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 
@@ -178,7 +181,7 @@
                 }
 
                 for(BlockRenderLayer blockrenderlayer1 : BlockRenderLayer.values()) {
-                     if(!block.canRenderInLayer(iblockstate, blockrenderlayer1)) continue;
+                     if (!cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.canBlockRenderInLayer(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate, blockrenderlayer1)) continue;
                      net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockrenderlayer1);
                 int j = blockrenderlayer1.ordinal();
 
@@ -192,7 +195,9 @@
                         this.preRenderBlocks(bufferbuilder, blockpos);
                     }
 
-                    aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
+                    if (!cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, aboolean, blockrenderlayer1, x, y, z, lvt_10_1_, lvt_9_1_)) {
+                        aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
+                    }
                 }
                 }
                 net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
