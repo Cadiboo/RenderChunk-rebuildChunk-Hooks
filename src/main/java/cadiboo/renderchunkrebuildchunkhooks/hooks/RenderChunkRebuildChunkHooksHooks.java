@@ -1,10 +1,5 @@
 package cadiboo.renderchunkrebuildchunkhooks.hooks;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-
 import cadiboo.renderchunkrebuildchunkhooks.config.ModConfig;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
@@ -26,6 +21,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+
 /**
  * @author Cadiboo
  */
@@ -46,12 +46,14 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	public static final MethodHandle COMPILED_CHUNK_SET_LAYER_USED_HANDLE = getMethodHandle();
 
 	private static Method getMethodAndMakeItAccessable() {
+
 		final Method method = ReflectionHelper.findMethod(CompiledChunk.class, "setLayerUsed", "func_178486_a", BlockRenderLayer.class);
 		method.setAccessible(true);
 		return method;
 	}
 
 	static MethodHandle getMethodHandle() {
+
 		try {
 			return MethodHandles.publicLookup().unreflect(COMPILED_CHUNK_SET_LAYER_USED);
 		} catch (final IllegalAccessException illegalAccessException) {
@@ -64,6 +66,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param blockRenderLayer the {@link BlockRenderLayer}
 	 */
 	public static void compiledChunk_setLayerUsed(final CompiledChunk compiledChunk, final BlockRenderLayer blockRenderLayer) {
+
 		try {
 			COMPILED_CHUNK_SET_LAYER_USED_HANDLE.invokeExact(compiledChunk, blockRenderLayer);
 		} catch (final Throwable throwable) {
@@ -81,10 +84,13 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
+	 *
 	 * @return If vanilla rendering should be stopped
+	 *
+	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean onRebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
+
 		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, renderGlobal, worldView, generator, compiledChunk, renderChunkPosition, x, y, z);
 
 		if (ModConfig.enableRebuildChunkPreEvent) {
@@ -106,10 +112,13 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param block                     the {@link Block block} being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
-	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
+	 *
 	 * @return If the block can render in the layer
+	 *
+	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 
 		if (ModConfig.enableRebuildChunkBlockRenderInLayerEvent) {
@@ -143,11 +152,14 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 *
 	 * @return If the block should NOT be rebuilt to the chunk by vanilla
+	 *
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
-	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
-												   final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer,
+		final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+
 		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, renderGlobal, worldView, generator, compiledChunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 
 		if (ModConfig.enableRebuildChunkBlockEvent) {

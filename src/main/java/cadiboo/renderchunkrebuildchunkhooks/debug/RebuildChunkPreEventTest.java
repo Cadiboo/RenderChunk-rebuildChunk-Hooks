@@ -19,11 +19,11 @@
 
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import java.util.Random;
-
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.Random;
 
 @Mod.EventBusSubscriber
 @Mod(modid = RebuildChunkPreEventTest.MODID, name = "RebuildChunkPreEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
@@ -35,6 +35,7 @@ public class RebuildChunkPreEventTest {
 
 	@SubscribeEvent
 	public static void onRebuildChunkPreEvent(final RebuildChunkPreEvent event) {
+
 		if (!ENABLED) {
 			return;
 		}

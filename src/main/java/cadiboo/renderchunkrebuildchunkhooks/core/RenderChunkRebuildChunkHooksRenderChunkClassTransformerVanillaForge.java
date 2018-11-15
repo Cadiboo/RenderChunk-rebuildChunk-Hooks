@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.InsnList;
 // useful links:
 // https://text-compare.com
 // http://www.minecraftforge.net/forum/topic/32600-1710-strange-error-with-custom-event-amp-event-handler/?do=findComment&comment=172480
-public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine extends RenderChunkRebuildChunkHooksRenderChunkClassTransformer {
+public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge extends RenderChunkRebuildChunkHooksRenderChunkClassTransformer {
 
 	@Override public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 

@@ -19,22 +19,23 @@
 
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import java.util.Random;
-
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.Random;
+
 @Mod(modid = RebuildChunkBlockRenderInLayerEventTest.MODID, name = "RebuildChunkBlockRenderInLayerEventTest", version = "1.0", acceptableRemoteVersions = "*")
 @Mod.EventBusSubscriber
 public class RebuildChunkBlockRenderInLayerEventTest {
 
-	public static final String	MODID	= "rebuild_chunk_block_render_in_layer_event_test";
-	public static final boolean	ENABLED	= true;
+	public static final String  MODID   = "rebuild_chunk_block_render_in_layer_event_test";
+	public static final boolean ENABLED = true;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
+
 		if (!ENABLED) {
 			return;
 		}

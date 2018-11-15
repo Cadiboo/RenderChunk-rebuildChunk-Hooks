@@ -29,7 +29,7 @@ import java.util.List;
 // useful links:
 // https://text-compare.com
 // http://www.minecraftforge.net/forum/topic/32600-1710-strange-error-with-custom-event-amp-event-handler/?do=findComment&comment=172480
-public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes, INames {
+public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes, INames {
 
 	public static final List<String> IGNORED_PREFIXES = ImmutableList.of("cpw", "net.minecraftforge", "io", "org", "gnu", "com", "joptsimple");
 
@@ -39,14 +39,14 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-    public static final boolean DEBUG_DUMP_BYTECODE = true;
+	public static final boolean DEBUG_DUMP_BYTECODE = true;
 
-	public static final boolean	DEBUG_EVERYTHING	= false;
-	public static final boolean	DEBUG_CLASSES		= DEBUG_EVERYTHING | false;
-	public static final boolean	DEBUG_TYPES			= DEBUG_EVERYTHING | true;
-	public static final boolean	DEBUG_METHODS		= DEBUG_EVERYTHING | true;
-	public static final boolean	DEBUG_INSTRUCTIONS	= DEBUG_EVERYTHING | true;
-	public static final boolean	DEBUG_FIELDS		= DEBUG_EVERYTHING | true;
+	public static final boolean DEBUG_EVERYTHING   = false;
+	public static final boolean DEBUG_CLASSES      = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_TYPES        = DEBUG_EVERYTHING | true;
+	public static final boolean DEBUG_METHODS      = DEBUG_EVERYTHING | true;
+	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | true;
+	public static final boolean DEBUG_FIELDS       = DEBUG_EVERYTHING | true;
 
 	static {
 		if (DEBUG_TYPES) {
@@ -65,11 +65,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		}
 	}
 
-    public static final Printer PRINTER = new Textifier();
-    public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
+	public static final Printer            PRINTER              = new Textifier();
+	public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 
-	@Override
-	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
+	@Override public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 
 		if (DEBUG_CLASSES) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {
@@ -136,7 +135,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 				LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" matched and passed");
 			}
 
-            this.injectHooks(method.instructions);
+			this.injectHooks(method.instructions);
 
 		}
 
@@ -178,34 +177,19 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 
 	}
 
-    public void injectHooks(InsnList instructions) {
+	public void injectHooks(InsnList instructions) {
 
-        this.injectRebuildChunkPreEventHook(instructions);
-        this.injectRebuildChunkBlockRenderInLayerEventHook(instructions);
-        this.injectRebuildRebuildChunkBlockEventHook(instructions);
+		this.injectRebuildChunkPreEventHook(instructions);
+		this.injectRebuildChunkBlockRenderInLayerEventHook(instructions);
+		this.injectRebuildRebuildChunkBlockEventHook(instructions);
 
-    }
+	}
 
-    public void injectRebuildChunkPreEventHook(InsnList instructions) {
+	public abstract void injectRebuildChunkPreEventHook(InsnList instructions);
 
-        // get "++renderChunksUpdated;"
-        // inject after
-        // get line number for nice debug
+	public abstract void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions);
 
-//        GETSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
-//                ICONST_1
-//        IADD
-//        PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I
-
-    }
-
-    public void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
-
-        // get "block.canRenderInLayer(iblockstate, blockrenderlayer);"
-        // "INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z"
-        // replace it with our hook and inject before & after (let the existing ALOADs stay because we use the same variables)
-
-    }
+	public abstract void injectRebuildRebuildChunkBlockEventHook(InsnList instructions);
 
 	public static String insnToString(final AbstractInsnNode insn) {
 		insn.accept(TRACE_METHOD_VISITOR);
@@ -214,15 +198,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements 
 		PRINTER.getText().clear();
 		return sw.toString().trim();
 	}
-
-    public void injectRebuildRebuildChunkBlockEventHook(InsnList instructions) {
-
-        // find "blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);"
-        // "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z"
-        // get return label
-        // get line number for nice debug
-        // inject before
-    }
 
 	public static String fieldToString(final FieldNode field) {
 		final StringWriter sw = new StringWriter();
