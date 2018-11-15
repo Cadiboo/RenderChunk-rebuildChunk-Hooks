@@ -4,6 +4,8 @@ import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.Random;
+
 @Mod.EventBusSubscriber
 @Mod(modid = RebuildChunkBlockEventTest.MODID, name = "RebuildChunkBlockEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
 public class RebuildChunkBlockEventTest {
@@ -17,8 +19,9 @@ public class RebuildChunkBlockEventTest {
 		if (! ENABLED) {
 			return;
 		}
-
-		event.setCanceled(true);
+		if (new Random().nextBoolean()) {
+			event.setCanceled(true);
+		}
 
 		//		if (!event.getBlockState().getMaterial().blocksLight()) {
 		//			event.setCanceled(false);
