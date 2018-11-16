@@ -1,24 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
-import com.sun.tools.doclint.Entity;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
-import net.minecraft.client.renderer.chunk.CompiledChunk;
-import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ChunkCache;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.*;
-
-import java.util.HashSet;
+import org.objectweb.asm.tree.InsnList;
 
 /**
  * @author Cadiboo
@@ -42,6 +24,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 	}
 
+	/**
+	 * get "++renderChunksUpdated;"
+	 * inject after
+	 * get line number for nice debug
+	 *
+	 * @param instructions the instructions for the method
+	 */
 	public void injectRebuildChunkPreEventHook(InsnList instructions) {
 
 		super.injectRebuildChunkPreEventHook(instructions);

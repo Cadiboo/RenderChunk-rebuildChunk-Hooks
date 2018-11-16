@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
 import cadiboo.renderchunkrebuildchunkhooks.core.util.INames;
+import cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +30,7 @@ import java.util.List;
 // useful links:
 // https://text-compare.com
 // http://www.minecraftforge.net/forum/topic/32600-1710-strange-error-with-custom-event-amp-event-handler/?do=findComment&comment=172480
-public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes, INames {
+public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes, INames, IStacks {
 
 	public static final List<String> IGNORED_PREFIXES = ImmutableList.of("cpw", "net.minecraftforge", "io", "org", "gnu", "com", "joptsimple");
 
