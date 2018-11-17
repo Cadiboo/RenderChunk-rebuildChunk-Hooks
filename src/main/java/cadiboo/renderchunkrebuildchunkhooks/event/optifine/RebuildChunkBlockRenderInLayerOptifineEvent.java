@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
@@ -40,7 +41,7 @@ public class RebuildChunkBlockRenderInLayerOptifineEvent extends RebuildChunkBlo
 	 */
 	public RebuildChunkBlockRenderInLayerOptifineEvent(RenderChunk renderChunk, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator chunkCompileTaskGenerator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, MutableBlockPos renderChunkPosition, VisGraph visGraph, MutableBlockPos blockPos, IBlockState blockState, BlockRenderLayer blockRenderLayer) {
 
-		super(renderChunk, chunkCacheOF.chunkCache, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
+		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 		this.chunkCacheOF = chunkCacheOF;
 	}
 

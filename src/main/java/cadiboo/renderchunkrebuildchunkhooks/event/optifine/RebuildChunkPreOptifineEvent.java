@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
+import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -35,7 +36,7 @@ public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 	 */
 	public RebuildChunkPreOptifineEvent(RenderChunk renderChunk, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, float x, float y, float z) {
 
-		super(renderChunk, renderGlobal, chunkCacheOF.chunkCache, generator, compiledchunk, renderChunkPosition, x, y, z);
+		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, renderChunkPosition, x, y, z);
 		this.chunkCacheOF = chunkCacheOF;
 	}
 

@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
+import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -55,7 +56,7 @@ public class RebuildChunkBlockOptifineEvent extends RebuildChunkBlockEvent {
 	public RebuildChunkBlockOptifineEvent(RenderChunk renderChunk, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, IBlockState blockState, BlockPosM blockPos, BufferBuilder bufferBuilder, MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, BlockRenderLayer blockRenderLayer, float x, float y, float z, HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
 		VisGraph visGraph) {
 
-		super(renderChunk, renderGlobal, chunkCacheOF.chunkCache, generator, compiledchunk, blockRendererDispatcher, blockState, new MutableBlockPos(blockPos), bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
+		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, blockRendererDispatcher, blockState, new MutableBlockPos(blockPos), bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 		this.chunkCacheOF = chunkCacheOF;
 	}
 
