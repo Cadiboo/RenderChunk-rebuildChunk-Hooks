@@ -181,55 +181,81 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public void injectHooks(InsnList instructions) {
 
-		LOGGER.info("injecting RebuildChunkPreEvent Hook...");
-		if (DEBUG_INSTRUCTIONS) {
-			for (int i = 0; i < instructions.size(); i++) {
-				LOGGER.info(insnToString(instructions.get(i)));
+		{
+			LOGGER.info("injecting RebuildChunkPreEvent Hook...");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
 			}
-		}
-		this.injectRebuildChunkPreEventHook(instructions);
-		LOGGER.info("injected RebuildChunkPreEvent Hook");
-		if (DEBUG_INSTRUCTIONS) {
-			for (int i = 0; i < instructions.size(); i++) {
-				LOGGER.info(insnToString(instructions.get(i)));
-			}
-		}
-
-		LOGGER.info("injecting RebuildChunkBlockRenderInLayerEvent Hook...");
-		if (DEBUG_INSTRUCTIONS) {
-			for (int i = 0; i < instructions.size(); i++) {
-				LOGGER.info(insnToString(instructions.get(i)));
-			}
-		}
-		this.injectRebuildChunkBlockRenderInLayerEventHook(instructions);
-		LOGGER.info("injected RebuildChunkBlockRenderInLayerEvent Hook");
-		if (DEBUG_INSTRUCTIONS) {
-			for (int i = 0; i < instructions.size(); i++) {
-				LOGGER.info(insnToString(instructions.get(i)));
+			this.injectRebuildChunkPreEventHook(instructions);
+			LOGGER.info("injected RebuildChunkPreEvent Hook");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
 			}
 		}
 
-		LOGGER.info("injecting RebuildRebuildChunkBlockEvent Hook...");
-		if (DEBUG_INSTRUCTIONS) {
-			for (int i = 0; i < instructions.size(); i++) {
-				LOGGER.info(insnToString(instructions.get(i)));
+		{
+			LOGGER.info("injecting RebuildChunkBlockRenderInLayerEvent Hook...");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+			this.injectRebuildChunkBlockRenderInLayerEventHook(instructions);
+			LOGGER.info("injected RebuildChunkBlockRenderInLayerEvent Hook");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
 			}
 		}
-		this.injectRebuildRebuildChunkBlockEventHook(instructions);
-		LOGGER.info("injected RebuildRebuildChunkBlockEvent Hook");
-		if (DEBUG_INSTRUCTIONS) {
-			for (int i = 0; i < instructions.size(); i++) {
-				LOGGER.info(insnToString(instructions.get(i)));
+
+		{
+			LOGGER.info("injecting RebuildRebuildChunkBlockEvent Hook...");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+			this.injectRebuildChunkBlockEventHook(instructions);
+			LOGGER.info("injected RebuildRebuildChunkBlockEvent Hook");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+		}
+
+		{
+			LOGGER.info("injecting RebuildChunkPostEvent Hook...");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+			this.injectRebuildChunkPostEventHook(instructions);
+			LOGGER.info("injected RebuildChunkPostEvent Hook");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
 			}
 		}
 
 	}
 
+
 	public abstract void injectRebuildChunkPreEventHook(InsnList instructions);
 
 	public abstract void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions);
 
-	public abstract void injectRebuildRebuildChunkBlockEventHook(InsnList instructions);
+	public abstract void injectRebuildChunkBlockEventHook(InsnList instructions);
+
+	public abstract void injectRebuildChunkPostEventHook(InsnList instructions);
+
 
 	public static String insnToString(final AbstractInsnNode insn) {
 

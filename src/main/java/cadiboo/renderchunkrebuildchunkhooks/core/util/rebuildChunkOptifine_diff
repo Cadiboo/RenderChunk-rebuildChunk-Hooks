@@ -252,4 +252,5 @@
         finally {
             this.lockCompileTask.unlock();
         }
+        cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.onRebuildChunkPostEvent(this, x, y, z, generator, compiledchunk, this.position, this.renderGlobal, this.makeChunkCacheOF(blockpos), lvt_9_1_, this.setTileEntities, this.lockCompileTask);
     }

@@ -18,6 +18,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 	}
 
+	@Override
 	public void injectHooks(InsnList instructions) {
 
 		super.injectHooks(instructions);
@@ -31,6 +32,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 *
 	 * @param instructions the instructions for the method
 	 */
+	@Override
 	public void injectRebuildChunkPreEventHook(InsnList instructions) {
 
 		super.injectRebuildChunkPreEventHook(instructions);
@@ -44,6 +46,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 *
 	 * @param instructions the instructions for the method
 	 */
+	@Override
 	public void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
 
 		super.injectRebuildChunkBlockRenderInLayerEventHook(instructions);
@@ -59,9 +62,24 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 *
 	 * @param instructions
 	 */
-	public void injectRebuildRebuildChunkBlockEventHook(InsnList instructions) {
+	@Override
+	public void injectRebuildChunkBlockEventHook(InsnList instructions) {
 
-		super.injectRebuildRebuildChunkBlockEventHook(instructions);
+		super.injectRebuildChunkBlockEventHook(instructions);
+
+	}
+
+	/**
+	 * find last return statement in method<br>
+	 * get line number for nice debug<br>
+	 * inject before<br>
+	 *
+	 * @param instructions
+	 */
+	@Override
+	public void injectRebuildChunkPostEventHook(InsnList instructions) {
+
+		super.injectRebuildChunkPostEventHook(instructions);
 
 	}
 

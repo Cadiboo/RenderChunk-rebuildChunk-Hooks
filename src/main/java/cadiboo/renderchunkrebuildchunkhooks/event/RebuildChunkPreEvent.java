@@ -21,10 +21,10 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 public class RebuildChunkPreEvent extends Event {
 
 	private final RenderChunk               renderChunk;
-	private final RenderGlobal              context;
+	private final RenderGlobal              renderGlobal;
 	private final ChunkCache                worldView;
 	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk             compiledChunk;
+	private final CompiledChunk             compiledchunk;
 	private final MutableBlockPos           renderChunkPosition;
 	private final float                     x;
 	private final float                     y;
@@ -32,22 +32,22 @@ public class RebuildChunkPreEvent extends Event {
 
 	/**
 	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
+	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledChunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 */
-	public RebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
+	public RebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
 
 		this.renderChunk = renderChunk;
-		this.context = renderGlobal;
+		this.renderGlobal = renderGlobal;
 		this.worldView = worldView;
 		this.generator = generator;
-		this.compiledChunk = compiledChunk;
+		this.compiledchunk = compiledchunk;
 		this.renderChunkPosition = renderChunkPosition;
 		this.x = x;
 		this.y = y;
@@ -65,9 +65,9 @@ public class RebuildChunkPreEvent extends Event {
 	/**
 	 * @return the {@link RenderGlobal} passed in
 	 */
-	public RenderGlobal getContext() {
+	public RenderGlobal getRenderGlobal() {
 
-		return this.context;
+		return this.renderGlobal;
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class RebuildChunkPreEvent extends Event {
 	 */
 	public CompiledChunk getCompiledChunk() {
 
-		return this.compiledChunk;
+		return this.compiledchunk;
 	}
 
 	/**

@@ -23,6 +23,7 @@ import java.util.HashSet;
  * Called when a {@link net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called.<br>
  * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} the block renders in.<br>
  * Canceling this event prevents the block from being rebuilt to the chunk (and therefore rendered).<br>
+ * You can perform your own rendering in this event.<br>
  *
  * @author Cadiboo
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
@@ -31,30 +32,29 @@ import java.util.HashSet;
 public class RebuildChunkBlockEvent extends Event {
 
 	private final RenderChunk               renderChunk;
-	private final RenderGlobal              context;
+	private final RenderGlobal              renderGlobal;
 	private final ChunkCache                worldView;
 	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk             compiledChunk;
+	private final CompiledChunk             compiledchunk;
 	private final BlockRendererDispatcher   blockRendererDispatcher;
 	private final IBlockState               blockState;
 	private final MutableBlockPos           blockPos;
 	private final BufferBuilder             bufferBuilder;
 	private final MutableBlockPos           renderChunkPosition;
 	private final BlockRenderLayer          blockRenderLayer;
+	private final boolean[]                 usedBlockRenderLayers;
 	private final float                     x;
 	private final float                     y;
 	private final float                     z;
 	private final HashSet<TileEntity>       tileEntitiesWithGlobalRenderers;
 	private final VisGraph                  visGraph;
 
-	private final boolean[] usedBlockRenderLayers;
-
 	/**
 	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
 	 * @param renderGlobal                    the {@link RenderGlobal} passed in
 	 * @param worldView                       the {@link ChunkCache} passed in
 	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in
-	 * @param compiledChunk                   the {@link CompiledChunk} passed in
+	 * @param compiledchunk                   the {@link CompiledChunk} passed in
 	 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher} passed in
 	 * @param blockState                      the {@link IBlockState state} of the block being rendered
 	 * @param blockPos                        the {@link MutableBlockPos position} of the block being rendered
@@ -68,14 +68,14 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in
 	 * @param visGraph                        the {@link VisGraph} passed in
 	 */
-	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
+	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
 		final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 
 		this.renderChunk = renderChunk;
-		this.context = renderGlobal;
+		this.renderGlobal = renderGlobal;
 		this.worldView = worldView;
 		this.generator = generator;
-		this.compiledChunk = compiledChunk;
+		this.compiledchunk = compiledchunk;
 		this.blockRendererDispatcher = blockRendererDispatcher;
 		this.blockState = blockState;
 		this.blockPos = blockPos;
@@ -101,9 +101,9 @@ public class RebuildChunkBlockEvent extends Event {
 	/**
 	 * @return the {@link RenderGlobal} passed in
 	 */
-	public RenderGlobal getContext() {
+	public RenderGlobal getRenderGlobal() {
 
-		return this.context;
+		return renderGlobal;
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class RebuildChunkBlockEvent extends Event {
 	 */
 	public CompiledChunk getCompiledChunk() {
 
-		return this.compiledChunk;
+		return this.compiledchunk;
 	}
 
 	/**
@@ -168,6 +168,24 @@ public class RebuildChunkBlockEvent extends Event {
 	public MutableBlockPos getRenderChunkPosition() {
 
 		return this.renderChunkPosition;
+	}
+
+	/**
+	 * @return the {@link BlockRenderLayer} passed in
+	 */
+	public BlockRenderLayer getBlockRenderLayer() {
+
+		return this.blockRenderLayer;
+	}
+
+	/**
+	 * If a boolean is true then the corresponding {@link BlockRenderLayer} will be rendered
+	 *
+	 * @return an array of booleans mapped to {@link BlockRenderLayer#ordinal()}
+	 */
+	public boolean[] getUsedBlockRenderLayers() {
+
+		return this.usedBlockRenderLayers;
 	}
 
 	/**
@@ -253,7 +271,7 @@ public class RebuildChunkBlockEvent extends Event {
 
 		final BufferBuilder bufferbuilder = this.getBufferBuilderForBlockRenderLayer(blockRenderLayer);
 
-		if (!this.getCompiledChunk().isLayerStarted(blockRenderLayer)) {
+		if (! this.getCompiledChunk().isLayerStarted(blockRenderLayer)) {
 			this.getCompiledChunk().setLayerStarted(blockRenderLayer);
 			preRenderBlocks(bufferbuilder, this.getRenderChunkPosition());
 		}
@@ -271,25 +289,7 @@ public class RebuildChunkBlockEvent extends Event {
 	private static void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
 
 		bufferBuilderIn.begin(7, DefaultVertexFormats.BLOCK);
-		bufferBuilderIn.setTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
-	}
-
-	/**
-	 * If a boolean is true then the corresponding {@link BlockRenderLayer} will be rendered
-	 *
-	 * @return an array of booleans mapped to {@link BlockRenderLayer#ordinal()}
-	 */
-	public boolean[] getUsedBlockRenderLayers() {
-
-		return this.usedBlockRenderLayers;
-	}
-
-	/**
-	 * @return the {@link BlockRenderLayer} passed in
-	 */
-	public BlockRenderLayer getBlockRenderLayer() {
-
-		return this.blockRenderLayer;
+		bufferBuilderIn.setTranslation(- pos.getX(), - pos.getY(), - pos.getZ());
 	}
 
 }

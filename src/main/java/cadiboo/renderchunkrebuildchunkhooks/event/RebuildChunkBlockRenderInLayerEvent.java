@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
  * Called when a {@link net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called.<br>
  * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} the block renders in.<br>
  * Setting the result of this event to {@link net.minecraftforge.fml.common.eventhandler.Event.Result#DENY} prevents the parts of the block in this {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).<br>
- * You can perform your own rendering in this event.<br>
+ * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}<br>
  *
  * @author Cadiboo
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
@@ -27,7 +27,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	private final RenderChunk               renderChunk;
 	private final ChunkCache                worldView;
 	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk             compiledChunk;
+	private final CompiledChunk             compiledchunk;
 	private final BlockRendererDispatcher   blockRendererDispatcher;
 	private final MutableBlockPos           renderChunkPosition;
 	private final VisGraph                  visGraph;
@@ -37,22 +37,22 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 
 	/**
 	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param compiledChunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
 	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
 	 */
-	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
 
 		this.renderChunk = renderChunk;
 		this.worldView = worldView;
 		this.generator = chunkCompileTaskGenerator;
-		this.compiledChunk = compiledChunk;
+		this.compiledchunk = compiledchunk;
 		this.blockRendererDispatcher = blockRendererDispatcher;
 		this.renderChunkPosition = renderChunkPosition;
 		this.visGraph = visGraph;
@@ -90,7 +90,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 */
 	public CompiledChunk getCompiledChunk() {
 
-		return this.compiledChunk;
+		return this.compiledchunk;
 	}
 
 	/**

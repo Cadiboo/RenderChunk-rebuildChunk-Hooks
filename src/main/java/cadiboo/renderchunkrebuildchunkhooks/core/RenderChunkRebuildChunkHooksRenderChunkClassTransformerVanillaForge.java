@@ -255,7 +255,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 *
 	 * @param instructions the instructions for the method
 	 */
-	public void injectRebuildRebuildChunkBlockEventHook(InsnList instructions) {
+	public void injectRebuildChunkBlockEventHook(InsnList instructions) {
 
 		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
 
@@ -362,9 +362,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "renderGlobal", "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "worldView", "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockrendererdispatcher
@@ -373,7 +373,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockpos$mutableblockpos (currentBlockPos)
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_bufferbuilder)); // bufferbuilder
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", "position", "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_aboolean)); // aboolean
 		//		tempInstructionList.add(new VarInsnNode(ALOAD, 17)); // blockrenderlayer1
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); // blockrenderlayer1
@@ -389,6 +389,63 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		// Inject our instructions right BEFORE first VarsInsNode
 		instructions.insertBefore(preExistingVarInsNode, tempInstructionList);
+
+	}
+
+	/**
+	 * find last return statement in method<br>
+	 * get line number for nice debug<br>
+	 * inject before<br>
+	 *
+	 * @param instructions the instructions for the method
+	 */
+	@Override
+	public void injectRebuildChunkPostEventHook(InsnList instructions) {
+
+		MethodInsnNode RETURN_Node = null;
+
+		//Iterate backwards over the instructions to get the last return statement in the method
+		for (int i = instructions.size() - 1; i > 0; i--) {
+			AbstractInsnNode instruction = instructions.get(i);
+
+			if (instruction.getOpcode() == RETURN) {
+				if (instruction.getType() == AbstractInsnNode.INSN) {
+					RETURN_Node = (MethodInsnNode) instruction;
+					break;
+				}
+			}
+
+		}
+
+		if (RETURN_Node == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return;
+		}
+
+		final InsnList tempInstructionList = new InsnList();
+
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
+		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_x));
+		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_y));
+		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_z));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // setTileEntities
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_setTileEntities, "Ljava/util/Set;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // lockCompileTask
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_lockCompileTask, "Ljava/util/concurrent/locks/ReentrantLock;"));
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkPostEvent",
+			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/VisGraph;Ljava/util/Set;Ljava/util/concurrent/locks/ReentrantLock;)V", false));
+
+		// Inject our instructions right BEFORE the RETURN
+		instructions.insertBefore(RETURN_Node, tempInstructionList);
 
 	}
 
