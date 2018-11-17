@@ -44,7 +44,7 @@ public class RebuildChunkPostEventTest {
 		ByteBuffer solid = event.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(BlockRenderLayer.SOLID).getByteBuffer();
 
 
-		solid.toString();
+//		solid.toString();
 
 	}
 
