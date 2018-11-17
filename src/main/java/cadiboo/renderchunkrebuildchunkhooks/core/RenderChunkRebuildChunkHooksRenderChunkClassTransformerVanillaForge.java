@@ -394,7 +394,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 	/**
 	 * find last return statement in method<br>
-	 * get line number for nice debug<br>
 	 * inject before<br>
 	 *
 	 * @param instructions the instructions for the method
@@ -402,7 +401,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	@Override
 	public void injectRebuildChunkPostEventHook(InsnList instructions) {
 
-		MethodInsnNode RETURN_Node = null;
+		InsnNode RETURN_Node = null;
 
 		//Iterate backwards over the instructions to get the last return statement in the method
 		for (int i = instructions.size() - 1; i > 0; i--) {
@@ -410,7 +409,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 			if (instruction.getOpcode() == RETURN) {
 				if (instruction.getType() == AbstractInsnNode.INSN) {
-					RETURN_Node = (MethodInsnNode) instruction;
+					RETURN_Node = (InsnNode) instruction;
 					break;
 				}
 			}
@@ -444,7 +443,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkPostEvent",
 			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/VisGraph;Ljava/util/Set;Ljava/util/concurrent/locks/ReentrantLock;)V", false));
 
-		// Inject our instructions right BEFORE the RETURN
+		// Inject our instructions right BEFORE the RETURN instruction
 		instructions.insertBefore(RETURN_Node, tempInstructionList);
 
 	}
