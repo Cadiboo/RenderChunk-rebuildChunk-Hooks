@@ -1,5 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
+import cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;

@@ -1,4 +1,4 @@
-package cadiboo.renderchunkrebuildchunkhooks.core;
+package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
 import cadiboo.renderchunkrebuildchunkhooks.core.util.INames;
 import cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;

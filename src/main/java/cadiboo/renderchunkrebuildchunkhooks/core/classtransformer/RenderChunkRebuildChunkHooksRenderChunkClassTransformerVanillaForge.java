@@ -1,4 +1,4 @@
-package cadiboo.renderchunkrebuildchunkhooks.core;
+package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
