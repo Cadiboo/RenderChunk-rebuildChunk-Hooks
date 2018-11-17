@@ -47,7 +47,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 		//		if (OPTIFINE) {
 //		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine.class.getName() };
 		//		}
-				return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformer.class.getName() };
+				return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
 		//		return new String[0];
 	}
 
