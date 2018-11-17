@@ -20,8 +20,11 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.nio.ByteBuffer;
 
 @Mod.EventBusSubscriber
 @Mod(modid = RebuildChunkPostEventTest.MODID, name = "RebuildChunkPostEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
@@ -37,6 +40,11 @@ public class RebuildChunkPostEventTest {
 		if (! ENABLED) {
 			return;
 		}
+
+		ByteBuffer solid = event.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(BlockRenderLayer.SOLID).getByteBuffer();
+
+
+		solid.toString();
 
 	}
 
