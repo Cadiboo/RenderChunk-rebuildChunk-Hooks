@@ -38,7 +38,7 @@ public class RebuildChunkPreEventTest {
 
 	public static final String MODID = "rebuild_chunk_pre_event_test";
 
-	public static final boolean ENABLED = true;
+	public static final boolean ENABLED = false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkPreEvent(final RebuildChunkPreEvent event) {

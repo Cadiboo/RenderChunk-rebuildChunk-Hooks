@@ -27,13 +27,11 @@ import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.nio.ByteBuffer;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -43,7 +41,7 @@ public class RebuildChunkPostEventTest {
 
 	public static final String MODID = "rebuild_chunk_post_event_test";
 
-	public static final boolean ENABLED = true;
+	public static final boolean ENABLED = false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkPostEvent(final RebuildChunkPostEvent event) {
@@ -80,7 +78,7 @@ public class RebuildChunkPostEventTest {
 		Preconditions.checkNotNull(event.getSetTileEntities());
 		Preconditions.checkNotNull(event.getLockCompileTask());
 
-		ByteBuffer solid = event.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(BlockRenderLayer.SOLID).getByteBuffer();
+		//		ByteBuffer solid = event.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(BlockRenderLayer.SOLID).getByteBuffer();
 
 		//		solid.toString();
 

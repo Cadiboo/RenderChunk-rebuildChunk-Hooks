@@ -41,12 +41,12 @@ import java.util.Random;
 public class RebuildChunkBlockRenderInLayerEventTest {
 
 	public static final String  MODID   = "rebuild_chunk_block_render_in_layer_event_test";
-	public static final boolean ENABLED = true;
+	public static final boolean ENABLED = false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
 
-		if (!ENABLED) {
+		if (! ENABLED) {
 			return;
 		}
 
