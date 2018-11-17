@@ -177,14 +177,14 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-	 * @param generator
+	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 	 * @param compiledchunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition
-	 * @param renderGlobal
-	 * @param worldView
-	 * @param visGraph            the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param setTileEntities
-	 * @param lockCompileTask
+	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param visGraph            the {@link VisGraph} passed in
+	 * @param setTileEntities     the {@link Set} of {@link TileEntity TileEntities} with global renderers passed in
+	 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
 	 */
 	public static void onRebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCache worldView, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
 

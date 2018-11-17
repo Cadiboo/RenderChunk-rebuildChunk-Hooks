@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.debug;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
+import com.google.common.base.Preconditions;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -11,7 +12,7 @@ import java.util.Random;
 public class RebuildChunkBlockEventTest {
 
 	public static final String  MODID   = "rebuild_chunk_block_event_test";
-	public static final boolean ENABLED = true;
+	public static final boolean ENABLED = false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
@@ -19,8 +20,29 @@ public class RebuildChunkBlockEventTest {
 		if (! ENABLED) {
 			return;
 		}
+
+		Preconditions.checkNotNull(event.getRenderChunk());
+		Preconditions.checkNotNull(event.getRenderGlobal());
+		Preconditions.checkNotNull(event.getWorldView());
+		Preconditions.checkNotNull(event.getGenerator());
+		Preconditions.checkNotNull(event.getCompiledChunk());
+		Preconditions.checkNotNull(event.getBlockRendererDispatcher());
+		Preconditions.checkNotNull(event.getBlockState());
+		Preconditions.checkNotNull(event.getBlockPos());
+		Preconditions.checkNotNull(event.getBufferBuilder());
+		Preconditions.checkNotNull(event.getRenderChunkPosition());
+		Preconditions.checkNotNull(event.getUsedBlockRenderLayers());
+		Preconditions.checkNotNull(event.getX());
+		Preconditions.checkNotNull(event.getY());
+		Preconditions.checkNotNull(event.getZ());
+		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers());
+		Preconditions.checkNotNull(event.getVisGraph());
+
 		if (new Random().nextBoolean()) {
-			event.setCanceled(true);
+			//			event.setCanceled(true);
+			for (int i = 0; i < event.getUsedBlockRenderLayers().length; i++) {
+				event.getUsedBlockRenderLayers()[i] = false;
+			}
 		}
 
 		//		if (!event.getBlockState().getMaterial().blocksLight()) {

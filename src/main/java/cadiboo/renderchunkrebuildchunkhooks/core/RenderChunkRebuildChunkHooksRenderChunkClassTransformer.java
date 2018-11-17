@@ -44,13 +44,14 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public static final boolean DEBUG_EVERYTHING   = false;
 	public static final boolean DEBUG_CLASSES      = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_TYPES        = DEBUG_EVERYTHING | true;
-	public static final boolean DEBUG_METHODS      = DEBUG_EVERYTHING | true;
+	public static final boolean DEBUG_NAMES        = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_TYPES        = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_STACKS       = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_METHODS      = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | true;
-	public static final boolean DEBUG_FIELDS       = DEBUG_EVERYTHING | true;
 
 	static {
-		if (DEBUG_TYPES) {
+		if (DEBUG_NAMES) {
 			for (final Field field : INames.class.getFields()) {
 				Object value;
 				try {
@@ -59,7 +60,22 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info(field.getName() + ": " + value);
 
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					LOGGER.error("Error in <clinit>!");
+					LOGGER.error("Error logging names!");
+					e.printStackTrace();
+				}
+			}
+		}
+
+		if (DEBUG_STACKS) {
+			for (final Field field : IStacks.class.getFields()) {
+				Object value;
+				try {
+					value = field.get(IStacks.class);
+
+					LOGGER.info(field.getName() + ": " + value);
+
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					LOGGER.error("Error logging stacks!");
 					e.printStackTrace();
 				}
 			}
@@ -247,7 +263,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	}
 
-
 	public abstract void injectRebuildChunkPreEventHook(InsnList instructions);
 
 	public abstract void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions);
@@ -255,7 +270,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public abstract void injectRebuildChunkBlockEventHook(InsnList instructions);
 
 	public abstract void injectRebuildChunkPostEventHook(InsnList instructions);
-
 
 	public static String insnToString(final AbstractInsnNode insn) {
 
