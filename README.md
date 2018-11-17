@@ -1,10 +1,11 @@
 # RenderChunk rebuildChunk Hooks
-A small(ish) coremod (that is not very well made) for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to allow modders to add their own custom rendering logic. Here be dragons - You have been warned.
+A small(ish) coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to allow modders to add their own custom chunk rendering logic and other chunk rendering related modifications.
+###### Here be dragons - You have been warned.
 
-## [Download (click)](https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/tree/master/build/libs)
+## [Download (click)](https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/releases)
 
 ## Compatability
-Either 100% or 0%. If another core-mod tries to tamper with RenderChunk#rebuildChunk, it is likely that the game will crash. Report it to me and them, and I'll try and work with them to solve the problem (either add the functionality that they were adding to my mod or agree on a way to do things that allows both our mods to work)
+I'm working to add compatability for Optifine & BetterFolliage. If another core-mod tries to tamper with RenderChunk#rebuildChunk, it is possible that the game will crash. Report it to me and them, and I'll try and fix it myself or work with them to solve the problem
 ### It is up to the authors of mods who use these hooks to make sure they don't break anything!
 #### Use Forge's Render Pipeline where possible!
 
