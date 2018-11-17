@@ -48,7 +48,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final boolean DEBUG_TYPES        = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_STACKS       = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_METHODS      = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | true;
+	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | false;
 
 	static {
 		if (DEBUG_NAMES) {
@@ -189,7 +189,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		} catch (final Exception e) {
 			e.printStackTrace();
 			LOGGER.error("FAILED to inject hooks!!! Discarding changes.");
-			LOGGER.warn("Any mods that depend on the hooks provided by this mod will break");
+			LOGGER.warn("Any mods that depend on the hooks provided by this mod will not work");
 			return basicClass;
 		}
 

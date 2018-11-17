@@ -1,11 +1,12 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
-import cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine;
+import cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.Name;
@@ -29,8 +30,20 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static boolean DEOBFUSCATED = false;
-	public static boolean OPTIFINE     = false;
+	public static       boolean DEOBFUSCATED = false;
+	public static final boolean OPTIFINE;
+
+	static {
+		boolean optifine = false;
+		try {
+			final Class<?> optifineConfig = Class.forName("Config", false, Loader.instance().getModClassLoader());
+			optifine = true;
+			LOGGER.info("RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 has detected Optifine, enabling compatibility features");
+		} catch (final Exception e) {
+			optifine = false;
+		}
+		OPTIFINE = optifine;
+	}
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
 
@@ -45,10 +58,12 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	@Override
 	public String[] getASMTransformerClass() {
-		//		if (OPTIFINE) {
-		return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine.class.getName() };
-		//		}
-//				return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
+
+		if (OPTIFINE) {
+			return new String[] { "cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine" };
+		} else {
+			return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
+		}
 		//		return new String[0];
 	}
 

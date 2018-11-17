@@ -1,5 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
+import net.optifine.BlockPosM;
 import net.optifine.override.ChunkCacheOF;
 
 /**
@@ -35,14 +37,15 @@ public class RebuildChunkBlockRenderInLayerOptifineEvent extends RebuildChunkBlo
 	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
 	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
+	 * @param blockPos                  the {@link BlockPosM position} of the block being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
 	 */
-	public RebuildChunkBlockRenderInLayerOptifineEvent(RenderChunk renderChunk, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator chunkCompileTaskGenerator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, MutableBlockPos renderChunkPosition, VisGraph visGraph, MutableBlockPos blockPos, IBlockState blockState, BlockRenderLayer blockRenderLayer) {
+	public RebuildChunkBlockRenderInLayerOptifineEvent(RenderChunk renderChunk, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator chunkCompileTaskGenerator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, MutableBlockPos renderChunkPosition, VisGraph visGraph, BlockPosM blockPos, IBlockState blockState, BlockRenderLayer blockRenderLayer) {
 
-		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
+		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, new MutableBlockPos(blockPos), blockState, blockRenderLayer);
 		this.chunkCacheOF = chunkCacheOF;
+
 	}
 
 	/**
