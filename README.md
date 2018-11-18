@@ -16,4 +16,5 @@ I submitted a [PR to forge](https://github.com/MinecraftForge/MinecraftForge/pul
 [MinecraftForge Forums - [1.12.2] Replace world renderer](http://www.minecraftforge.net/forum/topic/66516-1122-replace-world-renderer/)
 
 ###### Known Users:
-NoCubes (1.12.x) https://github.com/Cadiboo/NoCubes
+NoCubes (1.12.2) [https://github.com/Cadiboo/NoCubes](https://github.com/Cadiboo/NoCubes)
+AntiRix's Tiled Map Mod [https://map.mcserver.ml/](https://map.mcserver.ml/)
