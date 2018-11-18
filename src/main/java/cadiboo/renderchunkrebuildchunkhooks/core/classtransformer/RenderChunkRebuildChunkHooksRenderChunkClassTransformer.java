@@ -50,6 +50,11 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final boolean DEBUG_METHODS      = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | false;
 
+	public static final boolean INJECT_RebuildChunkPreEvent                = true;
+	public static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
+	public static final boolean INJECT_RebuildRebuildChunkBlockEvent       = true;
+	public static final boolean INJECT_RebuildChunkPostEvent               = true;
+
 	static {
 		if (DEBUG_NAMES) {
 			for (final Field field : INames.class.getFields()) {
@@ -142,7 +147,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 
 			// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
-			if (method.name.equals("a") || method.name.equals("resortTransparency")) {
+			if (method.name.equals("a") ||method.name.equals("func_178570_a")|| method.name.equals("resortTransparency")) {
 				if (DEBUG_METHODS) {
 					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" was rejected");
 				}
@@ -197,7 +202,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public void injectHooks(InsnList instructions) {
 
-		{
+		if (INJECT_RebuildChunkPreEvent) {
 			LOGGER.info("injecting RebuildChunkPreEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
@@ -213,7 +218,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		{
+		if (INJECT_RebuildChunkBlockRenderInLayerEvent) {
 			LOGGER.info("injecting RebuildChunkBlockRenderInLayerEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
@@ -229,7 +234,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		{
+		if (INJECT_RebuildRebuildChunkBlockEvent) {
 			LOGGER.info("injecting RebuildRebuildChunkBlockEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
@@ -245,7 +250,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		{
+		if (INJECT_RebuildChunkPostEvent) {
 			LOGGER.info("injecting RebuildChunkPostEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
