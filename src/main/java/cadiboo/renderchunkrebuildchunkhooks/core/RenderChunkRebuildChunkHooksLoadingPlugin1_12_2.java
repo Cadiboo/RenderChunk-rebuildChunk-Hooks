@@ -30,20 +30,9 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static       boolean DEOBFUSCATED = false;
-	public static final boolean OPTIFINE;
-
-	static {
-		boolean optifine = false;
-		try {
-			final Class<?> optifineConfig = Class.forName("Config", false, Loader.instance().getModClassLoader());
-			optifine = true;
-			LOGGER.info("RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 has detected Optifine, enabling compatibility features");
-		} catch (final Exception e) {
-			optifine = false;
-		}
-		OPTIFINE = optifine;
-	}
+	public static boolean DEOBFUSCATED      = false;
+	public static boolean OPTIFINE          = false;
+	public static boolean OptifineCheckDone = false;
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
 
@@ -59,12 +48,24 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	@Override
 	public String[] getASMTransformerClass() {
 
+		if (! OptifineCheckDone) {
+			try {
+				final Class<?> optifineConfig = Class.forName("Config", false, Loader.instance().getModClassLoader());
+				OPTIFINE = true;
+				OptifineCheckDone = true;
+				LOGGER.info(this.getClass().getSimpleName()+" has detected Optifine, using Optifine compatible ClassTransformer");
+			} catch (final Exception e) {
+				OPTIFINE = false;
+				LOGGER.info(this.getClass().getSimpleName()+" has not found Optifine, using normal (Forge) ClassTransformer");
+			}
+		}
+
 		if (OPTIFINE) {
 			return new String[] { "cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine" };
 		} else {
 			return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
 		}
-		//		return new String[0];
+//		return new String[0];
 	}
 
 	@Override
