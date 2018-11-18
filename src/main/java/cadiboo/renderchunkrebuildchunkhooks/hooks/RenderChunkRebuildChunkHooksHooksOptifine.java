@@ -4,6 +4,7 @@ import cadiboo.renderchunkrebuildchunkhooks.config.ModConfig;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockOptifineEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockRenderInLayerOptifineEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkPostOptifineEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkPreOptifineEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -164,7 +165,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine extends  RenderChun
 	 */
 	public static void onRebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, BlockPos.MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
 
-		final RebuildChunkPostEvent event = new RebuildChunkPostEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, chunkCacheOF.chunkCache, visGraph, setTileEntities, lockCompileTask);
+		final RebuildChunkPostOptifineEvent event = new RebuildChunkPostOptifineEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, chunkCacheOF, visGraph, setTileEntities, lockCompileTask);
 
 		if (ModConfig.enableRebuildChunkBlockEvent) {
 			MinecraftForge.EVENT_BUS.post(event);
