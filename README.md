@@ -10,6 +10,7 @@ We currently support
 - Forge 1.12.2 - 14.23.5.2768
 - Forge 1.12.2 - 14.23.4.2725
 - Optifine HD_U_E2 on Forge 1.12.2 - 14.23.4.2725
+
 Note: The mod _should_ work all Forge 1.12.2 versions (actually all 1.12.x versions if you mess with the code of the mod) but due to the amount of work required to test the mod on all of them, we only officially support the above versions.
 ## Compatability
 I've just added compatibility with Optifine HD_U_E2! 
