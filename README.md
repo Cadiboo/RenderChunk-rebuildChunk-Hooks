@@ -4,8 +4,17 @@ A small(ish) coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to
 
 ## [Download (click)](https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/releases)
 
+## Support
+We currently support
+- Forge 1.12.2 - 14.23.5.2775
+- Forge 1.12.2 - 14.23.5.2768
+- Forge 1.12.2 - 14.23.4.2725
+- Optifine HD_U_E2 on Forge 1.12.2 - 14.23.4.2725
+
+Note: The mod _should_ work all Forge 1.12.2 versions (actually all 1.12.x versions if you remove the version restrictions) but due to the amount of work required to test the mod on all of them, we only officially support the above versions.
 ## Compatability
-I'm working to add compatability for Optifine & BetterFolliage. If another core-mod tries to tamper with RenderChunk#rebuildChunk, it is possible that the game will crash. Report it to me and them, and I'll try and fix it myself or work with them to solve the problem
+I've just added compatibility with Optifine HD_U_E2! 
+I'm working to add compatability with BetterFolliage. If another core-mod tries to tamper with RenderChunk#rebuildChunk, it is possible that the game will crash. Report it to me and them, and I'll try and fix it myself or work with them to solve the problem! 
 ### It is up to the authors of mods who use these hooks to make sure they don't break anything!
 #### Use Forge's Render Pipeline where possible!
 
