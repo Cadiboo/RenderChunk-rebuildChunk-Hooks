@@ -30,12 +30,12 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static boolean DEOBFUSCATED      = false;
+	public static boolean DEOBFUSCATED = false;
 
 	public static boolean OPTIFINE          = false;
 	public static boolean OptifineCheckDone = false;
 
-	public static boolean BETTER_FOLIAGE          = false;
+	public static boolean BETTER_FOLIAGE         = false;
 	public static boolean BetterFoliageCheckDone = false;
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
@@ -57,11 +57,11 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 				final Class<?> optifineConfig = Class.forName("Config", false, Loader.instance().getModClassLoader());
 				OPTIFINE = true;
 				OptifineCheckDone = true;
-				LOGGER.info(this.getClass().getSimpleName()+" has detected Optifine, using Optifine compatible ClassTransformer");
+				LOGGER.info(this.getClass().getSimpleName() + " has detected Optifine, using Optifine compatible ClassTransformer");
 			} catch (final Exception e) {
 				OPTIFINE = false;
 				OptifineCheckDone = true;
-				LOGGER.info(this.getClass().getSimpleName()+" has not found Optifine, using normal (Forge) ClassTransformer");
+				LOGGER.info(this.getClass().getSimpleName() + " has not found Optifine, using normal (Forge) ClassTransformer");
 			}
 		}
 
@@ -70,11 +70,11 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 				final Class<?> betterFollageClient = Class.forName("mods.betterfoliage.client.Hooks", false, Loader.instance().getModClassLoader());
 				BETTER_FOLIAGE = true;
 				BetterFoliageCheckDone = true;
-				LOGGER.info(this.getClass().getSimpleName()+" has detected BetterFolliage, compatibility features will be enabled");
+				LOGGER.info(this.getClass().getSimpleName() + " has detected BetterFolliage, compatibility features will be enabled");
 			} catch (final Exception e) {
 				BETTER_FOLIAGE = false;
 				BetterFoliageCheckDone = true;
-				LOGGER.info(this.getClass().getSimpleName()+" has not found BetterFolliage");
+				LOGGER.info(this.getClass().getSimpleName() + " has not found BetterFolliage");
 			}
 		}
 
@@ -83,7 +83,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 		} else {
 			return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
 		}
-//		return new String[0];
+		//		return new String[0];
 	}
 
 	@Override

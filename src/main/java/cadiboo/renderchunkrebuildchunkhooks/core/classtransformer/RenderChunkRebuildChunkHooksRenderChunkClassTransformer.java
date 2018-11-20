@@ -3,7 +3,6 @@ package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 import cadiboo.renderchunkrebuildchunkhooks.core.util.INames;
 import cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

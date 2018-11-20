@@ -23,26 +23,26 @@ public class InjectionHelper implements Opcodes, INames {
 			return getCanRenderInBlockInjectionPointVanillaForge(instructions);
 		}
 
-//		// where: RenderChunk.rebuildChunk()
-//		// what: invoke code to overrule result of Block.canRenderInLayer()
-//		// why: allows us to render transparent quads for blocks which are only on the SOLID layer
-//		transformMethod(Refs.rebuildChunk) {
-//			if (isOptifinePresent) {
-//				find(varinsn(ISTORE, 23))?.insertAfter {
-//					log.info("[BetterFoliageLoader] Applying RenderChunk block layer override")
-//					varinsn(ALOAD, 19)
-//					varinsn(ALOAD, 18)
-//					varinsn(ALOAD, 22)
-//					invokeStatic(Refs.canRenderBlockInLayer)
-//					varinsn(ISTORE, 23)
-//				}
-//			} else {
-//				find(invokeRef(Refs.canRenderInLayer))?.replace {
-//					log.info("[BetterFoliageLoader] Applying RenderChunk block layer override")
-//					invokeStatic(Refs.canRenderBlockInLayer)
-//				}
-//			}
-//		}
+		//		// where: RenderChunk.rebuildChunk()
+		//		// what: invoke code to overrule result of Block.canRenderInLayer()
+		//		// why: allows us to render transparent quads for blocks which are only on the SOLID layer
+		//		transformMethod(Refs.rebuildChunk) {
+		//			if (isOptifinePresent) {
+		//				find(varinsn(ISTORE, 23))?.insertAfter {
+		//					log.info("[BetterFoliageLoader] Applying RenderChunk block layer override")
+		//					varinsn(ALOAD, 19)
+		//					varinsn(ALOAD, 18)
+		//					varinsn(ALOAD, 22)
+		//					invokeStatic(Refs.canRenderBlockInLayer)
+		//					varinsn(ISTORE, 23)
+		//				}
+		//			} else {
+		//				find(invokeRef(Refs.canRenderInLayer))?.replace {
+		//					log.info("[BetterFoliageLoader] Applying RenderChunk block layer override")
+		//					invokeStatic(Refs.canRenderBlockInLayer)
+		//				}
+		//			}
+		//		}
 
 	}
 
@@ -155,14 +155,13 @@ public class InjectionHelper implements Opcodes, INames {
 		// Find the bytecode instruction for "block.canRenderInLayer(iblockstate, blockrenderlayer);" ("INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
 
-//			INVOKESTATIC net/optifine/reflect/Reflector.callBoolean (Ljava/lang/Object;Lnet/optifine/reflect/ReflectorMethod;[Ljava/lang/Object;)Z
-//			ISTORE 23
-//			ALOAD 19 : block
-//			ALOAD 18 : iblockstate
-//			ALOAD 22 : blockrenderlayer1
-//			INVOKESTATIC mods/betterfoliage/client/Hooks.canRenderBlockInLayer (Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z
-//			ISTORE 23
-
+			//			INVOKESTATIC net/optifine/reflect/Reflector.callBoolean (Ljava/lang/Object;Lnet/optifine/reflect/ReflectorMethod;[Ljava/lang/Object;)Z
+			//			ISTORE 23
+			//			ALOAD 19 : block
+			//			ALOAD 18 : iblockstate
+			//			ALOAD 22 : blockrenderlayer1
+			//			INVOKESTATIC mods/betterfoliage/client/Hooks.canRenderBlockInLayer (Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z
+			//			ISTORE 23
 
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
@@ -193,7 +192,6 @@ public class InjectionHelper implements Opcodes, INames {
 			//			ALOAD 22 : blockrenderlayer1
 			//			INVOKESTATIC mods/betterfoliage/client/Hooks.canRenderBlockInLayer (Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z
 			//			ISTORE 23
-
 
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {

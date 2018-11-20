@@ -1,7 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.hooks;
 
 import cadiboo.renderchunkrebuildchunkhooks.config.ModConfig;
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockOptifineEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockRenderInLayerOptifineEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkPostOptifineEvent;
@@ -33,7 +32,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author Cadiboo
  */
-public final class RenderChunkRebuildChunkHooksHooksOptifine extends  RenderChunkRebuildChunkHooksHooks {
+public final class RenderChunkRebuildChunkHooksHooksOptifine {
 
 	public static final Field CHUNK_CACHE_OF_CHUNK_CACHE = getFieldAndMakeItAccessable();
 
@@ -44,7 +43,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine extends  RenderChun
 		return field;
 	}
 
-	public static ChunkCache getWorldViewFromChunkCacheOF(ChunkCacheOF chunkCacheOF){
+	public static ChunkCache getWorldViewFromChunkCacheOF(ChunkCacheOF chunkCacheOF) {
 
 		try {
 			return (ChunkCache) CHUNK_CACHE_OF_CHUNK_CACHE.get(chunkCacheOF);
@@ -52,7 +51,6 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine extends  RenderChun
 			throw new RuntimeException(illegalAccessException);
 		}
 	}
-
 
 	/**
 	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
@@ -137,8 +135,8 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine extends  RenderChun
 	 *
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
-	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final BlockPosM blockPos, final BufferBuilder bufferBuilder, final BlockPos.MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers,
-		final BlockRenderLayer blockRenderLayer, final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final BlockPosM blockPos, final BufferBuilder bufferBuilder, final BlockPos.MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer,
+		final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 
 		final RebuildChunkBlockOptifineEvent event = new RebuildChunkBlockOptifineEvent(renderChunk, renderGlobal, chunkCacheOF, generator, compiledChunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 
