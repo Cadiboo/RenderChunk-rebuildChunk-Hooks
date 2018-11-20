@@ -3,6 +3,7 @@ package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 import cadiboo.renderchunkrebuildchunkhooks.core.util.INames;
 import cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
+
 /**
  * @author Cadiboo
  * @see <a href="http://www.egtry.com/java/bytecode/asm/tree_transform">http://www.egtry.com/java/bytecode/asm/tree_transform</a>
@@ -35,7 +38,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final List<String> IGNORED_PREFIXES = ImmutableList.of("cpw", "net.minecraftforge", "io", "org", "gnu", "com", "joptsimple");
 
 	public static final int CLASS_WRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
-	// skip class reader rJeading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
+	// skip class reader reading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
 	public static final int CLASS_READER_FLAGS = (CLASS_WRITER_FLAGS & ClassWriter.COMPUTE_FRAMES) == ClassWriter.COMPUTE_FRAMES ? ClassReader.SKIP_FRAMES : 0;
 
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -147,7 +150,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 
 			// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
-			if (method.name.equals("a") ||method.name.equals("func_178570_a")|| method.name.equals("resortTransparency")) {
+			if (method.name.equals("a") || method.name.equals("func_178570_a") || method.name.equals("resortTransparency")) {
 				if (DEBUG_METHODS) {
 					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" was rejected");
 				}
@@ -209,8 +212,11 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info(insnToString(instructions.get(i)));
 				}
 			}
-			this.injectRebuildChunkPreEventHook(instructions);
-			LOGGER.info("injected RebuildChunkPreEvent Hook");
+			if (this.injectRebuildChunkPreEventHook(instructions)) {
+				LOGGER.info("injected RebuildChunkPreEvent Hook");
+			} else {
+				LOGGER.error("failed to inject RebuildChunkPreEvent Hook");
+			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
 					LOGGER.info(insnToString(instructions.get(i)));
@@ -225,8 +231,30 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info(insnToString(instructions.get(i)));
 				}
 			}
-			this.injectRebuildChunkBlockRenderInLayerEventHook(instructions);
-			LOGGER.info("injected RebuildChunkBlockRenderInLayerEvent Hook");
+			if (this.injectRebuildChunkBlockRenderInLayerEventHook(instructions)) {
+				LOGGER.info("injected RebuildChunkBlockRenderInLayerEvent Hook");
+			} else {
+				LOGGER.error("failed to inject RebuildChunkBlockRenderInLayerEvent Hook");
+			}
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+		}
+
+		if (BETTER_FOLIAGE) {
+			LOGGER.info("removing BetterFoliage's modifications...");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+			if (this.removeBetterFoliagesModifications(instructions)) {
+				LOGGER.info("removed BetterFoliage's modifications");
+			} else {
+				LOGGER.error("failed to remove BetterFoliage's modifications");
+			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
 					LOGGER.info(insnToString(instructions.get(i)));
@@ -241,8 +269,11 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info(insnToString(instructions.get(i)));
 				}
 			}
-			this.injectRebuildChunkBlockEventHook(instructions);
-			LOGGER.info("injected RebuildRebuildChunkBlockEvent Hook");
+			if (this.injectRebuildChunkBlockEventHook(instructions)) {
+				LOGGER.info("injected RebuildRebuildChunkBlockEvent Hook");
+			} else {
+				LOGGER.error("failed to inject RebuildRebuildChunkBlockEvent Hook");
+			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
 					LOGGER.info(insnToString(instructions.get(i)));
@@ -257,8 +288,11 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info(insnToString(instructions.get(i)));
 				}
 			}
-			this.injectRebuildChunkPostEventHook(instructions);
-			LOGGER.info("injected RebuildChunkPostEvent Hook");
+			if (this.injectRebuildChunkPostEventHook(instructions)) {
+				LOGGER.info("injected RebuildChunkPostEvent Hook");
+			} else {
+				LOGGER.error("failed to inject RebuildChunkPostEvent Hook");
+			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
 					LOGGER.info(insnToString(instructions.get(i)));
@@ -268,13 +302,71 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	}
 
-	public abstract void injectRebuildChunkPreEventHook(InsnList instructions);
+	public abstract boolean injectRebuildChunkPreEventHook(InsnList instructions);
 
-	public abstract void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions);
+	public abstract boolean injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions);
 
-	public abstract void injectRebuildChunkBlockEventHook(InsnList instructions);
+	public boolean removeBetterFoliagesModifications(InsnList instructions) {
 
-	public abstract void injectRebuildChunkPostEventHook(InsnList instructions);
+		//		// where: RenderChunk.rebuildChunk()
+		//		// what: replace call to BlockRendererDispatcher.renderBlock()
+		//		// why: allows us to perform additional rendering for each block
+		//		transformMethod(Refs.rebuildChunk) {
+		//			find(invokeRef(Refs.renderBlock))?.replace {
+		//				log.info("[BetterFoliageLoader] Applying RenderChunk block render override")
+		//				varinsn(ALOAD, if (isOptifinePresent) 22 else 20)
+		//				invokeStatic(Refs.renderWorldBlock)
+		//			}
+		//		}
+
+		//		ALOAD 13
+		//		ALOAD 18
+		//		ALOAD 17
+		//		ALOAD 11
+		//		ALOAD 24
+		//-		INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z
+		//+		ALOAD 22 | 20
+		//+		INVOKESTATIC mods/betterfoliage/client/Hooks.renderWorldBlock (Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/BlockRenderLayer;)Z
+
+		MethodInsnNode INVOKESTATIC_Hooks_renderWorldBlock_Node = null;
+
+		// Find the bytecode instruction for "Hooks.renderWorldBlock" ("INVOKESTATIC mods/betterfoliage/client/Hooks.renderWorldBlock (Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/BlockRenderLayer;)Z")
+		for (AbstractInsnNode instruction : instructions.toArray()) {
+
+			if (instruction.getOpcode() == INVOKESTATIC) {
+				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
+					LOGGER.warn(insnToString(instruction));
+					if (((MethodInsnNode) instruction).name.equals("renderWorldBlock")) {
+						LOGGER.warn(insnToString(instruction));
+						if (((MethodInsnNode) instruction).desc.equals("(Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/BlockRenderLayer;)Z")) {
+							LOGGER.error(insnToString(instruction));
+							INVOKESTATIC_Hooks_renderWorldBlock_Node = (MethodInsnNode) instruction;
+						}
+						break;
+					}
+				}
+			}
+
+		}
+
+		if (INVOKESTATIC_Hooks_renderWorldBlock_Node == null) {
+			new RuntimeException("Couldn't find BetterFoliage's modifications!").printStackTrace();
+			return false;
+		}
+
+		// add back BlockRenderDispatcher.renderBlock ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
+		instructions.insert(INVOKESTATIC_Hooks_renderWorldBlock_Node, new MethodInsnNode(INVOKEVIRTUAL, BlockRendererDispatcher_INTERNAL_NAME, BlockRendererDispatcher_renderBlock, BlockRendererDispatcher_renderBlock_DESCRIPTION, false));
+
+		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node.getPrevious());
+		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node);
+
+		return true;
+
+	}
+
+	public abstract boolean injectRebuildChunkBlockEventHook(InsnList instructions);
+
+	public abstract boolean injectRebuildChunkPostEventHook(InsnList instructions);
 
 	public static String insnToString(final AbstractInsnNode insn) {
 

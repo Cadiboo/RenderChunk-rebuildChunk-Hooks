@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import joptsimple.internal.Strings;
 import net.minecraft.client.renderer.chunk.RenderChunk;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.LoadController;
@@ -12,8 +13,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 
 public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContainer {
 
@@ -68,7 +72,21 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 			RenderChunk.class.getName();
 			final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
 			LOGGER.info("Sucessfully preloaded RenderChunk!");
+
+			if (BETTER_FOLIAGE) {
+				final Class<?> betterFoliageCompatibilityEventSubscriberClass;
+				try {
+					betterFoliageCompatibilityEventSubscriberClass = Class.forName("cadiboo.renderchunkrebuildchunkhooks.mod.BetterFoliageCompatibilityEventSubscriber");
+
+					final Object betterFoliageCompatibilityEventSubscriber = betterFoliageCompatibilityEventSubscriberClass.getConstructors()[0].newInstance();
+
+					MinecraftForge.EVENT_BUS.register(betterFoliageCompatibilityEventSubscriber);
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+					throw new RuntimeException(exception);
+				}
+			}
 		}
+
 	}
 
 	@Override

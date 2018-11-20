@@ -1,5 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
+import cadiboo.renderchunkrebuildchunkhooks.core.util.InjectionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -60,7 +61,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * @param instructions the instructions for the method
 	 */
 	@Override
-	public void injectRebuildChunkPreEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkPreEventHook(InsnList instructions) {
 
 		FieldInsnNode PUTSTATIC_renderChunksUpdated_Node = null;
 
@@ -82,7 +83,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (PUTSTATIC_renderChunksUpdated_Node == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LabelNode preExistingLabelNode = null;
@@ -98,7 +99,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (preExistingLabelNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		final LabelNode oldPreExistingLabelNode = preExistingLabelNode;
@@ -114,7 +115,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (preExistingLabelNode == oldPreExistingLabelNode) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LineNumberNode preExistingLineNumberNode = null;
@@ -130,7 +131,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (preExistingLineNumberNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		final InsnList tempInstructionList = new InsnList();
@@ -171,6 +172,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		instructions.insertBefore(preExistingLabelNode, tempInstructionList);
 
+		return true;
+
 	}
 
 	/**
@@ -184,88 +187,19 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * @param instructions the instructions for the method
 	 */
 	@Override
-	public void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
 
-		FieldInsnNode GETSTATIC_Reflector_ForgeBlock_canRenderInLayer = null;
+		final AbstractInsnNode canRenderInLayer = InjectionHelper.getCanRenderInBlockInjectionPoint(instructions);
 
-		// Find the bytecode instruction for "block.canRenderInLayer(iblockstate, blockrenderlayer);" ("INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")
-		find_GETSTATIC_Reflector_ForgeBlock_canRenderInLayer:
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-
-			//NO! Not the right one
-			//			LINENUMBER 237 L26
-			//#			GETSTATIC net/optifine/reflect/Reflector.ForgeBlock_canRenderInLayer : Lnet/optifine/reflect/ReflectorMethod;
-			//			INVOKEVIRTUAL net/optifine/reflect/ReflectorMethod.exists ()Z
-			//			ISTORE 14
-
-			//YES! this is the one
-			//			LINENUMBER 299 L55
-			//			ALOAD 19
-			//#			GETSTATIC net/optifine/reflect/Reflector.ForgeBlock_canRenderInLayer : Lnet/optifine/reflect/ReflectorMethod;
-			//			ICONST_2
-			//			ANEWARRAY java/lang/Object
-
-			if (instruction.getOpcode() != GETSTATIC) {
-				continue;
-			}
-
-			if (instruction.getType() != AbstractInsnNode.FIELD_INSN) {
-				continue;
-			}
-
-			final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
-
-			if (! fieldInsnNode.owner.equals("net/optifine/reflect/Reflector")) {
-				continue;
-			}
-			if (! fieldInsnNode.name.equals("ForgeBlock_canRenderInLayer")) {
-				continue;
-			}
-			if (! fieldInsnNode.desc.equals("Lnet/optifine/reflect/ReflectorMethod;")) {
-				continue;
-			}
-
-			//make sure the instruction directly after it isnt "ReflectorMethod.exists()"
-
-			final int indexOfFieldInsnNode = instructions.indexOf(fieldInsnNode);
-
-			for (int i = indexOfFieldInsnNode; i < indexOfFieldInsnNode + 10; i++) {
-
-				final AbstractInsnNode instruction2 = instructions.get(i);
-
-				if (instruction2.getOpcode() == INVOKEVIRTUAL) {
-					if (instruction2.getType() == AbstractInsnNode.METHOD_INSN) {
-						final MethodInsnNode methodInsnNode = (MethodInsnNode) instruction2;
-						if (methodInsnNode.owner.equals("net/optifine/reflect/ReflectorMethod")) {
-							if (methodInsnNode.name.equals("exists")) {
-								if (methodInsnNode.desc.equals("()Z")) {
-									continue find_GETSTATIC_Reflector_ForgeBlock_canRenderInLayer;
-								}
-							}
-						}
-					}
-				}
-
-			}
-
-			//we made sure the instruction directly after it wasnt "ReflectorMethod.exists()"
-
-			GETSTATIC_Reflector_ForgeBlock_canRenderInLayer = (FieldInsnNode) instruction;
-			break find_GETSTATIC_Reflector_ForgeBlock_canRenderInLayer;
-
-		}
-
-		if (GETSTATIC_Reflector_ForgeBlock_canRenderInLayer == null) {
+		if (canRenderInLayer == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
-
-		LOGGER.info(GETSTATIC_Reflector_ForgeBlock_canRenderInLayer);
 
 		LineNumberNode preExistingLineNumberNode = null;
 
 		// go back up the instructions until we find the line number for the instruction (so we don't remove it)
-		for (int i = instructions.indexOf(GETSTATIC_Reflector_ForgeBlock_canRenderInLayer) - 1; i >= 0; i--) {
+		for (int i = instructions.indexOf(canRenderInLayer) - 1; i >= 0; i--) {
 			if (instructions.get(i).getType() != AbstractInsnNode.LINE) {
 				continue;
 			}
@@ -275,13 +209,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (preExistingLineNumberNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		VarInsnNode preExistingISTOREInstructionNode = null;
 
 		// go back down the instructions until we find the ISTORE instruction (so we don't remove it)
-		for (int i = instructions.indexOf(GETSTATIC_Reflector_ForgeBlock_canRenderInLayer); i < instructions.indexOf(GETSTATIC_Reflector_ForgeBlock_canRenderInLayer) + 20; i++) {
+		for (int i = instructions.indexOf(canRenderInLayer); i < instructions.indexOf(canRenderInLayer) + 20; i++) {
 			if (instructions.get(i).getType() != AbstractInsnNode.VAR_INSN) {
 				continue;
 			}
@@ -295,7 +229,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (preExistingISTOREInstructionNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		//remove all instructions between the line number and the ISTORE instruction<br>
@@ -347,6 +281,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 		// Inject our instructions right BEFORE the ISTORE instruction
 		instructions.insertBefore(preExistingISTOREInstructionNode, tempInstructionList);
 
+		return true;
+
 	}
 
 	/**
@@ -359,7 +295,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * @param instructions
 	 */
 	@Override
-	public void injectRebuildChunkBlockEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkBlockEventHook(InsnList instructions) {
 
 		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
 
@@ -379,7 +315,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LabelNode preExistingLabelNode = null;
@@ -395,7 +331,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (preExistingLabelNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		VarInsnNode preExistingVarInsNode = null;
@@ -411,7 +347,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (preExistingVarInsNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LabelNode returnLabel = null;
@@ -427,7 +363,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (returnLabel == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		final InsnList tempInstructionList = new InsnList();
@@ -483,6 +419,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 		// Inject our instructions right BEFORE first VarsInsNode
 		instructions.insertBefore(preExistingVarInsNode, tempInstructionList);
 
+		return true;
+
 	}
 
 	/**
@@ -492,7 +430,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * @param instructions the instructions for the method
 	 */
 	@Override
-	public void injectRebuildChunkPostEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkPostEventHook(InsnList instructions) {
 
 		InsnNode RETURN_Node = null;
 
@@ -511,7 +449,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		if (RETURN_Node == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		final InsnList tempInstructionList = new InsnList();
@@ -543,6 +481,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		// Inject our instructions right BEFORE the RETURN instruction
 		instructions.insertBefore(RETURN_Node, tempInstructionList);
+
+		return true;
 
 	}
 

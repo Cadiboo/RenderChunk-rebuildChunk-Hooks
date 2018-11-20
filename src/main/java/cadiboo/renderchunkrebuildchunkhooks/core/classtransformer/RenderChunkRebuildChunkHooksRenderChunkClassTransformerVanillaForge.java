@@ -1,5 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
+import cadiboo.renderchunkrebuildchunkhooks.core.util.InjectionHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -48,7 +49,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 *
 	 * @param instructions the instructions for the method
 	 */
-	public void injectRebuildChunkPreEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkPreEventHook(InsnList instructions) {
 
 		FieldInsnNode PUTSTATIC_renderChunksUpdated_Node = null;
 
@@ -70,7 +71,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (PUTSTATIC_renderChunksUpdated_Node == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LabelNode preExistingLabelNode = null;
@@ -86,7 +87,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (preExistingLabelNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LineNumberNode preExistingLineNumberNode = null;
@@ -102,7 +103,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (preExistingLineNumberNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		final InsnList tempInstructionList = new InsnList();
@@ -144,6 +145,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		instructions.insertBefore(preExistingLabelNode, tempInstructionList);
 
+		return true;
 	}
 
 	/**
@@ -153,35 +155,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 *
 	 * @param instructions the instructions for the method
 	 */
-	public void injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
 
-		MethodInsnNode INVOKEVIRTUAL_Block_canRenderInLayer_Node = null;
-
-		// Find the bytecode instruction for "block.canRenderInLayer(iblockstate, blockrenderlayer);" ("INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-
-			// L44
-			// LINENUMBER 191 L44
-			// ALOAD 17: block
-			// ALOAD 16: iblockstate
-			// ALOAD 18: blockrenderlayer1
-			// # INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer(Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z //INJECTION POINT
-			// IFNE L45
-			// GOTO L46
-
-			if (instruction.getOpcode() == INVOKEVIRTUAL) {
-				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (((MethodInsnNode) instruction).desc.equals(Block_canRenderInLayer_DESC)) {
-						INVOKEVIRTUAL_Block_canRenderInLayer_Node = (MethodInsnNode) instruction;
-						break;
-					}
-				}
-			}
-		}
+		final AbstractInsnNode INVOKEVIRTUAL_Block_canRenderInLayer_Node = InjectionHelper.getCanRenderInBlockInjectionPoint(instructions);
 
 		if (INVOKEVIRTUAL_Block_canRenderInLayer_Node == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		// ALOAD 17: block
@@ -244,6 +224,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		// Remove the call to block.canRenderInLayer()
 		instructions.remove(INVOKEVIRTUAL_Block_canRenderInLayer_Node);
 
+		return true;
 	}
 
 	/**
@@ -255,7 +236,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 *
 	 * @param instructions the instructions for the method
 	 */
-	public void injectRebuildChunkBlockEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkBlockEventHook(InsnList instructions) {
 
 		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
 
@@ -275,7 +256,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LabelNode preExistingLabelNode = null;
@@ -291,7 +272,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (preExistingLabelNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		VarInsnNode preExistingVarInsNode = null;
@@ -307,7 +288,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (preExistingVarInsNode == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		LabelNode returnLabel = null;
@@ -323,7 +304,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (returnLabel == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		final InsnList tempInstructionList = new InsnList();
@@ -382,6 +363,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		// Inject our instructions right BEFORE first VarsInsNode
 		instructions.insertBefore(preExistingVarInsNode, tempInstructionList);
 
+		return true;
 	}
 
 	/**
@@ -391,7 +373,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 * @param instructions the instructions for the method
 	 */
 	@Override
-	public void injectRebuildChunkPostEventHook(InsnList instructions) {
+	public boolean injectRebuildChunkPostEventHook(InsnList instructions) {
 
 		InsnNode RETURN_Node = null;
 
@@ -410,7 +392,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		if (RETURN_Node == null) {
 			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return;
+			return false;
 		}
 
 		final InsnList tempInstructionList = new InsnList();
@@ -438,6 +420,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		// Inject our instructions right BEFORE the RETURN instruction
 		instructions.insertBefore(RETURN_Node, tempInstructionList);
 
+		return true;
 	}
 
 }

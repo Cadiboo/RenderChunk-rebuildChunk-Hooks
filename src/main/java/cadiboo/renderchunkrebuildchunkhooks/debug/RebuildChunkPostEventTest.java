@@ -78,7 +78,7 @@ public class RebuildChunkPostEventTest {
 		Preconditions.checkNotNull(event.getSetTileEntities());
 		Preconditions.checkNotNull(event.getLockCompileTask());
 
-		//		ByteBuffer solid = event.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(BlockRenderLayer.SOLID).getByteBuffer();
+		//		BufferBuilder bufferBuilderForSolidBlockRenderLayer = event.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(BlockRenderLayer.SOLID);
 
 		//		solid.toString();
 

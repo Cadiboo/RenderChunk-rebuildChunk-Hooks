@@ -31,8 +31,12 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	public static final Logger LOGGER = LogManager.getLogger();
 
 	public static boolean DEOBFUSCATED      = false;
+
 	public static boolean OPTIFINE          = false;
 	public static boolean OptifineCheckDone = false;
+
+	public static boolean BETTER_FOLIAGE          = false;
+	public static boolean BetterFoliageCheckDone = false;
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
 
@@ -56,7 +60,21 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 				LOGGER.info(this.getClass().getSimpleName()+" has detected Optifine, using Optifine compatible ClassTransformer");
 			} catch (final Exception e) {
 				OPTIFINE = false;
+				OptifineCheckDone = true;
 				LOGGER.info(this.getClass().getSimpleName()+" has not found Optifine, using normal (Forge) ClassTransformer");
+			}
+		}
+
+		if (! BetterFoliageCheckDone) {
+			try {
+				final Class<?> betterFollageClient = Class.forName("mods.betterfoliage.client.Hooks", false, Loader.instance().getModClassLoader());
+				BETTER_FOLIAGE = true;
+				BetterFoliageCheckDone = true;
+				LOGGER.info(this.getClass().getSimpleName()+" has detected BetterFolliage, compatibility features will be enabled");
+			} catch (final Exception e) {
+				BETTER_FOLIAGE = false;
+				BetterFoliageCheckDone = true;
+				LOGGER.info(this.getClass().getSimpleName()+" has not found BetterFolliage");
 			}
 		}
 

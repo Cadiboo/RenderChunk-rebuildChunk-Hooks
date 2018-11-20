@@ -32,11 +32,13 @@ public interface INames {
 	//	String	CHUNK_CACHE_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/world/ChunkCache" : "anb";
 	//	String	MUTABLE_BLOCK_POS_INTERNAL_NAME	= DEOBFUSCATED ? "net/minecraft/util/math/BlockPos$MutableBlockPos" : "et$a";
 	//	String	CompiledChunk_INTERNAL_NAME		= DEOBFUSCATED ? "net/minecraft/client/renderer/chunk/CompiledChunk" : "bxm";
-	String RENDER_CHUNK_INTERNAL_NAME      = "net/minecraft/client/renderer/chunk/RenderChunk";
-	String RENDER_GLOBAL_INTERNAL_NAME     = "net/minecraft/client/renderer/RenderGlobal";
-	String CHUNK_CACHE_INTERNAL_NAME       = "net/minecraft/world/ChunkCache";
-	String MUTABLE_BLOCK_POS_INTERNAL_NAME = "net/minecraft/util/math/BlockPos$MutableBlockPos";
-	String CompiledChunk_INTERNAL_NAME     = "net/minecraft/client/renderer/chunk/CompiledChunk";
+	String RENDER_CHUNK_INTERNAL_NAME            = "net/minecraft/client/renderer/chunk/RenderChunk";
+	String RENDER_GLOBAL_INTERNAL_NAME           = "net/minecraft/client/renderer/RenderGlobal";
+	String CHUNK_CACHE_INTERNAL_NAME             = "net/minecraft/world/ChunkCache";
+	String MUTABLE_BLOCK_POS_INTERNAL_NAME       = "net/minecraft/util/math/BlockPos$MutableBlockPos";
+	String BLOCK_POS_INTERNAL_NAME               = "net/minecraft/util/math/BlockPos";
+	String CompiledChunk_INTERNAL_NAME           = "net/minecraft/client/renderer/chunk/CompiledChunk";
+	String BlockRendererDispatcher_INTERNAL_NAME = "net/minecraft/client/renderer/BlockRendererDispatcher";
 
 	//	String I_BLOCK_STATE_INTERNAL_NAME = DEOBFUSCATED ? "net/minecraft/block/state/IBlockState" : "awr";
 	//
@@ -45,6 +47,11 @@ public interface INames {
 	String I_BLOCK_STATE_INTERNAL_NAME = "net/minecraft/block/state/IBlockState";
 
 	String BLOCK_RENDER_LAYER_INTERNAL_NAME = "net/minecraft/util/BlockRenderLayer";
+
+	String I_BLOCK_ACCESS_INTERNAL_NAME = "net/minecraft/world/IBlockAccess";
+	String BUFFER_BUILDER_INTERNAL_NAME = "net/minecraft/client/renderer/BufferBuilder";
+
+	String BlockRendererDispatcher_renderBlock_DESCRIPTION = Type.getMethodDescriptor(Type.getObjectType(I_BLOCK_STATE_INTERNAL_NAME), Type.getObjectType(BLOCK_POS_INTERNAL_NAME), Type.getObjectType(I_BLOCK_ACCESS_INTERNAL_NAME), Type.getObjectType(BUFFER_BUILDER_INTERNAL_NAME));
 
 	// (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z
 	String Block_canRenderInLayer_DESC = Type.getMethodDescriptor(Type.BOOLEAN_TYPE, Type.getObjectType(I_BLOCK_STATE_INTERNAL_NAME), Type.getObjectType(BLOCK_RENDER_LAYER_INTERNAL_NAME));
