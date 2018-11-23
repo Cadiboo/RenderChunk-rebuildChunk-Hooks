@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
+import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK;
@@ -62,16 +63,23 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final boolean INJECT_RebuildChunkPostEvent               = true;
 
 	static {
+
 		if (DEBUG_NAMES) {
-			for (final ObfuscationHelper.ObfuscationClass obfuscationClass : ObfuscationHelper.ObfuscationClass.values()) {
-				LOGGER.info("{}: {}, {}", obfuscationClass.name(), obfuscationClass.getClassName(), obfuscationClass.getInternalName());
+			ObfuscationHelper.ObfuscationLevel oldDbfuscationLevel = OBFUSCATION_LEVEL;
+			for (ObfuscationHelper.ObfuscationLevel obfuscationLevel : ObfuscationHelper.ObfuscationLevel.values()) {
+				LOGGER.warn("Debbuging names for " + obfuscationLevel.name());
+				OBFUSCATION_LEVEL = obfuscationLevel;
+				for (final ObfuscationHelper.ObfuscationClass obfuscationClass : ObfuscationHelper.ObfuscationClass.values()) {
+					LOGGER.info("ObfuscationClass {}: {}, {}", obfuscationClass.name(), obfuscationClass.getClassName(), obfuscationClass.getInternalName());
+				}
+				for (final ObfuscationHelper.ObfuscationField obfuscationField : ObfuscationHelper.ObfuscationField.values()) {
+					LOGGER.info("ObfuscationField {}: {}", obfuscationField.name(), obfuscationField.getName());
+				}
+				for (final ObfuscationHelper.ObfuscationMethod obfuscationMethod : ObfuscationHelper.ObfuscationMethod.values()) {
+					LOGGER.info("ObfuscationMethod {}: {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
+				}
 			}
-			for (final ObfuscationHelper.ObfuscationField obfuscationField : ObfuscationHelper.ObfuscationField.values()) {
-				LOGGER.info("{}: {}", obfuscationField.name(), obfuscationField.getName());
-			}
-			for (final ObfuscationHelper.ObfuscationMethod obfuscationMethod : ObfuscationHelper.ObfuscationMethod.values()) {
-				LOGGER.info("{}: {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
-			}
+			OBFUSCATION_LEVEL = oldDbfuscationLevel;
 		}
 
 		if (DEBUG_STACKS) {
@@ -88,6 +96,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 				}
 			}
 		}
+
 	}
 
 	public static final Printer            PRINTER              = new Textifier();
