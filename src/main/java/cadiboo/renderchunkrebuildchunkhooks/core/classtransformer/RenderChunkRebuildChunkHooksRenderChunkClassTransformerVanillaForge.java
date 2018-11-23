@@ -62,7 +62,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
 					final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
 					if (fieldInsnNode.desc.equals(RENDER_CHUNK_RENDER_CHUNKS_UPDATED.getDescriptor())) {
-						if (fieldInsnNode.name.equals(RENDER_CHUNK_RENDER_CHUNKS_UPDATED.name())) {
+						if (fieldInsnNode.name.equals(RENDER_CHUNK_RENDER_CHUNKS_UPDATED.getName())) {
 							PUTSTATIC_renderChunksUpdated_Node = fieldInsnNode;
 							break;
 						}
