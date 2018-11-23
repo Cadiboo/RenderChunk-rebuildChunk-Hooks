@@ -20,7 +20,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 
 	//because BetterFoliage's name starts with "b" it will get called early anyway, and I want to keep HIGHEST and HIGH for mods that actually need them
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = false)
-	public static void callBetterFoliageHooks_renderWorldBlock_onRebuildChunkBlockEvent(final RebuildChunkBlockEvent event) {
+	public void callBetterFoliageHooks_renderWorldBlock_onRebuildChunkBlockEvent(final RebuildChunkBlockEvent event) {
 
 		mods.betterfoliage.client.Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), event.getBlockRenderLayer());
 
@@ -29,7 +29,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 
 	//because BetterFoliage's name starts with "b" it will get called early anyway, and I want to keep HIGHEST and HIGH for mods that actually need them
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = false)
-	public static void callBetterFoliageHooks_renderWorldBlock_onRebuildChunkBlockEventOptifine(final RebuildChunkBlockOptifineEvent event) {
+	public void callBetterFoliageHooks_renderWorldBlock_onRebuildChunkBlockEventOptifine(final RebuildChunkBlockOptifineEvent event) {
 
 		mods.betterfoliage.client.Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), event.getBlockRenderLayer());
 
@@ -38,7 +38,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 
 	//because BetterFoliage's name starts with "b" it will get called early anyway, and I want to keep HIGHEST and HIGH for mods that actually need them
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = false)
-	public static void callBetterFoliageHooks_canRenderBlockInLayer_onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
+	public void callBetterFoliageHooks_canRenderBlockInLayer_onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
 
 		mods.betterfoliage.client.Hooks.canRenderBlockInLayer(event.getBlockState().getBlock(), event.getBlockState(), event.getBlockRenderLayer());
 
