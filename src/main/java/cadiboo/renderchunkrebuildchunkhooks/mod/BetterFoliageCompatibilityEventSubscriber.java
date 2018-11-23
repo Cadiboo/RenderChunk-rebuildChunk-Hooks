@@ -21,7 +21,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = false)
 	public static void callBetterFoliageHooks_renderWorldBlock_onRebuildChunkBlockEvent(final RebuildChunkBlockEvent event) {
 
-		mods.betterfoliage.client.Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getWorldView(), event.getBufferBuilder(), event.getBlockRenderLayer());
+		mods.betterfoliage.client.Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), event.getBlockRenderLayer());
 
 		event.setCanceled(true);
 	}
