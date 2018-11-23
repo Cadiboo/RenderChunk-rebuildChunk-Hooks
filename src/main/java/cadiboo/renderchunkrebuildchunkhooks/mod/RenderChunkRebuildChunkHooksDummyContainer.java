@@ -4,6 +4,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import joptsimple.internal.Strings;
 import net.minecraft.client.renderer.chunk.RenderChunk;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.util.ReportedException;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -68,22 +70,38 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 	public void preInit(final FMLPreInitializationEvent event) {
 
 		if (event.getSide().isClient()) {
-			LOGGER.info("Preloading RenderChunk...");
-			RenderChunk.class.getName();
-			final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
-			LOGGER.info("Successfully preloaded RenderChunk!");
 
-			if (BETTER_FOLIAGE) {
-				final Class<?> betterFoliageCompatibilityEventSubscriberClass;
-				try {
-					betterFoliageCompatibilityEventSubscriberClass = Class.forName("cadiboo.renderchunkrebuildchunkhooks.mod.BetterFoliageCompatibilityEventSubscriber");
+			tryPreloadRenderChunk();
 
-					final Object betterFoliageCompatibilityEventSubscriber = betterFoliageCompatibilityEventSubscriberClass.getConstructors()[0].newInstance();
+			tryRegisterBetterFoliageCompatibleEventSubscriber();
 
-					MinecraftForge.EVENT_BUS.register(betterFoliageCompatibilityEventSubscriber);
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-					throw new RuntimeException(exception);
-				}
+		}
+
+	}
+
+	private void tryPreloadRenderChunk() {
+
+		LOGGER.info("Preloading RenderChunk...");
+		RenderChunk.class.getName();
+		final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
+		LOGGER.info("Successfully preloaded RenderChunk!");
+
+	}
+
+	private void tryRegisterBetterFoliageCompatibleEventSubscriber() {
+
+		if (BETTER_FOLIAGE) {
+			final Class<?> betterFoliageCompatibilityEventSubscriberClass;
+			try {
+				betterFoliageCompatibilityEventSubscriberClass = Class.forName("cadiboo.renderchunkrebuildchunkhooks.mod.BetterFoliageCompatibilityEventSubscriber");
+
+				final Object betterFoliageCompatibilityEventSubscriber = betterFoliageCompatibilityEventSubscriberClass.getConstructors()[0].newInstance();
+
+				MinecraftForge.EVENT_BUS.register(betterFoliageCompatibilityEventSubscriber);
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+				CrashReport crashReport = new CrashReport("Error finding or registering BetterFoliage compatible EventSubscriber", exception);
+				crashReport.makeCategory("Registering BetterFoliage compatible EventSubscriber");
+				throw new ReportedException(crashReport);
 			}
 		}
 
