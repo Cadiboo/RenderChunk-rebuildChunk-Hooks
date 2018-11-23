@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
-import net.optifine.override.ChunkCacheOF;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.*;
 
