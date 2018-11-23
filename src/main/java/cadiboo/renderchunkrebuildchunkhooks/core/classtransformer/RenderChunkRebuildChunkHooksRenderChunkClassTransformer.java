@@ -55,6 +55,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final boolean DEBUG_METHODS      = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | false;
 
+	public static final boolean REMOVE_BetterFoliagesModifications         = BETTER_FOLIAGE & true;
 	public static final boolean INJECT_RebuildChunkPreEvent                = true;
 	public static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
 	public static final boolean INJECT_RebuildRebuildChunkBlockEvent       = true;
@@ -242,7 +243,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (BETTER_FOLIAGE) {
+		if (BETTER_FOLIAGE && REMOVE_BetterFoliagesModifications) {
 			LOGGER.info("removing BetterFoliage's modifications...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
@@ -334,11 +335,9 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					LOGGER.warn(insnToString(instruction));
 					if (((MethodInsnNode) instruction).name.equals("renderWorldBlock")) {
-						LOGGER.warn(insnToString(instruction));
+						//TODO
 						if (((MethodInsnNode) instruction).desc.equals("(Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/BlockRenderLayer;)Z")) {
-							LOGGER.error(insnToString(instruction));
 							INVOKESTATIC_Hooks_renderWorldBlock_Node = (MethodInsnNode) instruction;
 						}
 						break;
