@@ -50,6 +50,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public static final boolean DEBUG_EVERYTHING   = false;
 	public static final boolean DEBUG_CLASSES      = DEBUG_EVERYTHING | false;
+	//may cause issues, use with care
 	public static final boolean DEBUG_NAMES        = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_TYPES        = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_STACKS       = DEBUG_EVERYTHING | false;
@@ -111,7 +112,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (! unTransformedName.equals(RENDER_CHUNK.getClassName())) {
+		if (! transformedName.equals(RENDER_CHUNK.getClassName())) {
 			return basicClass;
 		}
 

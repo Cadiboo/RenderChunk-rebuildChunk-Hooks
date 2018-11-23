@@ -22,7 +22,8 @@ public class ObfuscationHelper {
 
 	public enum ObfuscationClass {
 
-		RENDER_CHUNK("net/minecraft/client/renderer/chunk/RenderChunk", "net/minecraft/client/renderer/chunk/RenderChunk", "bxp"),
+		//um, MCPBot says that RenderChunk is bxp (on 1.12 mappings), but when I run Minecraft (on 1.12.2) it says that RenderChunk is bxr. Using Minecraft 1.12.2 obfname
+		RENDER_CHUNK("net/minecraft/client/renderer/chunk/RenderChunk", "net/minecraft/client/renderer/chunk/RenderChunk", "bxr"),
 		CHUNK_COMPILE_TASK_GENERATOR("net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "bxl"),
 		VIS_GRAPH("net/minecraft/client/renderer/chunk/VisGraph", "net/minecraft/client/renderer/chunk/VisGraph", "bxs"),
 		RENDER_GLOBAL("net/minecraft/client/renderer/RenderGlobal", "net/minecraft/client/renderer/RenderGlobal", "buw"),
