@@ -141,7 +141,7 @@ public class ObfuscationHelper {
 				throw new RuntimeException("Illegal Field Type!");
 			}
 
-			return Type.getObjectType(type.getInternalName()).getDescriptor();
+			return type.getDescriptor();
 
 		}
 
