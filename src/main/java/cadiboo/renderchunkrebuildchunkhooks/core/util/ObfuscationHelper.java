@@ -280,13 +280,13 @@ public class ObfuscationHelper {
 
 			final ArrayList<Type> params = new ArrayList<>();
 
-			for (Object object : this.params) {
+			for (Object paramObject : this.params) {
 
 				final Type param;
-				if (object instanceof ObfuscationClass) {
-					param = Type.getObjectType(((ObfuscationClass) this.returnType).getInternalName());
-				} else if (this.returnType instanceof Type) {
-					param = (Type) this.returnType;
+				if (paramObject instanceof ObfuscationClass) {
+					param = Type.getObjectType(((ObfuscationClass) paramObject).getInternalName());
+				} else if (paramObject instanceof Type) {
+					param = (Type) paramObject;
 				} else {
 					throw new RuntimeException("Illegal Parameter!");
 				}
