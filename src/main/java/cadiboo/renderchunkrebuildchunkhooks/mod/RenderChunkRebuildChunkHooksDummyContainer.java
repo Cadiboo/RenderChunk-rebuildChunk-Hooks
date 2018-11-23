@@ -91,6 +91,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 	private void tryRegisterBetterFoliageCompatibleEventSubscriber() {
 
 		if (BETTER_FOLIAGE) {
+			LOGGER.info("Registering BetterFoliage compatible EventSubscriber...");
 			final Class<?> betterFoliageCompatibilityEventSubscriberClass;
 			try {
 				betterFoliageCompatibilityEventSubscriberClass = Class.forName("cadiboo.renderchunkrebuildchunkhooks.mod.BetterFoliageCompatibilityEventSubscriber");
@@ -103,6 +104,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 				crashReport.makeCategory("Registering BetterFoliage compatible EventSubscriber");
 				throw new ReportedException(crashReport);
 			}
+			LOGGER.info("Registered BetterFoliage compatible EventSubscriber");
 		}
 
 	}
