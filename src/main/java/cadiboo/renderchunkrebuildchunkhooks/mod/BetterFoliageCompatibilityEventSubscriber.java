@@ -13,7 +13,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 
 	public BetterFoliageCompatibilityEventSubscriber() {
 
-		LOGGER.info("instantiating + " + this.getClass().getSimpleName());
+		LOGGER.info("instantiating " + this.getClass().getSimpleName());
 
 	}
 
