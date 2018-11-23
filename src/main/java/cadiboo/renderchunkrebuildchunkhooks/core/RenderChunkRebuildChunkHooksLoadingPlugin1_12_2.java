@@ -123,7 +123,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 		RebuildChunkPreEvent.class.getName();
 		RebuildChunkBlockRenderInLayerEvent.class.getName();
 		RebuildChunkBlockEvent.class.getName();
-		LOGGER.info("Sucessfully Pre-loaded event classes");
+		LOGGER.info("Successfully Pre-loaded event classes");
 	}
 
 	@Override

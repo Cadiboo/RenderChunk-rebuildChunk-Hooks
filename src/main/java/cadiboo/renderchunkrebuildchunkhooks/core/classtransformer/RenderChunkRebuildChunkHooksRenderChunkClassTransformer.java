@@ -182,7 +182,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			// make the ClassWriter visit all the code in classNode
 			classNode.accept(out);
 
-			LOGGER.info("Injected hooks sucessfully!");
+			LOGGER.info("Injected hooks successfully!");
 
 			if (DEBUG_DUMP_BYTECODE) {
 				try {

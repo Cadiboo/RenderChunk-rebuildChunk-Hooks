@@ -71,7 +71,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 			LOGGER.info("Preloading RenderChunk...");
 			RenderChunk.class.getName();
 			final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
-			LOGGER.info("Sucessfully preloaded RenderChunk!");
+			LOGGER.info("Successfully preloaded RenderChunk!");
 
 			if (BETTER_FOLIAGE) {
 				final Class<?> betterFoliageCompatibilityEventSubscriberClass;
