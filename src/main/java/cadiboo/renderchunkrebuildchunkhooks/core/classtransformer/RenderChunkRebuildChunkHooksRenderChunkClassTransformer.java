@@ -111,7 +111,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (! transformedName.equals(RENDER_CHUNK.getClassName())) {
+		if (! unTransformedName.equals(RENDER_CHUNK.getClassName())) {
 			return basicClass;
 		}
 
