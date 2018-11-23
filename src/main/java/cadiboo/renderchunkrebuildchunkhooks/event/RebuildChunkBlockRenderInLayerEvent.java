@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 public class RebuildChunkBlockRenderInLayerEvent extends Event {
 
 	private final RenderChunk               renderChunk;
-	private final ChunkCache                worldView;
+	private final ChunkCache                chunkCache;
 	private final ChunkCompileTaskGenerator generator;
 	private final CompiledChunk             compiledchunk;
 	private final BlockRendererDispatcher   blockRendererDispatcher;
@@ -37,7 +37,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 
 	/**
 	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param chunkCache                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
 	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 	 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
@@ -47,10 +47,10 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
 	 */
-	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache chunkCache, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
 
 		this.renderChunk = renderChunk;
-		this.worldView = worldView;
+		this.chunkCache = chunkCache;
 		this.generator = chunkCompileTaskGenerator;
 		this.compiledchunk = compiledchunk;
 		this.blockRendererDispatcher = blockRendererDispatcher;
@@ -72,9 +72,9 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	/**
 	 * @return the {@link ChunkCache} passed in
 	 */
-	public ChunkCache getWorldView() {
+	public ChunkCache getChunkCache() {
 
-		return this.worldView;
+		return this.chunkCache;
 	}
 
 	/**

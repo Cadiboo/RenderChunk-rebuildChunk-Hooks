@@ -30,7 +30,7 @@ public class RebuildChunkPostEvent extends Event {
 	private final CompiledChunk             compiledchunk;
 	private final MutableBlockPos           renderChunkPosition;
 	private final RenderGlobal              renderGlobal;
-	private final ChunkCache                worldView;
+	private final ChunkCache                chunkCache;
 	private final VisGraph                  visGraph;
 	private final Set<TileEntity>           setTileEntities;
 	private final ReentrantLock             lockCompileTask;
@@ -44,12 +44,12 @@ public class RebuildChunkPostEvent extends Event {
 	 * @param compiledchunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param chunkCache          the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
 	 * @param visGraph            the {@link VisGraph} passed in
 	 * @param setTileEntities     the {@link Set} of {@link TileEntity TileEntities} with global renderers passed in
 	 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
 	 */
-	public RebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCache worldView, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
+	public RebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCache chunkCache, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
 
 		this.renderChunk = renderChunk;
 		this.x = x;
@@ -59,7 +59,7 @@ public class RebuildChunkPostEvent extends Event {
 		this.compiledchunk = compiledchunk;
 		this.renderChunkPosition = renderChunkPosition;
 		this.renderGlobal = renderGlobal;
-		this.worldView = worldView;
+		this.chunkCache = chunkCache;
 		this.visGraph = visGraph;
 		this.setTileEntities = setTileEntities;
 		this.lockCompileTask = lockCompileTask;
@@ -132,9 +132,9 @@ public class RebuildChunkPostEvent extends Event {
 	/**
 	 * @return the {@link ChunkCache} passed in
 	 */
-	public ChunkCache getWorldView() {
+	public ChunkCache getChunkCache() {
 
-		return this.worldView;
+		return this.chunkCache;
 	}
 
 	/**

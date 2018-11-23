@@ -33,7 +33,7 @@ public class RebuildChunkBlockEvent extends Event {
 
 	private final RenderChunk               renderChunk;
 	private final RenderGlobal              renderGlobal;
-	private final ChunkCache                worldView;
+	private final ChunkCache                chunkCache;
 	private final ChunkCompileTaskGenerator generator;
 	private final CompiledChunk             compiledchunk;
 	private final BlockRendererDispatcher   blockRendererDispatcher;
@@ -52,7 +52,7 @@ public class RebuildChunkBlockEvent extends Event {
 	/**
 	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
 	 * @param renderGlobal                    the {@link RenderGlobal} passed in
-	 * @param worldView                       the {@link ChunkCache} passed in
+	 * @param chunkCache                      the {@link ChunkCache} passed in
 	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in
 	 * @param compiledchunk                   the {@link CompiledChunk} passed in
 	 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher} passed in
@@ -68,12 +68,12 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in
 	 * @param visGraph                        the {@link VisGraph} passed in
 	 */
-	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
+	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache chunkCache, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
 		final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 
 		this.renderChunk = renderChunk;
 		this.renderGlobal = renderGlobal;
-		this.worldView = worldView;
+		this.chunkCache = chunkCache;
 		this.generator = generator;
 		this.compiledchunk = compiledchunk;
 		this.blockRendererDispatcher = blockRendererDispatcher;
@@ -109,9 +109,9 @@ public class RebuildChunkBlockEvent extends Event {
 	/**
 	 * @return the {@link ChunkCache} passed in
 	 */
-	public ChunkCache getWorldView() {
+	public ChunkCache getChunkCache() {
 
-		return this.worldView;
+		return this.chunkCache;
 	}
 
 	/**
