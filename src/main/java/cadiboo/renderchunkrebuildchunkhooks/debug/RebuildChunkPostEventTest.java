@@ -59,7 +59,7 @@ public class RebuildChunkPostEventTest {
 		 * @param compiledchunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 		 * @param renderChunkPosition the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 		 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-		 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param chunkCache          the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
 		 * @param visGraph            the {@link VisGraph} passed in
 		 * @param setTileEntities     the {@link Set} of {@link TileEntity TileEntities} with global renderers passed in
 		 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
@@ -73,7 +73,7 @@ public class RebuildChunkPostEventTest {
 		Preconditions.checkNotNull(event.getCompiledChunk());
 		Preconditions.checkNotNull(event.getRenderChunkPosition());
 		Preconditions.checkNotNull(event.getRenderGlobal());
-		Preconditions.checkNotNull(event.getWorldView());
+		Preconditions.checkNotNull(event.getChunkCache());
 		Preconditions.checkNotNull(event.getVisGraph());
 		Preconditions.checkNotNull(event.getSetTileEntities());
 		Preconditions.checkNotNull(event.getLockCompileTask());

@@ -23,7 +23,7 @@ public class RebuildChunkBlockEventTest {
 
 		Preconditions.checkNotNull(event.getRenderChunk());
 		Preconditions.checkNotNull(event.getRenderGlobal());
-		Preconditions.checkNotNull(event.getWorldView());
+		Preconditions.checkNotNull(event.getChunkCache());
 		Preconditions.checkNotNull(event.getGenerator());
 		Preconditions.checkNotNull(event.getCompiledChunk());
 		Preconditions.checkNotNull(event.getBlockRendererDispatcher());

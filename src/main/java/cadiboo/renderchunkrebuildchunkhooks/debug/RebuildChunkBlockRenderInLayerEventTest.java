@@ -52,7 +52,7 @@ public class RebuildChunkBlockRenderInLayerEventTest {
 
 		/**
 		 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-		 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param chunkCache                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
 		 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
 		 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
 		 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
@@ -64,7 +64,7 @@ public class RebuildChunkBlockRenderInLayerEventTest {
 		 */
 
 		Preconditions.checkNotNull(event.getRenderChunk());
-		Preconditions.checkNotNull(event.getWorldView());
+		Preconditions.checkNotNull(event.getChunkCache());
 		Preconditions.checkNotNull(event.getCompiledChunk());
 		Preconditions.checkNotNull(event.getBlockRendererDispatcher());
 		Preconditions.checkNotNull(event.getRenderChunkPosition());
