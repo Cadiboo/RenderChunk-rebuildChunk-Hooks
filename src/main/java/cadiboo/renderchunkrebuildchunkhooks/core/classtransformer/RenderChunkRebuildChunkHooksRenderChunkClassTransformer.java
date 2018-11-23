@@ -65,7 +65,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	static {
 
 		if (DEBUG_NAMES) {
-			ObfuscationHelper.ObfuscationLevel oldDbfuscationLevel = OBFUSCATION_LEVEL;
+			ObfuscationHelper.ObfuscationLevel oldObfuscationLevel = OBFUSCATION_LEVEL;
 			for (ObfuscationHelper.ObfuscationLevel obfuscationLevel : ObfuscationHelper.ObfuscationLevel.values()) {
 				LOGGER.warn("Debbuging names for " + obfuscationLevel.name());
 				OBFUSCATION_LEVEL = obfuscationLevel;
@@ -79,7 +79,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info("ObfuscationMethod {}: {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
 				}
 			}
-			OBFUSCATION_LEVEL = oldDbfuscationLevel;
+			OBFUSCATION_LEVEL = oldObfuscationLevel;
 		}
 
 		if (DEBUG_STACKS) {
