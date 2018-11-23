@@ -307,7 +307,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 			if (instruction.getOpcode() == INVOKEVIRTUAL) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
 					//todo - better checking
-					if (((MethodInsnNode) instruction).name.equals(BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.name())) {
+					if (((MethodInsnNode) instruction).name.equals(BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getName())) {
 						INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = (MethodInsnNode) instruction;
 						break;
 					}
