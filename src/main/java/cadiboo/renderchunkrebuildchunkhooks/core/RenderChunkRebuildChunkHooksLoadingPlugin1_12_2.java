@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.core;
 
 import cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge;
+import cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
@@ -30,7 +31,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static boolean DEOBFUSCATED = false;
+	public static ObfuscationHelper.ObfuscationLevel OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.OBFUSCATED;
 
 	public static boolean OPTIFINE          = false;
 	public static boolean OptifineCheckDone = false;
@@ -51,6 +52,18 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	@Override
 	public String[] getASMTransformerClass() {
+
+		detectOtherCoremods();
+
+		if (OPTIFINE) {
+			return new String[] { "cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine" };
+		} else {
+			return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
+		}
+		//		return new String[0];
+	}
+
+	private void detectOtherCoremods() {
 
 		if (! OptifineCheckDone) {
 			try {
@@ -78,12 +91,6 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 			}
 		}
 
-		if (OPTIFINE) {
-			return new String[] { "cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine" };
-		} else {
-			return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
-		}
-		//		return new String[0];
 	}
 
 	@Override
@@ -101,15 +108,16 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	@Override
 	public void injectData(final Map<String, Object> data) {
 
-		DEOBFUSCATED = (boolean) data.get("runtimeDeobfuscationEnabled");
-		//		try {
-		//			final Class<?> optifineConfig = Class.forName("Config", false, Loader.instance().getModClassLoader());
-		//			final String optifineVersion = (String) optifineConfig.getField("VERSION").get(null);
-		//			OPTIFINE = true;
-		//			LOGGER.info("RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 has detected optifine {}, enabling compatibility features", optifineVersion);
-		//		} catch (final Exception e) {
-		//			OPTIFINE = false;
-		//		}
+		final boolean runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
+		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+		if (runtimeDeobfuscationEnabled) {
+			OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.SRG;
+		} else if (developerEnvironment) {
+			OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.DEOBFUSCATED;
+		} else {
+			OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.OBFUSCATED;
+		}
 
 		LOGGER.info("Pre-loading event classes...");
 		RebuildChunkPreEvent.class.getName();

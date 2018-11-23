@@ -8,8 +8,9 @@ import org.objectweb.asm.tree.MethodInsnNode;
 
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OPTIFINE;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_CAN_RENDER_IN_LAYER;
 
-public class InjectionHelper implements Opcodes, INames {
+public class InjectionHelper implements Opcodes {
 
 	public static AbstractInsnNode getCanRenderInBlockInjectionPoint(InsnList instructions) {
 
@@ -64,9 +65,11 @@ public class InjectionHelper implements Opcodes, INames {
 
 			if (instruction.getOpcode() == INVOKEVIRTUAL) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (((MethodInsnNode) instruction).desc.equals(Block_canRenderInLayer_DESC)) {
-						INVOKEVIRTUAL_Block_canRenderInLayer_Node = (MethodInsnNode) instruction;
-						break;
+					if (((MethodInsnNode) instruction).name.equals(BLOCK_CAN_RENDER_IN_LAYER.getName())) {
+						if (((MethodInsnNode) instruction).desc.equals(BLOCK_CAN_RENDER_IN_LAYER.getDescriptor())) {
+							INVOKEVIRTUAL_Block_canRenderInLayer_Node = (MethodInsnNode) instruction;
+							break;
+						}
 					}
 				}
 			}
@@ -165,6 +168,7 @@ public class InjectionHelper implements Opcodes, INames {
 
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
+					//TODO FIXME
 					if (((MethodInsnNode) instruction).name.equals("canRenderBlockInLayer")) {
 						if (((MethodInsnNode) instruction).desc.equals("(Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")) {
 							INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = (MethodInsnNode) instruction;
@@ -195,6 +199,7 @@ public class InjectionHelper implements Opcodes, INames {
 
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
+					//TODO FIXME
 					if (((MethodInsnNode) instruction).name.equals("canRenderBlockInLayer")) {
 						if (((MethodInsnNode) instruction).desc.equals("(Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")) {
 							INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = (MethodInsnNode) instruction;

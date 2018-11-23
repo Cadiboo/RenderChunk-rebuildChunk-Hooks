@@ -19,6 +19,8 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 import java.util.HashSet;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.*;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.*;
 
 /**
  * @author Cadiboo
@@ -59,8 +61,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 			if (instruction.getOpcode() == PUTSTATIC) {
 				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
 					final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
-					if (fieldInsnNode.desc.equals(Type.INT_TYPE.getDescriptor())) {
-						if (fieldInsnNode.name.equals(STATIC_FIELD_renderChunksUpdated)) {
+					if (fieldInsnNode.desc.equals(RENDER_CHUNK_RENDER_CHUNKS_UPDATED.getDescriptor())) {
+						if (fieldInsnNode.name.equals(RENDER_CHUNK_RENDER_CHUNKS_UPDATED.name())) {
 							PUTSTATIC_renderChunksUpdated_Node = fieldInsnNode;
 							break;
 						}
@@ -128,13 +130,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		 */
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_RENDER_GLOBAL.getName(), "Lnet/minecraft/client/renderer/RenderGlobal;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_x)); // x
 		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_y)); // y
 		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_z)); // z
@@ -201,12 +203,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderChunk - renderChunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // ChunkCache - worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockRendererDispatcher
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // visGraph
 		// tempInstructionList.add(new VarInsnNode(ALOAD, 13)); // blockPos
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockPos
@@ -245,7 +247,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 			if (instruction.getOpcode() == INVOKEVIRTUAL) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (((MethodInsnNode) instruction).name.equals(BlockRendererDispatcher_renderBlock)) {
+					//todo check desc etc.
+					if (((MethodInsnNode) instruction).name.equals(BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getName())) {
 						INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = (MethodInsnNode) instruction;
 						break;
 					}
@@ -335,9 +338,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_RENDER_GLOBAL.getName(), "Lnet/minecraft/client/renderer/RenderGlobal;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockrendererdispatcher
@@ -346,7 +349,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockpos$mutableblockpos (currentBlockPos)
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_bufferbuilder)); // bufferbuilder
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_aboolean)); // aboolean
 		//		tempInstructionList.add(new VarInsnNode(ALOAD, 17)); // blockrenderlayer1
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); // blockrenderlayer1
@@ -404,16 +407,16 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_POSITION_NAME, "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_RENDER_GLOBAL_NAME, "Lnet/minecraft/client/renderer/RenderGlobal;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_RENDER_GLOBAL.getName(), "Lnet/minecraft/client/renderer/RenderGlobal;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_WORLD_VIEW_NAME, "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // setTileEntities
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_setTileEntities, "Ljava/util/Set;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_SET_TILE_ENTITIES.getName(), "Ljava/util/Set;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // lockCompileTask
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", FIELD_lockCompileTask, "Ljava/util/concurrent/locks/ReentrantLock;"));
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_LOCK_COMPILE_TASK.getName(), "Ljava/util/concurrent/locks/ReentrantLock;"));
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkPostEvent",
 			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/VisGraph;Ljava/util/Set;Ljava/util/concurrent/locks/ReentrantLock;)V", false));
 

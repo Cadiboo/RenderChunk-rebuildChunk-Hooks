@@ -1,7 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
-import cadiboo.renderchunkrebuildchunkhooks.core.util.INames;
 import cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;
+import cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +24,9 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK;
 
 /**
  * @author Cadiboo
@@ -32,7 +35,7 @@ import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkH
 // useful links:
 // https://text-compare.com
 // http://www.minecraftforge.net/forum/topic/32600-1710-strange-error-with-custom-event-amp-event-handler/?do=findComment&comment=172480
-public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes, INames, IStacks {
+public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes, IStacks {
 
 	public static final List<String> IGNORED_PREFIXES = ImmutableList.of("cpw", "net.minecraftforge", "io", "org", "gnu", "com", "joptsimple");
 
@@ -59,17 +62,14 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	static {
 		if (DEBUG_NAMES) {
-			for (final Field field : INames.class.getFields()) {
-				Object value;
-				try {
-					value = field.get(INames.class);
-
-					LOGGER.info(field.getName() + ": " + value);
-
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					LOGGER.error("Error logging names!");
-					e.printStackTrace();
-				}
+			for (final ObfuscationHelper.ObfuscationClass obfuscationClass : ObfuscationHelper.ObfuscationClass.values()) {
+				LOGGER.info("{}: {}, {}", obfuscationClass.name(), obfuscationClass.getClassName(), obfuscationClass.getInternalName());
+			}
+			for (final ObfuscationHelper.ObfuscationField obfuscationField : ObfuscationHelper.ObfuscationField.values()) {
+				LOGGER.info("{}: {}", obfuscationField.name(), obfuscationField.getName());
+			}
+			for (final ObfuscationHelper.ObfuscationMethod obfuscationMethod : ObfuscationHelper.ObfuscationMethod.values()) {
+				LOGGER.info("{}: {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
 			}
 		}
 
@@ -97,11 +97,11 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 		if (DEBUG_CLASSES) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {
-				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(RENDER_CHUNK_TRANSFORMED_NAME) + ", transformedName equals: " + transformedName.equals(RENDER_CHUNK_TRANSFORMED_NAME));
+				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(RENDER_CHUNK.getClassName()) + ", transformedName equals: " + transformedName.equals(RENDER_CHUNK.getClassName()));
 			}
 		}
 
-		if (! transformedName.equals(RENDER_CHUNK_TRANSFORMED_NAME)) {
+		if (! transformedName.equals(RENDER_CHUNK.getClassName())) {
 			return basicClass;
 		}
 
@@ -130,14 +130,14 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		cr.accept(classNode, CLASS_READER_FLAGS);
 
 		if (DEBUG_TYPES) {
-			LOGGER.info("RebuildChunk type: " + REBUILD_CHUNK_TYPE);
-			LOGGER.info("RebuildChunk descriptor: " + REBUILD_CHUNK_DESCRIPTOR);
+			LOGGER.info("RebuildChunk type: " + RENDER_CHUNK_REBUILD_CHUNK.getType());
+			LOGGER.info("RebuildChunk descriptor: " + RENDER_CHUNK_REBUILD_CHUNK.getDescriptor());
 		}
 
 		// peek at classNode and modifier
 		for (final MethodNode method : classNode.methods) {
 
-			if (! method.desc.equals(REBUILD_CHUNK_DESCRIPTOR)) {
+			if (! method.desc.equals(RENDER_CHUNK_REBUILD_CHUNK.getDescriptor())) {
 				if (DEBUG_METHODS) {
 					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" did not match");
 				}
@@ -354,7 +354,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		}
 
 		// add back BlockRenderDispatcher.renderBlock ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
-		instructions.insert(INVOKESTATIC_Hooks_renderWorldBlock_Node, new MethodInsnNode(INVOKEVIRTUAL, BlockRendererDispatcher_INTERNAL_NAME, BlockRendererDispatcher_renderBlock, BlockRendererDispatcher_renderBlock_DESCRIPTION, false));
+		instructions.insert(INVOKESTATIC_Hooks_renderWorldBlock_Node, new MethodInsnNode(INVOKEVIRTUAL, BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getOwner().getInternalName(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getName(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getDescriptor(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.isInterface()));
 
 		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node.getPrevious());
 		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node);
