@@ -46,7 +46,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static final boolean DEBUG_DUMP_BYTECODE = true;
+	public static final boolean DEBUG_DUMP_BYTECODE = false;
 
 	public static final boolean DEBUG_EVERYTHING   = false;
 	public static final boolean DEBUG_CLASSES      = DEBUG_EVERYTHING | false;
