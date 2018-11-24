@@ -1,6 +1,8 @@
 package cadiboo.renderchunkrebuildchunkhooks.core.util;
 
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +39,12 @@ public class ObfuscationHelper {
 		I_BLOCK_ACCESS("net/minecraft/world/IBlockAccess", "net/minecraft/world/IBlockAccess", "amw"),
 		BUFFER_BUILDER("net/minecraft/client/renderer/BufferBuilder", "net/minecraft/client/renderer/BufferBuilder", "bui"),
 		TILE_ENTITY_RENDERER_DISPATCHER("net/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher", "net/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher", "bwv"),
-		BLOCK("net/minecraft/block/Block", "net/minecraft/block/Block", "aou");
+		BLOCK("net/minecraft/block/Block", "net/minecraft/block/Block", "aou"),
+		BETTER_FOLIAGE_HOOKS("mods/betterfoliage/client/Hooks", "mods/betterfoliage/client/Hooks", "mods/betterfoliage/client/Hooks"),
+		OPTIFINE_REFLECTOR_METHOD("net/optifine/reflect/ReflectorMethod", "net/optifine/reflect/ReflectorMethod", "net/optifine/reflect/ReflectorMethod"),
+		OPTIFINE_REFLECTOR("net/optifine/reflect/Reflector", "net/optifine/reflect/Reflector", "net/optifine/reflect/Reflector"),
+
+		;
 
 		private final String deobfuscatedName;
 		private final String srgName;
@@ -86,29 +93,40 @@ public class ObfuscationHelper {
 	public enum ObfuscationField {
 
 		// instance fields
-		RENDER_CHUNK_POSITION("position", "field_178586_f", "o", MUTABLE_BLOCK_POS),
-		RENDER_CHUNK_RENDER_GLOBAL("renderGlobal", "field_178589_e", "e", RENDER_GLOBAL),
-		RENDER_CHUNK_WORLD_VIEW("worldView", "field_189564_r", "r", CHUNK_CACHE),
-		RENDER_CHUNK_LOCK_COMPILE_TASK("lockCompileTask", "field_178587_g", "f", Type.getObjectType(Type.getInternalName(ReentrantLock.class))),
-		RENDER_CHUNK_SET_TILE_ENTITIES("setTileEntities", "field_181056_j", "i", Type.getObjectType(Type.getInternalName(HashSet.class))),
+		RENDER_CHUNK_POSITION(RENDER_CHUNK, "position", "field_178586_f", "o", MUTABLE_BLOCK_POS),
+		RENDER_CHUNK_RENDER_GLOBAL(RENDER_CHUNK, "renderGlobal", "field_178589_e", "e", RENDER_GLOBAL),
+		RENDER_CHUNK_WORLD_VIEW(RENDER_CHUNK, "worldView", "field_189564_r", "r", CHUNK_CACHE),
+		RENDER_CHUNK_LOCK_COMPILE_TASK(RENDER_CHUNK, "lockCompileTask", "field_178587_g", "f", Type.getObjectType(Type.getInternalName(ReentrantLock.class))),
+		RENDER_CHUNK_SET_TILE_ENTITIES(RENDER_CHUNK, "setTileEntities", "field_181056_j", "i", Type.getObjectType(Type.getInternalName(HashSet.class))),
 
 		// static fields
-		RENDER_CHUNK_RENDER_CHUNKS_UPDATED("renderChunksUpdated", "field_178592_a", "a", INT_TYPE),
-		TILE_ENTITY_RENDERER_DISPATCHER_INSTANCE("instance", "field_147556_a", "a", TILE_ENTITY_RENDERER_DISPATCHER),
+		RENDER_CHUNK_RENDER_CHUNKS_UPDATED(RENDER_CHUNK, "renderChunksUpdated", "field_178592_a", "a", INT_TYPE),
+		TILE_ENTITY_RENDERER_DISPATCHER_INSTANCE(TILE_ENTITY_RENDERER_DISPATCHER, "instance", "field_147556_a", "a", TILE_ENTITY_RENDERER_DISPATCHER),
+
+		OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER(OPTIFINE_REFLECTOR, "ForgeBlock_canRenderInLayer","ForgeBlock_canRenderInLayer","ForgeBlock_canRenderInLayer", OPTIFINE_REFLECTOR_METHOD)
 
 		;
 
-		private final String deobfuscatedName;
-		private final String srgName;
-		private final String obfuscatedName;
-		private final Object type;
+		private final ObfuscationClass owner;
+		private final String           deobfuscatedName;
+		private final String           srgName;
+		private final String           obfuscatedName;
+		private final Object           type;
 
-		ObfuscationField(String deobfuscatedName, String srgName, String obfuscatedName, Object type) {
+		ObfuscationField(ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object type) {
 
+			this.owner = owner;
 			this.deobfuscatedName = deobfuscatedName;
 			this.srgName = srgName;
 			this.obfuscatedName = obfuscatedName;
 			this.type = type;
+
+		}
+
+		public ObfuscationClass getOwner() {
+
+			return owner;
+
 		}
 
 		/**
@@ -143,6 +161,24 @@ public class ObfuscationHelper {
 			}
 
 			return type.getDescriptor();
+
+		}
+
+		public boolean matches(FieldInsnNode field) {
+
+			if (! field.owner.equals(this.getOwner().getInternalName())) {
+				return false;
+			}
+
+			if (! field.name.equals(this.getName())) {
+				return false;
+			}
+
+			if (! field.desc.equals(this.getDescriptor())) {
+				return false;
+			}
+
+			return true;
 
 		}
 
@@ -203,6 +239,13 @@ public class ObfuscationHelper {
 		// forge added method
 		BLOCK_CAN_RENDER_IN_LAYER(BLOCK, "canRenderInLayer", "canRenderInLayer", "canRenderInLayer", BOOLEAN_TYPE, new Object[] {
 			I_BLOCK_STATE, BLOCK_RENDER_LAYER
+		}, false),
+		// forge added method
+		BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER(BETTER_FOLIAGE_HOOKS, "canRenderBlockInLayer", "canRenderBlockInLayer", "canRenderBlockInLayer", BOOLEAN_TYPE, new Object[] {
+			BLOCK, I_BLOCK_STATE, BLOCK_RENDER_LAYER
+		}, false),
+		OPTIFINE_REFLECTOR_METHOD_EXISTS(OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[] {
+
 		}, false)
 
 		//		CHUNK_COMPILE_TASK_GENERATOR_GET_LOCK("add", "func_177982_a", "f"),
@@ -246,6 +289,7 @@ public class ObfuscationHelper {
 		public ObfuscationClass getOwner() {
 
 			return owner;
+
 		}
 
 		/**
@@ -303,12 +347,37 @@ public class ObfuscationHelper {
 		public Type getType() {
 
 			return Type.getMethodType(this.getDescriptor());
+
 		}
 
 		public boolean isInterface() {
 
 			return isInterface;
+
 		}
+
+		public boolean matches(MethodInsnNode method) {
+
+			if (! method.owner.equals(this.getOwner().getInternalName())) {
+				return false;
+			}
+
+			if (! method.name.equals(this.getName())) {
+				return false;
+			}
+
+			if (! method.desc.equals(this.getDescriptor())) {
+				return false;
+			}
+
+			if (! method.itf == this.isInterface()) {
+				return false;
+			}
+
+			return true;
+
+		}
+
 	}
 
 }
