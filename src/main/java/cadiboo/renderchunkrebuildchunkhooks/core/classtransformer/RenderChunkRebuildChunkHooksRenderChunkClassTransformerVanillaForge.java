@@ -175,7 +175,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		final InsnList tempInstructionList = new InsnList();
 
-		// TODO find ALOAD refrences instead of hardcoding them
+		// TODO find ALOAD refrences instead of hardcoding them?
 
 		// Inject a call to RenderChunkRebuildChunkHooksHooks#canBlockRenderInLayer()} AFTER the call to block.canRenderInLayer(iblockstate, blockrenderlayer1)
 		// add our hook
