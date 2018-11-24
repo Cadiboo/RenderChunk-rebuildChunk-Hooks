@@ -5,7 +5,7 @@ import cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
-import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyContainer;
+import cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -18,7 +18,10 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
-@Name(RenderChunkRebuildChunkHooksDummyContainer.MOD_NAME)
+import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID;
+import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_NAME;
+
+@Name(MOD_NAME)
 @MCVersion("1.12.2")
 @TransformerExclusions({ "cadiboo.renderchunkrebuildchunkhooks.core." })
 /** How early your core mod is called - Use > 1000 to work with srg names */
@@ -27,7 +30,7 @@ import java.util.Map;
 //put in _VM_ arguments -Dfml.coreMods.load=cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
 public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoadingPlugin {
 
-	public static final String CORE_MARKER = RenderChunkRebuildChunkHooksDummyContainer.MOD_NAME + " Loaded";
+	public static final String CORE_MARKER = MOD_ID + " Loaded";
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
@@ -60,7 +63,6 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 		} else {
 			return new String[] { RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName() };
 		}
-		//		return new String[0];
 	}
 
 	private void detectOtherCoremods() {
@@ -96,12 +98,12 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	@Override
 	public String getModContainerClass() {
 
-		return RenderChunkRebuildChunkHooksDummyContainer.class.getName();
+		return RenderChunkRebuildChunkHooksDummyModContainer.class.getName();
 	}
 
 	@Override
 	public String getSetupClass() {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 
