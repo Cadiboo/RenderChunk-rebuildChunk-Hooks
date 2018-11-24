@@ -15,12 +15,9 @@ import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
@@ -45,7 +42,8 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static final boolean DEBUG_DUMP_BYTECODE = false;
+	// TODO dump it in the Minecraft directory?
+	//	public static final boolean DEBUG_DUMP_BYTECODE = false;
 
 	public static final boolean DEBUG_EVERYTHING   = false;
 	public static final boolean DEBUG_CLASSES      = DEBUG_EVERYTHING | false;
@@ -116,23 +114,23 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			return basicClass;
 		}
 
-		if (DEBUG_DUMP_BYTECODE) {
-			try {
-				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
-				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
-				final ClassReader reader = new ClassReader(basicClass);
-				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
-				reader.accept(tracingVisitor, 0);
-
-				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
-				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
-				fileOutputStream.write(basicClass);
-				fileOutputStream.close();
-			} catch (final Exception exception) {
-				LOGGER.error("Failed to dump bytecode of classes before injecting hooks!");
-				exception.printStackTrace();
-			}
-		}
+		//		if (DEBUG_DUMP_BYTECODE) {
+		//			try {
+		//				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
+		//				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+		//				final ClassReader reader = new ClassReader(basicClass);
+		//				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+		//				reader.accept(tracingVisitor, 0);
+		//
+		//				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
+		//				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+		//				fileOutputStream.write(basicClass);
+		//				fileOutputStream.close();
+		//			} catch (final Exception exception) {
+		//				LOGGER.error("Failed to dump bytecode of classes before injecting hooks!");
+		//				exception.printStackTrace();
+		//			}
+		//		}
 
 		LOGGER.info("Preparing to inject hooks into \"" + transformedName + "\" (RenderChunk)");
 
@@ -192,25 +190,25 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 			LOGGER.info("Injected hooks successfully!");
 
-			if (DEBUG_DUMP_BYTECODE) {
-				try {
-					final byte[] bytes = out.toByteArray();
-
-					final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
-					final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
-					final ClassReader reader = new ClassReader(bytes);
-					final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
-					reader.accept(tracingVisitor, 0);
-
-					final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
-					final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
-					fileOutputStream.write(bytes);
-					fileOutputStream.close();
-				} catch (final Exception exception) {
-					LOGGER.error("Failed to dump bytecode of classes after injecting hooks!");
-					exception.printStackTrace();
-				}
-			}
+			//			if (DEBUG_DUMP_BYTECODE) {
+			//				try {
+			//					final byte[] bytes = out.toByteArray();
+			//
+			//					final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
+			//					final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+			//					final ClassReader reader = new ClassReader(bytes);
+			//					final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+			//					reader.accept(tracingVisitor, 0);
+			//
+			//					final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
+			//					final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+			//					fileOutputStream.write(bytes);
+			//					fileOutputStream.close();
+			//				} catch (final Exception exception) {
+			//					LOGGER.error("Failed to dump bytecode of classes after injecting hooks!");
+			//					exception.printStackTrace();
+			//				}
+			//			}
 
 			return out.toByteArray();
 		} catch (final Exception e) {
