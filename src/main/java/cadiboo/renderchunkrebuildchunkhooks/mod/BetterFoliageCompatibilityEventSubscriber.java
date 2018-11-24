@@ -27,7 +27,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 
 		boolean used = mods.betterfoliage.client.Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), blockRenderLayer);
 
-		event.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] = used;
+		event.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] |= used;
 
 		event.setCanceled(true);
 
