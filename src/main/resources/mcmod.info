@@ -6,7 +6,7 @@
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "_Programatically_generated",
-  "updateUrl": "",
+  "updateJSON": "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/update.json",
   "authorList": ["Cadiboo"],
   "credits": "The Forge and FML guys for Forge and FML and Cadiboo for making the mod",
   "logoFile": "",
