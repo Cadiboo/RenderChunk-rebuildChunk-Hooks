@@ -26,8 +26,7 @@ import java.util.List;
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
-import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
-import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.*;
 
 /**
  * @author Cadiboo
@@ -50,6 +49,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public static final boolean DEBUG_EVERYTHING   = false;
 	public static final boolean DEBUG_CLASSES      = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_FIELDS       = DEBUG_EVERYTHING | false;
 	//may cause issues, use with care
 	public static final boolean DEBUG_NAMES        = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_TYPES        = DEBUG_EVERYTHING | false;
@@ -74,10 +74,10 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info("ObfuscationClass {}: {}, {}", obfuscationClass.name(), obfuscationClass.getClassName(), obfuscationClass.getInternalName());
 				}
 				for (final ObfuscationHelper.ObfuscationField obfuscationField : ObfuscationHelper.ObfuscationField.values()) {
-					LOGGER.info("ObfuscationField {}: {}", obfuscationField.name(), obfuscationField.getName());
+					LOGGER.info("ObfuscationField {}: {}, {}, {}", obfuscationField.name(), obfuscationField.getOwner(), obfuscationField.getName(), obfuscationField.getDescriptor());
 				}
 				for (final ObfuscationHelper.ObfuscationMethod obfuscationMethod : ObfuscationHelper.ObfuscationMethod.values()) {
-					LOGGER.info("ObfuscationMethod {}: {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
+					LOGGER.info("ObfuscationMethod {}: {}, {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getName(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
 				}
 			}
 			OBFUSCATION_LEVEL = oldObfuscationLevel;
@@ -128,8 +128,9 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
 				fileOutputStream.write(basicClass);
 				fileOutputStream.close();
-			} catch (final Exception e) {
-				// TODO: handle exception
+			} catch (final Exception exception) {
+				LOGGER.error("Failed to dump bytecode of classes before injecting hooks!");
+				exception.printStackTrace();
 			}
 		}
 
@@ -140,13 +141,20 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		final ClassReader cr = new ClassReader(basicClass);
 		cr.accept(classNode, CLASS_READER_FLAGS);
 
+		if (DEBUG_FIELDS) {
+			for (final FieldNode field : classNode.fields) {
+				LOGGER.info(fieldToString(field));
+			}
+		}
+
 		if (DEBUG_TYPES) {
 			LOGGER.info("RebuildChunk type: " + RENDER_CHUNK_REBUILD_CHUNK.getType());
 			LOGGER.info("RebuildChunk descriptor: " + RENDER_CHUNK_REBUILD_CHUNK.getDescriptor());
 		}
 
-		// peek at classNode and modifier
 		for (final MethodNode method : classNode.methods) {
+
+			//TODO RENDER_CHUNK_REBUILD_CHUNK.matches()
 
 			if (! method.desc.equals(RENDER_CHUNK_REBUILD_CHUNK.getDescriptor())) {
 				if (DEBUG_METHODS) {
@@ -198,8 +206,9 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
 					fileOutputStream.write(bytes);
 					fileOutputStream.close();
-				} catch (final Exception e) {
-					// TODO: handle exception
+				} catch (final Exception exception) {
+					LOGGER.error("Failed to dump bytecode of classes after injecting hooks!");
+					exception.printStackTrace();
 				}
 			}
 
@@ -345,11 +354,8 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (((MethodInsnNode) instruction).name.equals("renderWorldBlock")) {
-						//TODO
-						if (((MethodInsnNode) instruction).desc.equals("(Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/BlockRenderLayer;)Z")) {
-							INVOKESTATIC_Hooks_renderWorldBlock_Node = (MethodInsnNode) instruction;
-						}
+					if (BETTER_FOLIAGE_RENDER_WORLD_BLOCK.matches((MethodInsnNode) instruction)) {
+						INVOKESTATIC_Hooks_renderWorldBlock_Node = (MethodInsnNode) instruction;
 						break;
 					}
 				}

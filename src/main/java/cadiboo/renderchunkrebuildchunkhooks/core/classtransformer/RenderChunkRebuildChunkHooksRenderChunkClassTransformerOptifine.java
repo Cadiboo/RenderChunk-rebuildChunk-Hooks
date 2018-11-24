@@ -71,12 +71,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 			if (instruction.getOpcode() == PUTSTATIC) {
 				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
-					final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
-					if (fieldInsnNode.desc.equals(RENDER_CHUNK_RENDER_CHUNKS_UPDATED.getDescriptor())) {
-						if (fieldInsnNode.name.equals(RENDER_CHUNK_RENDER_CHUNKS_UPDATED.getName())) {
-							PUTSTATIC_renderChunksUpdated_Node = fieldInsnNode;
-							break;
-						}
+					if (RENDER_CHUNK_RENDER_CHUNKS_UPDATED.matches((FieldInsnNode) instruction)) {
+						PUTSTATIC_renderChunksUpdated_Node = (FieldInsnNode) instruction;
+						break;
 					}
 				}
 			}
@@ -305,8 +302,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 			if (instruction.getOpcode() == INVOKEVIRTUAL) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					//todo - better checking
-					if (((MethodInsnNode) instruction).name.equals(BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getName())) {
+					if (BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.matches((MethodInsnNode) instruction)) {
 						INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = (MethodInsnNode) instruction;
 						break;
 					}

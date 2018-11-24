@@ -130,8 +130,9 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 
 	@Override
 	public String getAccessTransformerClass() {
-		// TODO Auto-generated method stub
+
 		return null;
+
 	}
 
 }

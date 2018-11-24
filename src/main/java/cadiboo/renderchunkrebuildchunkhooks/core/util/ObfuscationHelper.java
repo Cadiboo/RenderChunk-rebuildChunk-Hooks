@@ -103,9 +103,7 @@ public class ObfuscationHelper {
 		RENDER_CHUNK_RENDER_CHUNKS_UPDATED(RENDER_CHUNK, "renderChunksUpdated", "field_178592_a", "a", INT_TYPE),
 		TILE_ENTITY_RENDERER_DISPATCHER_INSTANCE(TILE_ENTITY_RENDERER_DISPATCHER, "instance", "field_147556_a", "a", TILE_ENTITY_RENDERER_DISPATCHER),
 
-		OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER(OPTIFINE_REFLECTOR, "ForgeBlock_canRenderInLayer","ForgeBlock_canRenderInLayer","ForgeBlock_canRenderInLayer", OPTIFINE_REFLECTOR_METHOD)
-
-		;
+		OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER(OPTIFINE_REFLECTOR, "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", OPTIFINE_REFLECTOR_METHOD);
 
 		private final ObfuscationClass owner;
 		private final String           deobfuscatedName;
@@ -184,44 +182,6 @@ public class ObfuscationHelper {
 
 	}
 
-	//		// methods
-	//		String RENDER_CHUNK_preRenderBlocks                          = DEOBFUSCATED ? "preRenderBlocks" : "func_178573_a";                // a
-	//		String RENDER_CHUNK_postRenderBlocks                         = DEOBFUSCATED ? "postRenderBlocks" : "func_178584_a";                // a
-	//		String ChunkCompileTaskGenerator_getLock                     = DEOBFUSCATED ? "getLock" : "func_178540_f";
-	//		String BLOCKPOS_add_III                                      = DEOBFUSCATED ? "add" : "func_177982_a";
-	//		String ChunkCompileTaskGenerator_getStatus                   = DEOBFUSCATED ? "getStatus" : "func_178546_a";
-	//		String ChunkCompileTaskGenerator_setCompiledChunk            = DEOBFUSCATED ? "setCompiledChunk" : "func_178543_a";
-	//		String CHUNK_CACHE_isEmpty                                   = DEOBFUSCATED ? "isEmpty" : "func_72806_N";
-	//		String MINECRAFT_getBlockRendererDispatcher                  = DEOBFUSCATED ? "getBlockRendererDispatcher" : "func_175602_ab";
-	//		String CHUNK_CACHE_getBlockState                             = DEOBFUSCATED ? "getBlockState" : "func_180495_p";                    // uhh... Forge Bot says no info for 1.12, using 1.13 name
-	//		String BLOCK_hasTileEntity_IBlockState                       = "hasTileEntity";                                                    // forge added method
-	//		String VIS_GRAPH_setOpaqueCube                               = DEOBFUSCATED ? "setOpaqueCube" : "func_178606_a";
-	//		String CHUNK_CACHE_getTileEntity                             = DEOBFUSCATED ? "getTileEntity" : "func_190300_a";
-	//		String TileEntityRendererDispatcher_getRenderer_TE_TESR      = DEOBFUSCATED ? "getRenderer" : "func_147547_b";
-	//		String TileEntitySpecialRenderer_isGlobalRenderer            = "isGlobalRenderer";                                                // uhh... Forge Bot says no info for the entire TileEntitySpecialRenderer class
-	//		String COMPILED_CHUNK_addTileEntity                          = DEOBFUSCATED ? "addTileEntity" : "func_178490_a";
-	//		String BLOCK_canRenderInLayer                                = "canRenderInLayer";                                                // forge added method
-	//		String BLOCK_getDefaultState                                 = DEOBFUSCATED ? "getDefaultState" : "func_176223_P";
-	//		String ChunkCompileTaskGenerator_getRegionRenderCacheBuilder = DEOBFUSCATED ? "getRegionRenderCacheBuilder" : "func_178545_d";
-	//		String RegionRenderCacheBuilder_getWorldRendererByLayerId    = DEOBFUSCATED ? "getWorldRendererByLayerId" : "func_179039_a";
-	//		String COMPILED_CHUNK_isLayerStarted                         = DEOBFUSCATED ? "isLayerStarted" : "func_178492_d";
-	//		String COMPILED_CHUNK_setLayerStarted                        = DEOBFUSCATED ? "setLayerStarted" : "func_178493_c";
-	//		String COMPILED_CHUNK_setLayerUsed                           = DEOBFUSCATED ? "setLayerUsed" : "func_178486_a";
-	//		String BlockRendererDispatcher_renderBlock                   = DEOBFUSCATED ? "renderBlock" : "func_175018_a";
-	//		String RegionRenderCacheBuilder_getWorldRendererByLayer      = DEOBFUSCATED ? "getWorldRendererByLayer" : "func_179038_a";
-	//		String VIS_GRAPH_computeVisibility                           = DEOBFUSCATED ? "computeVisibility" : "func_178607_a";
-	//		String COMPILED_CHUNK_setVisibility                          = DEOBFUSCATED ? "setVisibility" : "func_178488_a";
-	//		String RENDER_GLOBAL_updateTileEntities                      = DEOBFUSCATED ? "updateTileEntities" : "func_181023_a";
-	//
-	//		// INVOKESTATIC
-	//		String BlockPos_getAllInBoxMutable_BP_BP_Iterable = DEOBFUSCATED ? "getAllInBoxMutable" : "";
-	//		String Minecraft_getMinecraft                     = DEOBFUSCATED ? "getMinecraft" : "func_71410_x";
-	//
-	//		// INVOKEINTERFACE
-	//		String IBlockState_getBlock      = DEOBFUSCATED ? "getBlock" : "func_177230_c";
-	//		String IBlockState_isOpaqueCube  = DEOBFUSCATED ? "isOpaqueCube" : "func_185914_p";    // from IBlockProperties
-	//		String IBlockState_getRenderType = DEOBFUSCATED ? "getRenderType" : "func_185901_i";    // from IBlockProperties
-
 	public enum ObfuscationMethod {
 
 		RENDER_CHUNK_REBUILD_CHUNK(RENDER_CHUNK, "rebuildChunk", "func_178581_b", "b", VOID_TYPE, new Object[] {
@@ -240,30 +200,16 @@ public class ObfuscationHelper {
 		BLOCK_CAN_RENDER_IN_LAYER(BLOCK, "canRenderInLayer", "canRenderInLayer", "canRenderInLayer", BOOLEAN_TYPE, new Object[] {
 			I_BLOCK_STATE, BLOCK_RENDER_LAYER
 		}, false),
-		// forge added method
 		BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER(BETTER_FOLIAGE_HOOKS, "canRenderBlockInLayer", "canRenderBlockInLayer", "canRenderBlockInLayer", BOOLEAN_TYPE, new Object[] {
 			BLOCK, I_BLOCK_STATE, BLOCK_RENDER_LAYER
 		}, false),
 		OPTIFINE_REFLECTOR_METHOD_EXISTS(OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[] {
 
-		}, false)
+		}, false),
+		BETTER_FOLIAGE_RENDER_WORLD_BLOCK(BETTER_FOLIAGE_HOOKS, "renderWorldBlock", "renderWorldBlock", "renderWorldBlock", BOOLEAN_TYPE, new Object[] {
+			BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
+		}, false),
 
-		//		CHUNK_COMPILE_TASK_GENERATOR_GET_LOCK("add", "func_177982_a", "f"),
-		//		BLOCKPOS_ADD_int("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
-		//		NAME("deobf", "srg", "obf"),
 		;
 
 		private final ObfuscationClass owner;
