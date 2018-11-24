@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.LoadController;
@@ -21,16 +23,25 @@ import java.util.Arrays;
 
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 
-public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContainer {
+public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModContainer {
 
-	public static final String MOD_ID      = "renderchunkrebuildchunkhooks";
+	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
+
+	static {
+		if (MOD_ID.length() > 64) {
+			final IllegalStateException exception = new IllegalStateException("Mod Id is too long!");
+			CrashReport crashReport = new CrashReport("Mod Id must be 64 characters or shorter!", exception);
+			crashReport.makeCategory("Constructing Mod");
+		}
+	}
+
 	public static final String MOD_NAME    = "RenderChunk rebuildChunk Hooks";
 	public static final String MOD_VERSION = "0.0.0.0";
 
 	// Directly reference a log4j logger.
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public RenderChunkRebuildChunkHooksDummyContainer() {
+	public RenderChunkRebuildChunkHooksDummyModContainer() {
 
 		super(new ModMetadata());
 
@@ -71,6 +82,10 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 
 		if (event.getSide().isClient()) {
 
+			ConfigManager.sync(MOD_ID, Config.Type.INSTANCE);
+
+			MinecraftForge.EVENT_BUS.register(new RenderChunkRebuildChunkHooksEventSubscriber());
+
 			tryPreloadRenderChunk();
 
 			tryRegisterBetterFoliageCompatibleEventSubscriber();
@@ -82,8 +97,12 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 	private void tryPreloadRenderChunk() {
 
 		LOGGER.info("Preloading RenderChunk...");
-		RenderChunk.class.getName();
-		final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
+		{
+			RenderChunk.class.getName();
+			LOGGER.info("Loaded RenderChunk, initialising...");
+			final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
+			LOGGER.info("Initialised RenderChunk");
+		}
 		LOGGER.info("Successfully preloaded RenderChunk!");
 
 	}
@@ -91,7 +110,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 	private void tryRegisterBetterFoliageCompatibleEventSubscriber() {
 
 		if (BETTER_FOLIAGE) {
-			LOGGER.info("Registering BetterFoliage compatible EventSubscriber...");
+			LOGGER.info("Registering BetterFoliage compatibility EventSubscriber...");
 			final Class<?> betterFoliageCompatibilityEventSubscriberClass;
 			try {
 				betterFoliageCompatibilityEventSubscriberClass = Class.forName("cadiboo.renderchunkrebuildchunkhooks.mod.BetterFoliageCompatibilityEventSubscriber");
@@ -101,10 +120,10 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 				MinecraftForge.EVENT_BUS.register(betterFoliageCompatibilityEventSubscriber);
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
 				CrashReport crashReport = new CrashReport("Error finding or registering BetterFoliage compatible EventSubscriber", exception);
-				crashReport.makeCategory("Registering BetterFoliage compatible EventSubscriber");
+				crashReport.makeCategory("Registering BetterFoliage compatibility EventSubscriber");
 				throw new ReportedException(crashReport);
 			}
-			LOGGER.info("Registered BetterFoliage compatible EventSubscriber");
+			LOGGER.info("Registered BetterFoliage compatibility EventSubscriber");
 		}
 
 	}
@@ -114,6 +133,7 @@ public class RenderChunkRebuildChunkHooksDummyContainer extends DummyModContaine
 
 		bus.register(this);
 		return true;
+
 	}
 
 }

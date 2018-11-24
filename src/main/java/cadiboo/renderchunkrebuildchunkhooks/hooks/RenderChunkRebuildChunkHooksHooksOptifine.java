@@ -71,7 +71,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 
 		final RebuildChunkPreOptifineEvent event = new RebuildChunkPreOptifineEvent(renderChunk, renderGlobal, chunkCacheOF, generator, compiledChunk, renderChunkPosition, x, y, z);
 
-		if (ModConfig.enableRebuildChunkPreEvent) {
+		if (ModConfig.shouldPostRebuildChunkPreEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -99,7 +99,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 
 		final RebuildChunkBlockRenderInLayerOptifineEvent event = new RebuildChunkBlockRenderInLayerOptifineEvent(renderChunk, chunkCacheOF, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 
-		if (ModConfig.enableRebuildChunkBlockRenderInLayerEvent) {
+		if (ModConfig.shouldPostRebuildChunkBlockRenderInLayerEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -140,7 +140,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 
 		final RebuildChunkBlockOptifineEvent event = new RebuildChunkBlockOptifineEvent(renderChunk, renderGlobal, chunkCacheOF, generator, compiledChunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 
-		if (ModConfig.enableRebuildChunkBlockEvent) {
+		if (ModConfig.shouldPostRebuildChunkBlockEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -165,7 +165,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 
 		final RebuildChunkPostOptifineEvent event = new RebuildChunkPostOptifineEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, chunkCacheOF, visGraph, setTileEntities, lockCompileTask);
 
-		if (ModConfig.enableRebuildChunkBlockEvent) {
+		if (ModConfig.shouldPostRebuildChunkPostEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 

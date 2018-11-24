@@ -96,7 +96,7 @@ public class RenderChunkRebuildChunkHooksHooks {
 
 		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, renderChunkPosition, x, y, z);
 
-		if (ModConfig.enableRebuildChunkPreEvent) {
+		if (ModConfig.shouldPostRebuildChunkPreEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -124,7 +124,7 @@ public class RenderChunkRebuildChunkHooksHooks {
 
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 
-		if (ModConfig.enableRebuildChunkBlockRenderInLayerEvent) {
+		if (ModConfig.shouldPostRebuildChunkBlockRenderInLayerEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -165,7 +165,7 @@ public class RenderChunkRebuildChunkHooksHooks {
 
 		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 
-		if (ModConfig.enableRebuildChunkBlockEvent) {
+		if (ModConfig.shouldPostRebuildChunkBlockEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -190,7 +190,7 @@ public class RenderChunkRebuildChunkHooksHooks {
 
 		final RebuildChunkPostEvent event = new RebuildChunkPostEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, worldView, visGraph, setTileEntities, lockCompileTask);
 
-		if (ModConfig.enableRebuildChunkBlockEvent) {
+		if (ModConfig.shouldPostRebuildChunkPostEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
