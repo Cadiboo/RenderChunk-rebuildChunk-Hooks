@@ -61,10 +61,10 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 		meta.modId = MOD_ID;
 		meta.name = MOD_NAME;
 		meta.version = MOD_VERSION;
-		meta.credits = "Me, Myself and I";
+		meta.credits = "The Forge and FML guys for Forge and FML and Cadiboo for making the mod";
 		meta.authorList = Arrays.asList("Cadiboo", "CosmicDan");
 		meta.description = Strings.join(description, "\n");
-		meta.url = "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks";
+		meta.url = "https://cadiboo.github.io/projects/" + MOD_ID;
 		meta.updateJSON = "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/update.json";
 		meta.screenshots = new String[0];
 		meta.logoFile = "/" + MOD_ID + "_logo.png";

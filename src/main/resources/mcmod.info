@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "render_chunk_rebuild_chunk_hooks",
+  "name": "RenderChunk rebuildChunk Hooks",
+  "description": "A small(ish) coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to allow modders to add their own custom chunk rendering logic and other chunk rendering related modifications.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "_Programatically_generated",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Cadiboo"],
+  "credits": "The Forge and FML guys for Forge and FML and Cadiboo for making the mod",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
