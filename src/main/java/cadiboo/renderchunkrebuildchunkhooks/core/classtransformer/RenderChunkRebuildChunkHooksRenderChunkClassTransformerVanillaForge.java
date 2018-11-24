@@ -15,12 +15,12 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 import java.util.HashSet;
-import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.*;
+
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.*;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
 
 /**
  * @author Cadiboo
