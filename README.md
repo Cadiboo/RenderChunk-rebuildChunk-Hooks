@@ -5,14 +5,17 @@ A small(ish) coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to
 ## [Download (click)](https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/releases)
 
 ## Support
-We currently support
-- Forge 1.12.2 - 14.23.5.2775
-- BetterFoliage on Forge 1.12.2 - 14.23.5.2775
-- Forge 1.12.2 - 14.23.5.2768
-- BetterFoliage on Forge 1.12.2 - 14.23.5.2768
-- Forge 1.12.2 - 14.23.4.2725
-- Optifine HD_U_E2 on Forge 1.12.2 - 14.23.4.2725
-- BetterFoliage and Optifine HD_U_E2 on Forge 1.12.2 - 14.23.4.2725
+We currently support any combination of the below **on the same Forge version**
+
+| Name          | Version       | Forge Version         | Minecraft Version|
+| ------------- | ------------- | --------------------- | ---------------- |
+| Forge         | 14.23.5.2775  | 1.12.2 - 14.23.5.2775 | 1.12.2           |
+| BetterFoliage | MC1.12-2.2.0  | 1.12.2 - 14.23.5.2775 | 1.12.2           |
+| Forge         | 14.23.5.2768  | 1.12.2 - 14.23.5.2768 | 1.12.2           |
+| BetterFoliage | MC1.12-2.2.0  | 1.12.2 - 14.23.5.2768 | 1.12.2           |
+| Forge         | 14.23.4.2725  | 1.12.2 - 14.23.4.2725 | 1.12.2           |
+| BetterFoliage | MC1.12-2.2.0  | 1.12.2 - 14.23.4.2725 | 1.12.2           |
+| Optifine      | HD_U_E2       | 1.12.2 - 14.23.4.2725 | 1.12.2           |
 
 Note: The mod _should_ work all Forge 1.12.2 versions (actually all 1.12.x versions if you remove the version restrictions) but due to the amount of work required to test the mod on all of them, we only officially support the above versions.
 ## Compatability
