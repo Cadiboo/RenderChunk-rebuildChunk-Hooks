@@ -47,11 +47,13 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 
 		final ArrayList<String> description = new ArrayList<>();
 		description.add("A small(ish) coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to allow modders to add their own custom chunk rendering logic and other chunk rendering related modifications.");
-		description.add("This mod provides (WIP disableable) events that Modders can use for various chunk/world-related rendering logic");
+		description.add("This mod provides configurable events that Modders can use for various chunk/world-related rendering logic");
 		description.add(" - The RebuildChunkPreEvent is called before any chunk rebuilding is done");
 		description.add("    - RebuildChunkPreOptifineEvent is the same as the RebuildChunkPreEvent but allows access to Optifine-related objects");
 		description.add(" - The RebuildChunkBlockRenderInLayerEvent allows modders to modify the BlockRenderLayers that blocks can render in");
 		description.add("    - RebuildChunkBlockRenderInLayerOptifineEvent is the same as the RebuildChunkBlockRenderInLayerEvent but allows access to Optifine-related objects");
+		description.add(" - The RebuildChunkBlockRenderInTypeEvent allows modders to modify the EnumBlockRenderType that blocks can render in");
+		description.add("    - RebuildChunkBlockRenderInTypeOptifineEvent is the same as the RebuildChunkBlockRenderInTypeEvent but allows access to Optifine-related objects");
 		description.add(" - The RebuildChunkBlockEvent is called for each BlockRenderLayers of each block and allows Modders to add their own logic");
 		description.add("    - RebuildChunkBlockOptifineEvent is the same as the RebuildChunkBlockEvent but allows access to Optifine-related objects");
 		description.add(" - The RebuildChunkPostEvent is called after all chunk rebuilding logic is done");

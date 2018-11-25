@@ -15,5 +15,6 @@ public interface IStacks {
 	int ALOAD_aboolean                                 = 11;
 	int ALOAD_blockrenderlayer1                        = 20;
 	int ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers = 10;
+	int ALOAD_block                                    = 16;
 
 }

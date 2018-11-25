@@ -58,7 +58,8 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final boolean REMOVE_BetterFoliagesModifications         = BETTER_FOLIAGE & true;
 	public static final boolean INJECT_RebuildChunkPreEvent                = true;
 	public static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
-	public static final boolean INJECT_RebuildRebuildChunkBlockEvent       = true;
+	public static final boolean INJECT_RebuildChunkBlockRenderInTypeEvent  = true;
+	public static final boolean INJECT_RebuildChunkBlockEvent              = true;
 	public static final boolean INJECT_RebuildChunkPostEvent               = true;
 
 	static {
@@ -279,17 +280,36 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (INJECT_RebuildRebuildChunkBlockEvent) {
-			LOGGER.info("injecting RebuildRebuildChunkBlockEvent Hook...");
+		if (INJECT_RebuildChunkBlockRenderInTypeEvent) {
+			LOGGER.info("injecting RebuildChunkBlockRenderInTypeEvent Hook...");
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+			if (this.injectRebuildChunkBlockRenderInTypeEventHook(instructions)) {
+				LOGGER.info("injected RebuildChunkBlockRenderInTypeEvent Hook");
+			} else {
+				LOGGER.error("failed to inject RebuildChunkBlockRenderInTypeEvent Hook");
+			}
+			if (DEBUG_INSTRUCTIONS) {
+				for (int i = 0; i < instructions.size(); i++) {
+					LOGGER.info(insnToString(instructions.get(i)));
+				}
+			}
+		}
+
+		if (INJECT_RebuildChunkBlockEvent) {
+			LOGGER.info("injecting RebuildChunkBlockEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
 					LOGGER.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.injectRebuildChunkBlockEventHook(instructions)) {
-				LOGGER.info("injected RebuildRebuildChunkBlockEvent Hook");
+				LOGGER.info("injected RebuildChunkBlockEvent Hook");
 			} else {
-				LOGGER.error("failed to inject RebuildRebuildChunkBlockEvent Hook");
+				LOGGER.error("failed to inject RebuildChunkBlockEvent Hook");
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
@@ -377,6 +397,8 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	}
 
 	public abstract boolean injectRebuildChunkBlockEventHook(InsnList instructions);
+
+	public abstract boolean injectRebuildChunkBlockRenderInTypeEventHook(InsnList instructions);
 
 	public abstract boolean injectRebuildChunkPostEventHook(InsnList instructions);
 

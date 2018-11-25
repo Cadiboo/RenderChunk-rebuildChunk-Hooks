@@ -7,22 +7,23 @@ import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 
 /**
- * Called when a {@link net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called.<br>
- * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} the block could render in.<br>
- * Setting the result of this event to {@link net.minecraftforge.fml.common.eventhandler.Event.Result#DENY} prevents the parts of the block in this {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).<br>
+ * Called when a {@link RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called.<br>
+ * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link EnumBlockRenderType BlockRenderLayer} the block could render in.<br>
+ * Setting the result of this event to {@link Result#DENY} prevents the block from being rebuilt to the chunk (and therefore rendered).<br>
  * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}<br>
  *
  * @author Cadiboo
- * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
+ * @see RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
  */
 @HasResult
-public class RebuildChunkBlockRenderInLayerEvent extends Event {
+public class RebuildChunkBlockRenderInTypeEvent extends Event {
 
 	private final RenderChunk               renderChunk;
 	private final ChunkCache                chunkCache;
@@ -33,7 +34,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	private final VisGraph                  visGraph;
 	private final MutableBlockPos           blockPos;
 	private final IBlockState               blockState;
-	private final BlockRenderLayer          blockRenderLayer;
+	private final EnumBlockRenderType       blockRenderType;
 
 	/**
 	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
@@ -45,9 +46,9 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
 	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
-	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
+	 * @param blockRenderType           the {@link EnumBlockRenderType} of the block being assessed
 	 */
-	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache chunkCache, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
+	public RebuildChunkBlockRenderInTypeEvent(final RenderChunk renderChunk, final ChunkCache chunkCache, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final EnumBlockRenderType blockRenderType) {
 
 		this.renderChunk = renderChunk;
 		this.chunkCache = chunkCache;
@@ -58,7 +59,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 		this.visGraph = visGraph;
 		this.blockPos = blockPos;
 		this.blockState = blockState;
-		this.blockRenderLayer = blockRenderLayer;
+		this.blockRenderType = blockRenderType;
 	}
 
 	/**
@@ -134,11 +135,11 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	}
 
 	/**
-	 * @return the {@link BlockRenderLayer} of the block passed in
+	 * @return the {@link EnumBlockRenderType} of the block passed in
 	 */
-	public BlockRenderLayer getBlockRenderLayer() {
+	public EnumBlockRenderType getBlockRenderType() {
 
-		return this.blockRenderLayer;
+		return this.blockRenderType;
 	}
 
 }

@@ -194,7 +194,7 @@
                     }
                     blockrenderlayer1 = this.fixBlockLayer(iblockstate, blockrenderlayer1);
                     final int j = blockrenderlayer1.ordinal();
-                    if (block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE) {
+                    if (cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.canBlockRenderInType(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate)) {
                         final BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getWorldRendererByLayerId(j);
                         bufferbuilder.setBlockLayer(blockrenderlayer1);
                         final RenderEnv renderEnv = bufferbuilder.getRenderEnv((IBlockAccess)blockAccess, iblockstate, (BlockPos)blockpos$mutableblockpos);

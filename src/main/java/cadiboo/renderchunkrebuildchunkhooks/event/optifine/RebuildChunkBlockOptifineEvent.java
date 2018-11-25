@@ -31,7 +31,7 @@ import java.util.HashSet;
 @Cancelable
 public class RebuildChunkBlockOptifineEvent extends RebuildChunkBlockEvent {
 
-	final ChunkCacheOF chunkCacheOF;
+	private final ChunkCacheOF chunkCacheOF;
 
 	/**
 	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
@@ -55,7 +55,7 @@ public class RebuildChunkBlockOptifineEvent extends RebuildChunkBlockEvent {
 	public RebuildChunkBlockOptifineEvent(RenderChunk renderChunk, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, IBlockState blockState, BlockPosM blockPos, BufferBuilder bufferBuilder, MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, BlockRenderLayer blockRenderLayer, float x, float y, float z, HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
 		VisGraph visGraph) {
 
-		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, blockRendererDispatcher, blockState, new MutableBlockPos(blockPos), bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
+		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, blockRendererDispatcher, blockState, new MutableBlockPos(blockPos), bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 		this.chunkCacheOF = chunkCacheOF;
 	}
 

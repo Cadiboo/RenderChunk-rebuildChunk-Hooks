@@ -43,6 +43,7 @@ public class ObfuscationHelper {
 		BETTER_FOLIAGE_HOOKS("mods/betterfoliage/client/Hooks", "mods/betterfoliage/client/Hooks", "mods/betterfoliage/client/Hooks"),
 		OPTIFINE_REFLECTOR_METHOD("net/optifine/reflect/ReflectorMethod", "net/optifine/reflect/ReflectorMethod", "net/optifine/reflect/ReflectorMethod"),
 		OPTIFINE_REFLECTOR("net/optifine/reflect/Reflector", "net/optifine/reflect/Reflector", "net/optifine/reflect/Reflector"),
+		ENUM_BLOCK_RENDER_TYPE("net/minecraft/util/EnumBlockRenderType", "net/minecraft/util/EnumBlockRenderType", "ath"),
 
 		;
 
@@ -103,7 +104,11 @@ public class ObfuscationHelper {
 		RENDER_CHUNK_RENDER_CHUNKS_UPDATED(RENDER_CHUNK, "renderChunksUpdated", "field_178592_a", "a", INT_TYPE),
 		TILE_ENTITY_RENDERER_DISPATCHER_INSTANCE(TILE_ENTITY_RENDERER_DISPATCHER, "instance", "field_147556_a", "a", TILE_ENTITY_RENDERER_DISPATCHER),
 
-		OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER(OPTIFINE_REFLECTOR, "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", OPTIFINE_REFLECTOR_METHOD);
+		OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER(OPTIFINE_REFLECTOR, "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", OPTIFINE_REFLECTOR_METHOD),
+
+		ENUM_BLOCK_RENDER_TYPE_INVISIBLE(ENUM_BLOCK_RENDER_TYPE, "INVISIBLE", "INVISIBLE", "INVISIBLE", ENUM_BLOCK_RENDER_TYPE),
+
+		;
 
 		private final ObfuscationClass owner;
 		private final String           deobfuscatedName;

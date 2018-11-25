@@ -1,7 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInTypeEvent;
 import cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 import net.optifine.BlockPosM;
@@ -17,15 +17,15 @@ import net.optifine.override.ChunkCacheOF;
 
 /**
  * Called when a {@link RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called when Optifine is present.<br>
- * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block could render in.<br>
- * Setting the result of this event to {@link Result#DENY} prevents the parts of the block in this {@link BlockRenderLayer BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).<br>
+ * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link EnumBlockRenderType BlockRenderLayer} the block could render in.<br>
+ * Setting the result of this event to {@link Result#DENY} prevents the block from being rebuilt to the chunk (and therefore rendered).<br>
  * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}<br>
  *
  * @author Cadiboo
  * @see RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
  */
 @HasResult
-public class RebuildChunkBlockRenderInLayerOptifineEvent extends RebuildChunkBlockRenderInLayerEvent {
+public class RebuildChunkBlockRenderInTypeOptifineEvent extends RebuildChunkBlockRenderInTypeEvent {
 
 	private final ChunkCacheOF chunkCacheOF;
 
@@ -37,13 +37,13 @@ public class RebuildChunkBlockRenderInLayerOptifineEvent extends RebuildChunkBlo
 	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
 	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param blockPos                  the {@link BlockPosM position} of the block being assessed
+	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
-	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
+	 * @param blockRenderType           the {@link EnumBlockRenderType} of the block being assessed
 	 */
-	public RebuildChunkBlockRenderInLayerOptifineEvent(RenderChunk renderChunk, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator chunkCompileTaskGenerator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, MutableBlockPos renderChunkPosition, VisGraph visGraph, BlockPosM blockPos, IBlockState blockState, BlockRenderLayer blockRenderLayer) {
+	public RebuildChunkBlockRenderInTypeOptifineEvent(final RenderChunk renderChunk, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final BlockPosM blockPos, final IBlockState blockState, final EnumBlockRenderType blockRenderType) {
 
-		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, new MutableBlockPos(blockPos), blockState, blockRenderLayer);
+		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, new MutableBlockPos(blockPos), blockState, blockRenderType);
 		this.chunkCacheOF = chunkCacheOF;
 
 	}

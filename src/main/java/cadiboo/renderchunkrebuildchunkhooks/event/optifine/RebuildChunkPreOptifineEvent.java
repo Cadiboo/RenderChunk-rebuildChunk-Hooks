@@ -36,7 +36,7 @@ public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 	 */
 	public RebuildChunkPreOptifineEvent(RenderChunk renderChunk, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, float x, float y, float z) {
 
-		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, renderChunkPosition, x, y, z);
+		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, renderChunkPosition, x, y, z);
 		this.chunkCacheOF = chunkCacheOF;
 	}
 

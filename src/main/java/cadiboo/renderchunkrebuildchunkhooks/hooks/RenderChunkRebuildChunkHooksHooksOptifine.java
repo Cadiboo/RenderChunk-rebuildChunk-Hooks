@@ -1,10 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.hooks;
 
 import cadiboo.renderchunkrebuildchunkhooks.config.ModConfig;
-import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockOptifineEvent;
-import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockRenderInLayerOptifineEvent;
-import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkPostOptifineEvent;
-import cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkPreOptifineEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.optifine.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -16,6 +13,7 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,7 +41,7 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 		return field;
 	}
 
-	public static ChunkCache getWorldViewFromChunkCacheOF(ChunkCacheOF chunkCacheOF) {
+	public static ChunkCache getChunkCacheFromChunkCacheOF(ChunkCacheOF chunkCacheOF) {
 
 		try {
 			return (ChunkCache) CHUNK_CACHE_OF_CHUNK_CACHE.get(chunkCacheOF);
@@ -110,6 +108,44 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
+	 * @param chunkCacheOF              the {@link ChunkCacheOF} passed in from RenderChunk#rebuildChunk
+	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition       the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
+	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param blockPos                  the {@link BlockPosM position} of the block being assessed
+	 * @param block                     the {@link Block block} being assessed
+	 * @param blockState                the {@link IBlockState state} of the block being assessed
+	 *
+	 * @return if the block should be rendered
+	 *
+	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
+	 */
+	public static boolean canBlockRenderInType(final RenderChunk renderChunk, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final BlockPos.MutableBlockPos renderChunkPosition, final VisGraph visGraph, final BlockPosM blockPos, final Block block, final IBlockState blockState) {
+
+		final RebuildChunkBlockRenderInTypeOptifineEvent event = new RebuildChunkBlockRenderInTypeOptifineEvent(renderChunk, chunkCacheOF, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockState.getRenderType());
+
+		if (ModConfig.shouldPostRebuildChunkBlockRenderInTypeEvent()) {
+			MinecraftForge.EVENT_BUS.post(event);
+		}
+
+		if (event.getResult() == Event.Result.ALLOW) {
+			return true;
+		} else if (event.getResult() == Event.Result.DEFAULT) {
+			if (ModConfig.shouldTweakCanBlockRenderInType()) {
+				return blockState.getRenderType() != EnumBlockRenderType.INVISIBLE;
+			} else {
+				return block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE;
+			}
+		} else {
+			return false;
+		}
+
 	}
 
 	/**

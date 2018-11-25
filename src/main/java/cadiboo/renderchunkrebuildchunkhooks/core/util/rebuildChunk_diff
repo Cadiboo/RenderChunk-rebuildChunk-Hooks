@@ -185,7 +185,7 @@
                      net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockrenderlayer1);
                 int j = blockrenderlayer1.ordinal();
 
-                if (block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE)
+                if (cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks.canBlockRenderInType(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate))
                 {
                     BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getWorldRendererByLayerId(j);
 

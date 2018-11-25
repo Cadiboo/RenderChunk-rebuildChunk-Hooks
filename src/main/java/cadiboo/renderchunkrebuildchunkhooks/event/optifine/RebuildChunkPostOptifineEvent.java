@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class RebuildChunkPostOptifineEvent extends RebuildChunkPostEvent {
 
-	final ChunkCacheOF chunkCacheOF;
+	private final ChunkCacheOF chunkCacheOF;
 
 	/**
 	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
@@ -41,7 +41,7 @@ public class RebuildChunkPostOptifineEvent extends RebuildChunkPostEvent {
 	 */
 	public RebuildChunkPostOptifineEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
 
-		super(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getWorldViewFromChunkCacheOF(chunkCacheOF), visGraph, setTileEntities, lockCompileTask);
+		super(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), visGraph, setTileEntities, lockCompileTask);
 		this.chunkCacheOF = chunkCacheOF;
 	}
 
