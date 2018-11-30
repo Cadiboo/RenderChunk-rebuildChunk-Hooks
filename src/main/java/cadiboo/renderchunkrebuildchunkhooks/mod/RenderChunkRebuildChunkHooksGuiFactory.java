@@ -5,9 +5,9 @@ import net.minecraftforge.fml.client.DefaultGuiFactory;
 import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID;
 import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_NAME;
 
-public class GuiFactory extends DefaultGuiFactory {
+public class RenderChunkRebuildChunkHooksGuiFactory extends DefaultGuiFactory {
 
-	protected GuiFactory() {
+	protected RenderChunkRebuildChunkHooksGuiFactory() {
 
 		super(MOD_ID, MOD_NAME);
 
