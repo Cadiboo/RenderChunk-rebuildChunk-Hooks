@@ -331,7 +331,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "canBlockRenderInType",
 			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;)Z", false));
-		tempInstructionList.add(new JumpInsnNode(IFNE, returnLabel));
+		tempInstructionList.add(new JumpInsnNode(IFEQ, returnLabel));
 
 		// Inject our instructions right BEFORE IF_ACMPEQ
 		instructions.insertBefore(preExistingIF_ACMPEQNode, tempInstructionList);
