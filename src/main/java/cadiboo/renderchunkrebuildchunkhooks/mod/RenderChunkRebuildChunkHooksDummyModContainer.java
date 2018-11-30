@@ -79,20 +79,24 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 		return FMLCommonHandler.instance().getSide().isClient();
 	}
 
+	static {
+		ConfigManager.sync(MOD_ID, Config.Type.INSTANCE);
+	}
+
 	@Subscribe
 	public void preInit(final FMLPreInitializationEvent event) {
 
-		if (event.getSide().isClient()) {
-
-			ConfigManager.sync(MOD_ID, Config.Type.INSTANCE);
-
-			MinecraftForge.EVENT_BUS.register(new RenderChunkRebuildChunkHooksEventSubscriber());
-
-			tryPreloadRenderChunk();
-
-			tryRegisterBetterFoliageCompatibleEventSubscriber();
-
+		if (! event.getSide().isClient()) {
+			return;
 		}
+
+
+
+		MinecraftForge.EVENT_BUS.register(new RenderChunkRebuildChunkHooksEventSubscriber());
+
+		tryPreloadRenderChunk();
+
+		tryRegisterBetterFoliageCompatibleEventSubscriber();
 
 	}
 
