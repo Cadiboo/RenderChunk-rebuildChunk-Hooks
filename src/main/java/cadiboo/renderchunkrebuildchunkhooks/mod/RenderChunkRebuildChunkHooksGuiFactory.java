@@ -7,7 +7,7 @@ import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHo
 
 public class RenderChunkRebuildChunkHooksGuiFactory extends DefaultGuiFactory {
 
-	protected RenderChunkRebuildChunkHooksGuiFactory() {
+	public RenderChunkRebuildChunkHooksGuiFactory() {
 
 		super(MOD_ID, MOD_NAME);
 
