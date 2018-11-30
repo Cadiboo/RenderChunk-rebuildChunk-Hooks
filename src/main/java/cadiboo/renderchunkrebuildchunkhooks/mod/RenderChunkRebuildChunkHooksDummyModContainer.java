@@ -138,4 +138,11 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 
 	}
 
+	@Override
+	public String getGuiClassName() {
+
+		return GuiFactory.class.getName();
+
+	}
+
 }
