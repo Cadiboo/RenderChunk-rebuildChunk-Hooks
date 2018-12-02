@@ -21,9 +21,11 @@ public class RenderChunkRebuildChunkHooksEventSubscriber {
 	public void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
 		if (event.getModID().equals(MOD_ID)) {
 			RenderChunkRebuildChunkHooksConfig.sync();
-			if (RenderChunkRebuildChunkHooksConfig.reloadChunksOnConfigChange())
-				if (Minecraft.getMinecraft().renderGlobal != null)
+			if (RenderChunkRebuildChunkHooksConfig.reloadChunksOnConfigChange()) {
+				if (Minecraft.getMinecraft().renderGlobal != null) {
 					Minecraft.getMinecraft().renderGlobal.loadRenderers();
+				}
+			}
 		}
 	}
 
