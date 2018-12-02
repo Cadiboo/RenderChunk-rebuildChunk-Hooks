@@ -30,8 +30,8 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 
 	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
 	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";
-	public static final String MOD_VERSION = "0.0.0.0";
-	public static final String MOD_FULL_VERSION = "1.12.2-" + MOD_VERSION + "-alpha16";
+	public static final String MOD_VERSION = "1.0.0.0";
+	public static final String MOD_FULL_VERSION = "1.12.2-" + MOD_VERSION + "";
 	// Directly reference a log4j logger.
 	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 	static {
