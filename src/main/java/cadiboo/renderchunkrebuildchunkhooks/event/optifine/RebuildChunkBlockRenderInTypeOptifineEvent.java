@@ -28,6 +28,7 @@ import net.optifine.override.ChunkCacheOF;
 public class RebuildChunkBlockRenderInTypeOptifineEvent extends RebuildChunkBlockRenderInTypeEvent {
 
 	private final ChunkCacheOF chunkCacheOF;
+	private final BlockPosM blockPosM;
 
 	/**
 	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
@@ -37,23 +38,28 @@ public class RebuildChunkBlockRenderInTypeOptifineEvent extends RebuildChunkBloc
 	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
 	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
+	 * @param blockPosM                 the {@link MutableBlockPos position} of the block being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderType           the {@link EnumBlockRenderType} of the block being assessed
 	 */
-	public RebuildChunkBlockRenderInTypeOptifineEvent(final RenderChunk renderChunk, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final BlockPosM blockPos, final IBlockState blockState, final EnumBlockRenderType blockRenderType) {
-
-		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, new MutableBlockPos(blockPos), blockState, blockRenderType);
+	public RebuildChunkBlockRenderInTypeOptifineEvent(final RenderChunk renderChunk, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final BlockPosM blockPosM, final IBlockState blockState, final EnumBlockRenderType blockRenderType) {
+		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, new MutableBlockPos(blockPosM), blockState, blockRenderType);
 		this.chunkCacheOF = chunkCacheOF;
-
+		this.blockPosM = blockPosM;
 	}
 
 	/**
 	 * @return the {@link ChunkCacheOF} passed in
 	 */
 	public ChunkCacheOF getChunkCacheOF() {
-
 		return chunkCacheOF;
+	}
+
+	/**
+	 * @return the {@link BlockPosM} passed in
+	 */
+	public BlockPosM getBlockPosM() {
+		return blockPosM;
 	}
 
 }

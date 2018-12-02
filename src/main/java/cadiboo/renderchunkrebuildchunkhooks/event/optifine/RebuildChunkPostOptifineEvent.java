@@ -40,7 +40,6 @@ public class RebuildChunkPostOptifineEvent extends RebuildChunkPostEvent {
 	 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
 	 */
 	public RebuildChunkPostOptifineEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
-
 		super(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), visGraph, setTileEntities, lockCompileTask);
 		this.chunkCacheOF = chunkCacheOF;
 	}
@@ -49,7 +48,6 @@ public class RebuildChunkPostOptifineEvent extends RebuildChunkPostEvent {
 	 * @return the {@link ChunkCacheOF} passed in
 	 */
 	public ChunkCacheOF getChunkCacheOF() {
-
 		return chunkCacheOF;
 	}
 

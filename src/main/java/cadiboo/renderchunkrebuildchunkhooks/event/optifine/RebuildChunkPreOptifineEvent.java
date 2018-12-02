@@ -35,7 +35,6 @@ public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
 	 */
 	public RebuildChunkPreOptifineEvent(RenderChunk renderChunk, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, float x, float y, float z) {
-
 		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, renderChunkPosition, x, y, z);
 		this.chunkCacheOF = chunkCacheOF;
 	}
@@ -44,7 +43,6 @@ public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 	 * @return the {@link ChunkCacheOF} passed in
 	 */
 	public ChunkCacheOF getChunkCacheOF() {
-
 		return chunkCacheOF;
 	}
 
