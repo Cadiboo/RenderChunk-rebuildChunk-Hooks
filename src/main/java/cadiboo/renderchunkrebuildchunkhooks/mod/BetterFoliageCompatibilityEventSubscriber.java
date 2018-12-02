@@ -2,6 +2,7 @@ package cadiboo.renderchunkrebuildchunkhooks.mod;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import mods.betterfoliage.client.Hooks;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -25,7 +26,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 
 		final BlockRenderLayer blockRenderLayer = event.getBlockRenderLayer();
 
-		boolean used = mods.betterfoliage.client.Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), blockRenderLayer);
+		boolean used = Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), blockRenderLayer);
 
 		event.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] |= used;
 
@@ -37,7 +38,7 @@ public class BetterFoliageCompatibilityEventSubscriber {
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = false)
 	public void callBetterFoliageHooks_canRenderBlockInLayer_onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
 
-		boolean shouldRender = mods.betterfoliage.client.Hooks.canRenderBlockInLayer(event.getBlockState().getBlock(), event.getBlockState(), event.getBlockRenderLayer());
+		boolean shouldRender = Hooks.canRenderBlockInLayer(event.getBlockState().getBlock(), event.getBlockState(), event.getBlockRenderLayer());
 
 		if (shouldRender) {
 			event.setResult(Event.Result.ALLOW);

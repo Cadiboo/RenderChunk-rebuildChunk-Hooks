@@ -1,5 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.mod;
 
+import cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import joptsimple.internal.Strings;
@@ -7,8 +8,6 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.LoadController;
@@ -26,7 +25,10 @@ import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkH
 public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModContainer {
 
 	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
-
+	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";
+	public static final String MOD_VERSION = "0.0.0.0";
+	// Directly reference a log4j logger.
+	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 	static {
 		if (MOD_ID.length() > 64) {
 			final IllegalStateException exception = new IllegalStateException("Mod Id is too long!");
@@ -34,12 +36,6 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 			crashReport.makeCategory("Constructing Mod");
 		}
 	}
-
-	public static final String MOD_NAME    = "RenderChunk rebuildChunk Hooks";
-	public static final String MOD_VERSION = "0.0.0.0";
-
-	// Directly reference a log4j logger.
-	public static final Logger LOGGER = LogManager.getLogger();
 
 	public RenderChunkRebuildChunkHooksDummyModContainer() {
 
@@ -73,24 +69,14 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 
 	}
 
-	@Override
-	public boolean shouldLoadInEnvironment() {
-
-		return FMLCommonHandler.instance().getSide().isClient();
-	}
-
-	static {
-		ConfigManager.sync(MOD_ID, Config.Type.INSTANCE);
-	}
-
 	@Subscribe
 	public void preInit(final FMLPreInitializationEvent event) {
 
-		if (! event.getSide().isClient()) {
+		if (!event.getSide().isClient()) {
 			return;
 		}
 
-
+		RenderChunkRebuildChunkHooksConfig.load(event.getSuggestedConfigurationFile());
 
 		MinecraftForge.EVENT_BUS.register(new RenderChunkRebuildChunkHooksEventSubscriber());
 
@@ -147,6 +133,12 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 
 		return RenderChunkRebuildChunkHooksGuiFactory.class.getName();
 
+	}
+
+	@Override
+	public boolean shouldLoadInEnvironment() {
+
+		return FMLCommonHandler.instance().getSide().isClient();
 	}
 
 }

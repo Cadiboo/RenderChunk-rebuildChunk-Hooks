@@ -1,6 +1,11 @@
 package cadiboo.renderchunkrebuildchunkhooks.hooks;
 
-import cadiboo.renderchunkrebuildchunkhooks.event.*;
+import cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInTypeEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
+import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -34,7 +39,8 @@ public class RenderChunkRebuildChunkHooksHooks {
 	/**
 	 * An accessible reference to the method {@link CompiledChunk#setLayerUsed(BlockRenderLayer)}
 	 */
-	@SuppressWarnings("javadoc") // remove warning "The method setLayerUsed(BlockRenderLayer) from the type compiledchunk is not visible"
+	@SuppressWarnings("javadoc")
+	// remove warning "The method setLayerUsed(BlockRenderLayer) from the type compiledchunk is not visible"
 	public static final Method COMPILED_CHUNK_SET_LAYER_USED = getMethodAndMakeItAccessable();
 
 	/**
@@ -42,7 +48,8 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 *
 	 * @see <a href="http://www.minecraftforge.net/forum/topic/66980-1122-access-transformer-problem/?do=findComment&comment=322130">More explanation here</a>
 	 */
-	@SuppressWarnings("javadoc") // remove warning "The method setLayerUsed(BlockRenderLayer) from the type compiledchunk is not visible"
+	@SuppressWarnings("javadoc")
+	// remove warning "The method setLayerUsed(BlockRenderLayer) from the type compiledchunk is not visible"
 	public static final MethodHandle COMPILED_CHUNK_SET_LAYER_USED_HANDLE = getMethodHandle();
 
 	private static Method getMethodAndMakeItAccessable() {
@@ -53,7 +60,7 @@ public class RenderChunkRebuildChunkHooksHooks {
 
 	}
 
-	static MethodHandle getMethodHandle() {
+	private static MethodHandle getMethodHandle() {
 
 		try {
 			return MethodHandles.publicLookup().unreflect(COMPILED_CHUNK_SET_LAYER_USED);
@@ -87,16 +94,14 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
 	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-	 *
 	 * @return If vanilla rendering should be stopped
-	 *
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean onRebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
 
 		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, renderChunkPosition, x, y, z);
 
-		if (ModConfig.shouldPostRebuildChunkPreEvent()) {
+		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPreEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -116,16 +121,14 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @param block                     the {@link Block block} being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
-	 *
 	 * @return If the block can render in the layer
-	 *
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
 
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 
-		if (ModConfig.shouldPostRebuildChunkBlockRenderInLayerEvent()) {
+		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInLayerEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -150,23 +153,21 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
 	 * @param block                     the {@link Block block} being assessed
 	 * @param blockState                the {@link IBlockState state} of the block being assessed
-	 *
 	 * @return if the block should be rendered
-	 *
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean canBlockRenderInType(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState) {
 
 		final RebuildChunkBlockRenderInTypeEvent event = new RebuildChunkBlockRenderInTypeEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockState.getRenderType());
 
-		if (ModConfig.shouldPostRebuildChunkBlockRenderInTypeEvent()) {
+		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInTypeEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
 		if (event.getResult() == Event.Result.ALLOW) {
 			return true;
 		} else if (event.getResult() == Event.Result.DEFAULT) {
-			if (ModConfig.shouldTweakCanBlockRenderInType()) {
+			if (RenderChunkRebuildChunkHooksConfig.shouldTweakCanBlockRenderInType()) {
 				return blockState.getRenderType() != EnumBlockRenderType.INVISIBLE;
 			} else {
 				return block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE;
@@ -195,17 +196,15 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
 	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
 	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 *
 	 * @return If the block should NOT be rebuilt to the chunk by vanilla
-	 *
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer,
-		final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+	                                               final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 
 		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 
-		if (ModConfig.shouldPostRebuildChunkBlockEvent()) {
+		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
@@ -231,7 +230,7 @@ public class RenderChunkRebuildChunkHooksHooks {
 
 		final RebuildChunkPostEvent event = new RebuildChunkPostEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, worldView, visGraph, setTileEntities, lockCompileTask);
 
-		if (ModConfig.shouldPostRebuildChunkPostEvent()) {
+		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPostEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 

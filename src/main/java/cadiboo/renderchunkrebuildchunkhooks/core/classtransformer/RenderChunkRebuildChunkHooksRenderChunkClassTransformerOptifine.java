@@ -2,11 +2,24 @@ package cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
 import cadiboo.renderchunkrebuildchunkhooks.core.util.InjectionHelper;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.LineNumberNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ArrayList;
 
-import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.*;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.ENUM_BLOCK_RENDER_TYPE_INVISIBLE;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_LOCK_COMPILE_TASK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_CHUNKS_UPDATED;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_GLOBAL;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_SET_TILE_ENTITIES;
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
 
 /**
@@ -18,14 +31,14 @@ import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.O
 // http://www.minecraftforge.net/forum/topic/32600-1710-strange-error-with-custom-event-amp-event-handler/?do=findComment&comment=172480
 public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine extends RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge {
 
+	public static final int ALOAD_iblockstate = 18;
+	public static final int ALOAD_blockrenderlayer1 = 22;
+	public static final int ALOAD_blockrendererdispatcher = 13;
+	public static final int ALOAD_blockpos$mutableblockpos = 17;
+	public static final int ALOAD_bufferbuilder = 24;
+	public static final int ALOAD_array = 12;
 	private static final int ALOAD_blockAccess_chunkCacheOF = 11;
-	public static final  int ALOAD_iblockstate              = 18;
-	public static final  int ALOAD_blockrenderlayer1        = 22;
-	public static final  int ALOAD_blockrendererdispatcher  = 13;
-	public static final  int ALOAD_blockpos$mutableblockpos = 17;
-	public static final  int ALOAD_bufferbuilder            = 24;
-	public static final  int ALOAD_array                    = 12;
-	private static final int ALOAD_block                    = 19;
+	private static final int ALOAD_block = 19;
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
@@ -47,7 +60,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * get line number for nice debug
 	 *
 	 * @param instructions the instructions for the method
-	 *
 	 * @return if the injection was successful
 	 */
 	@Override
@@ -173,7 +185,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * inject our hook BEFORE the ISTORE instruction<br>
 	 *
 	 * @param instructions the instructions for the method
-	 *
 	 * @return if the injection was successful
 	 */
 	@Override
@@ -224,7 +235,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		//remove all instructions between the line number and the ISTORE instruction<br>
 		ArrayList<AbstractInsnNode> instructionsToRemove = new ArrayList<>();
-		for (int i = instructions.indexOf(preExistingLineNumberNode) + 1; i < instructions.indexOf(preExistingISTOREInstructionNode); ++ i) {
+		for (int i = instructions.indexOf(preExistingLineNumberNode) + 1; i < instructions.indexOf(preExistingISTOREInstructionNode); ++i) {
 			instructionsToRemove.add(instructions.get(i));
 		}
 		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
@@ -264,8 +275,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); // iblockstate
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); // blockrenderlayer1
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "canBlockRenderInLayer",
-			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/optifine/BlockPosM;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z",
-			false));
+				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/optifine/BlockPosM;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z",
+				false));
 
 		// Inject our instructions right BEFORE the ISTORE instruction
 		instructions.insertBefore(preExistingISTOREInstructionNode, tempInstructionList);
@@ -281,7 +292,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * delete everything between line number and IF_ACMPEQz
 	 *
 	 * @param instructions the instructions for the method
-	 *
 	 * @return if the injection was successful
 	 */
 	@Override
@@ -344,7 +354,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 		//remove all instructions between the line number and the IF_ACMPEQ instruction<br>
 		ArrayList<AbstractInsnNode> instructionsToRemove = new ArrayList<>();
-		for (int i = instructions.indexOf(preExistingLineNumberNode) + 1; i < instructions.indexOf(preExistingIF_ACMPEQNode); ++ i) {
+		for (int i = instructions.indexOf(preExistingLineNumberNode) + 1; i < instructions.indexOf(preExistingIF_ACMPEQNode); ++i) {
 			instructionsToRemove.add(instructions.get(i));
 		}
 		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
@@ -381,7 +391,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); // iblockstate
 
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "canBlockRenderInType",
-			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/optifine/BlockPosM;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;)Z", false));
+				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/optifine/BlockPosM;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;)Z", false));
 		tempInstructionList.add(new JumpInsnNode(IFEQ, returnLabel));
 
 		// Inject our instructions right BEFORE IF_ACMPEQ
@@ -401,7 +411,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * inject before<br>
 	 *
 	 * @param instructions the instructions for the method
-	 *
 	 * @return if the injection was successful
 	 */
 	@Override
@@ -521,8 +530,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "onRebuildChunkBlockEvent",
-			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/optifine/BlockPosM;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;[ZLnet/minecraft/util/BlockRenderLayer;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Z",
-			false));
+				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/optifine/BlockPosM;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;[ZLnet/minecraft/util/BlockRenderLayer;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Z",
+				false));
 		tempInstructionList.add(new JumpInsnNode(IFNE, returnLabel));
 
 		// Inject our instructions right BEFORE first VarsInsNode
@@ -537,7 +546,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 * inject before<br>
 	 *
 	 * @param instructions the instructions for the method
-	 *
 	 * @return if the injection was successful
 	 */
 	@Override
@@ -602,7 +610,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // lockCompileTask
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_LOCK_COMPILE_TASK.getName(), "Ljava/util/concurrent/locks/ReentrantLock;"));
 		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "onRebuildChunkPostEvent",
-			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/VisGraph;Ljava/util/Set;Ljava/util/concurrent/locks/ReentrantLock;)V", false));
+				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/VisGraph;Ljava/util/Set;Ljava/util/concurrent/locks/ReentrantLock;)V", false));
 
 		// Inject our instructions right BEFORE the RETURN instruction
 		instructions.insertBefore(RETURN_Node, tempInstructionList);

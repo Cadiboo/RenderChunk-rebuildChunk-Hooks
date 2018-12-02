@@ -27,7 +27,7 @@ public class RebuildChunkPostEventTest {
 	@SubscribeEvent
 	public static void onRebuildChunkPostEvent(final RebuildChunkPostEvent event) {
 
-		if (! ENABLED) {
+		if (!ENABLED) {
 			return;
 		}
 

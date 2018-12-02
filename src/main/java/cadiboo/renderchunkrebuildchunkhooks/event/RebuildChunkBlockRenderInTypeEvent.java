@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
@@ -25,16 +24,16 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 @HasResult
 public class RebuildChunkBlockRenderInTypeEvent extends Event {
 
-	private final RenderChunk               renderChunk;
-	private final ChunkCache                chunkCache;
+	private final RenderChunk renderChunk;
+	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk             compiledchunk;
-	private final BlockRendererDispatcher   blockRendererDispatcher;
-	private final MutableBlockPos           renderChunkPosition;
-	private final VisGraph                  visGraph;
-	private final MutableBlockPos           blockPos;
-	private final IBlockState               blockState;
-	private final EnumBlockRenderType       blockRenderType;
+	private final CompiledChunk compiledchunk;
+	private final BlockRendererDispatcher blockRendererDispatcher;
+	private final MutableBlockPos renderChunkPosition;
+	private final VisGraph visGraph;
+	private final MutableBlockPos blockPos;
+	private final IBlockState blockState;
+	private final EnumBlockRenderType blockRenderType;
 
 	/**
 	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for

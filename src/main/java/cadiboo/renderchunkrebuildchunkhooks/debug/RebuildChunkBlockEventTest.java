@@ -24,13 +24,13 @@ import java.util.Random;
 @Mod(modid = RebuildChunkBlockEventTest.MODID, name = "RebuildChunkBlockEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
 public class RebuildChunkBlockEventTest {
 
-	public static final String  MODID   = "rebuild_chunk_block_event_test";
+	public static final String MODID = "rebuild_chunk_block_event_test";
 	public static final boolean ENABLED = false;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
 
-		if (! ENABLED) {
+		if (!ENABLED) {
 			return;
 		}
 

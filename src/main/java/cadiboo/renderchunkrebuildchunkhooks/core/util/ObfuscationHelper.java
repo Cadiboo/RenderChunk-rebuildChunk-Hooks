@@ -9,8 +9,28 @@ import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
-import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.*;
-import static org.objectweb.asm.Type.*;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BETTER_FOLIAGE_HOOKS;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK_POS;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK_RENDERER_DISPATCHER;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK_RENDER_LAYER;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BUFFER_BUILDER;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.CHUNK_CACHE;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.CHUNK_COMPILE_TASK_GENERATOR;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.COMPILED_CHUNK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.ENUM_BLOCK_RENDER_TYPE;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_ACCESS;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_STATE;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.MUTABLE_BLOCK_POS;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR_METHOD;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_GLOBAL;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.TILE_ENTITY_RENDERER_DISPATCHER;
+import static org.objectweb.asm.Type.BOOLEAN_TYPE;
+import static org.objectweb.asm.Type.FLOAT_TYPE;
+import static org.objectweb.asm.Type.INT_TYPE;
+import static org.objectweb.asm.Type.VOID_TYPE;
 
 public class ObfuscationHelper {
 
@@ -111,10 +131,10 @@ public class ObfuscationHelper {
 		;
 
 		private final ObfuscationClass owner;
-		private final String           deobfuscatedName;
-		private final String           srgName;
-		private final String           obfuscatedName;
-		private final Object           type;
+		private final String deobfuscatedName;
+		private final String srgName;
+		private final String obfuscatedName;
+		private final Object type;
 
 		ObfuscationField(ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object type) {
 
@@ -169,15 +189,15 @@ public class ObfuscationHelper {
 
 		public boolean matches(FieldInsnNode field) {
 
-			if (! field.owner.equals(this.getOwner().getInternalName())) {
+			if (!field.owner.equals(this.getOwner().getInternalName())) {
 				return false;
 			}
 
-			if (! field.name.equals(this.getName())) {
+			if (!field.name.equals(this.getName())) {
 				return false;
 			}
 
-			if (! field.desc.equals(this.getDescriptor())) {
+			if (!field.desc.equals(this.getDescriptor())) {
 				return false;
 			}
 
@@ -189,41 +209,41 @@ public class ObfuscationHelper {
 
 	public enum ObfuscationMethod {
 
-		RENDER_CHUNK_REBUILD_CHUNK(RENDER_CHUNK, "rebuildChunk", "func_178581_b", "b", VOID_TYPE, new Object[] {
-			FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR
+		RENDER_CHUNK_REBUILD_CHUNK(RENDER_CHUNK, "rebuildChunk", "func_178581_b", "b", VOID_TYPE, new Object[]{
+				FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR
 		}, false),
-		RENDER_CHUNK_PRE_RENDER_BLOCKS(RENDER_CHUNK, "preRenderBlocks", "func_178573_a", "a", VOID_TYPE, new Object[] {
-			BUFFER_BUILDER, BLOCK_POS
+		RENDER_CHUNK_PRE_RENDER_BLOCKS(RENDER_CHUNK, "preRenderBlocks", "func_178573_a", "a", VOID_TYPE, new Object[]{
+				BUFFER_BUILDER, BLOCK_POS
 		}, false),
-		RENDER_CHUNK_POST_RENDER_BLOCKS(RENDER_CHUNK, "postRenderBlocks", "func_178584_a", "a", VOID_TYPE, new Object[] {
-			BLOCK_RENDER_LAYER, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, BUFFER_BUILDER, COMPILED_CHUNK
+		RENDER_CHUNK_POST_RENDER_BLOCKS(RENDER_CHUNK, "postRenderBlocks", "func_178584_a", "a", VOID_TYPE, new Object[]{
+				BLOCK_RENDER_LAYER, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, BUFFER_BUILDER, COMPILED_CHUNK
 		}, false),
-		BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK(BLOCK_RENDERER_DISPATCHER, "renderBlock", "func_175018_a", "a", BOOLEAN_TYPE, new Object[] {
-			I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER
+		BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK(BLOCK_RENDERER_DISPATCHER, "renderBlock", "func_175018_a", "a", BOOLEAN_TYPE, new Object[]{
+				I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER
 		}, false),
 		// forge added method
-		BLOCK_CAN_RENDER_IN_LAYER(BLOCK, "canRenderInLayer", "canRenderInLayer", "canRenderInLayer", BOOLEAN_TYPE, new Object[] {
-			I_BLOCK_STATE, BLOCK_RENDER_LAYER
+		BLOCK_CAN_RENDER_IN_LAYER(BLOCK, "canRenderInLayer", "canRenderInLayer", "canRenderInLayer", BOOLEAN_TYPE, new Object[]{
+				I_BLOCK_STATE, BLOCK_RENDER_LAYER
 		}, false),
-		BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER(BETTER_FOLIAGE_HOOKS, "canRenderBlockInLayer", "canRenderBlockInLayer", "canRenderBlockInLayer", BOOLEAN_TYPE, new Object[] {
-			BLOCK, I_BLOCK_STATE, BLOCK_RENDER_LAYER
+		BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER(BETTER_FOLIAGE_HOOKS, "canRenderBlockInLayer", "canRenderBlockInLayer", "canRenderBlockInLayer", BOOLEAN_TYPE, new Object[]{
+				BLOCK, I_BLOCK_STATE, BLOCK_RENDER_LAYER
 		}, false),
-		OPTIFINE_REFLECTOR_METHOD_EXISTS(OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[] {
+		OPTIFINE_REFLECTOR_METHOD_EXISTS(OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[]{
 
 		}, false),
-		BETTER_FOLIAGE_RENDER_WORLD_BLOCK(BETTER_FOLIAGE_HOOKS, "renderWorldBlock", "renderWorldBlock", "renderWorldBlock", BOOLEAN_TYPE, new Object[] {
-			BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
+		BETTER_FOLIAGE_RENDER_WORLD_BLOCK(BETTER_FOLIAGE_HOOKS, "renderWorldBlock", "renderWorldBlock", "renderWorldBlock", BOOLEAN_TYPE, new Object[]{
+				BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
 		}, false),
 
 		;
 
 		private final ObfuscationClass owner;
-		private final String           deobfuscatedName;
-		private final String           srgName;
-		private final String           obfuscatedName;
-		private final Object           returnType;
-		private final Object[]         params;
-		private final boolean          isInterface;
+		private final String deobfuscatedName;
+		private final String srgName;
+		private final String obfuscatedName;
+		private final Object returnType;
+		private final Object[] params;
+		private final boolean isInterface;
 
 		ObfuscationMethod(ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object returnType, Object[] params, boolean isInterface) {
 
@@ -309,19 +329,19 @@ public class ObfuscationHelper {
 
 		public boolean matches(MethodInsnNode method) {
 
-			if (! method.owner.equals(this.getOwner().getInternalName())) {
+			if (!method.owner.equals(this.getOwner().getInternalName())) {
 				return false;
 			}
 
-			if (! method.name.equals(this.getName())) {
+			if (!method.name.equals(this.getName())) {
 				return false;
 			}
 
-			if (! method.desc.equals(this.getDescriptor())) {
+			if (!method.desc.equals(this.getDescriptor())) {
 				return false;
 			}
 
-			if (! method.itf == this.isInterface()) {
+			if (!method.itf == this.isInterface()) {
 				return false;
 			}
 

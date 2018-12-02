@@ -24,16 +24,16 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 @HasResult
 public class RebuildChunkBlockRenderInLayerEvent extends Event {
 
-	private final RenderChunk               renderChunk;
-	private final ChunkCache                chunkCache;
+	private final RenderChunk renderChunk;
+	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk             compiledchunk;
-	private final BlockRendererDispatcher   blockRendererDispatcher;
-	private final MutableBlockPos           renderChunkPosition;
-	private final VisGraph                  visGraph;
-	private final MutableBlockPos           blockPos;
-	private final IBlockState               blockState;
-	private final BlockRenderLayer          blockRenderLayer;
+	private final CompiledChunk compiledchunk;
+	private final BlockRendererDispatcher blockRendererDispatcher;
+	private final MutableBlockPos renderChunkPosition;
+	private final VisGraph visGraph;
+	private final MutableBlockPos blockPos;
+	private final IBlockState blockState;
+	private final BlockRenderLayer blockRenderLayer;
 
 	/**
 	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for

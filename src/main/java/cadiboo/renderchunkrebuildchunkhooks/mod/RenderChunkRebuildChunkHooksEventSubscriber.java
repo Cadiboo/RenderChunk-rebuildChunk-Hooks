@@ -1,12 +1,15 @@
 package cadiboo.renderchunkrebuildchunkhooks.mod;
 
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
+import cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID;
 
+@SideOnly(Side.CLIENT)
 public class RenderChunkRebuildChunkHooksEventSubscriber {
 
 	/**
@@ -16,12 +19,12 @@ public class RenderChunkRebuildChunkHooksEventSubscriber {
 	 */
 	@SubscribeEvent
 	public void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-
 		if (event.getModID().equals(MOD_ID)) {
-			ConfigManager.sync(MOD_ID, Config.Type.INSTANCE);
+			RenderChunkRebuildChunkHooksConfig.sync();
+			if (RenderChunkRebuildChunkHooksConfig.reloadChunksOnConfigChange())
+				if (Minecraft.getMinecraft().renderGlobal != null)
+					Minecraft.getMinecraft().renderGlobal.loadRenderers();
 		}
 	}
-
-
 
 }

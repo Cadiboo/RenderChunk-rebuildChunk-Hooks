@@ -20,15 +20,15 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 @Cancelable
 public class RebuildChunkPreEvent extends Event {
 
-	private final RenderChunk               renderChunk;
-	private final RenderGlobal              renderGlobal;
-	private final ChunkCache                chunkCache;
+	private final RenderChunk renderChunk;
+	private final RenderGlobal renderGlobal;
+	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk             compiledchunk;
-	private final MutableBlockPos           renderChunkPosition;
-	private final float                     x;
-	private final float                     y;
-	private final float                     z;
+	private final CompiledChunk compiledchunk;
+	private final MutableBlockPos renderChunkPosition;
+	private final float x;
+	private final float y;
+	private final float z;
 
 	/**
 	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for

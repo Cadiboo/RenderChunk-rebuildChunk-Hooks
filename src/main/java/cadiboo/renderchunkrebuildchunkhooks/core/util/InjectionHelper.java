@@ -9,7 +9,9 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OPTIFINE;
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER;
-import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.*;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_CAN_RENDER_IN_LAYER;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.OPTIFINE_REFLECTOR_METHOD_EXISTS;
 
 public class InjectionHelper implements Opcodes {
 
@@ -86,7 +88,7 @@ public class InjectionHelper implements Opcodes {
 
 			final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
 
-			if (! OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER.matches(fieldInsnNode)) {
+			if (!OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER.matches(fieldInsnNode)) {
 				continue;
 			}
 

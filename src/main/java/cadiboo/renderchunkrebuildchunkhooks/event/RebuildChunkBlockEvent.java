@@ -31,23 +31,23 @@ import java.util.HashSet;
 @Cancelable
 public class RebuildChunkBlockEvent extends Event {
 
-	private final RenderChunk               renderChunk;
-	private final RenderGlobal              renderGlobal;
-	private final ChunkCache                chunkCache;
+	private final RenderChunk renderChunk;
+	private final RenderGlobal renderGlobal;
+	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk             compiledchunk;
-	private final BlockRendererDispatcher   blockRendererDispatcher;
-	private final IBlockState               blockState;
-	private final MutableBlockPos           blockPos;
-	private final BufferBuilder             bufferBuilder;
-	private final MutableBlockPos           renderChunkPosition;
-	private final BlockRenderLayer          blockRenderLayer;
-	private final boolean[]                 usedBlockRenderLayers;
-	private final float                     x;
-	private final float                     y;
-	private final float                     z;
-	private final HashSet<TileEntity>       tileEntitiesWithGlobalRenderers;
-	private final VisGraph                  visGraph;
+	private final CompiledChunk compiledchunk;
+	private final BlockRendererDispatcher blockRendererDispatcher;
+	private final IBlockState blockState;
+	private final MutableBlockPos blockPos;
+	private final BufferBuilder bufferBuilder;
+	private final MutableBlockPos renderChunkPosition;
+	private final BlockRenderLayer blockRenderLayer;
+	private final boolean[] usedBlockRenderLayers;
+	private final float x;
+	private final float y;
+	private final float z;
+	private final HashSet<TileEntity> tileEntitiesWithGlobalRenderers;
+	private final VisGraph visGraph;
 
 	/**
 	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
@@ -69,7 +69,7 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param visGraph                        the {@link VisGraph} passed in
 	 */
 	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache chunkCache, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
-		final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
+	                              final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
 
 		this.renderChunk = renderChunk;
 		this.renderGlobal = renderGlobal;
@@ -88,6 +88,19 @@ public class RebuildChunkBlockEvent extends Event {
 		this.z = z;
 		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
 		this.visGraph = visGraph;
+	}
+
+	/**
+	 * FOR INTERNAL USE ONLY<br>
+	 * Sets translation for and tarts the {@link BufferBuilder}
+	 *
+	 * @param bufferBuilderIn the {@link BufferBuilder} to set translation for and start
+	 * @param pos             the pos to get translations from
+	 */
+	private static void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
+
+		bufferBuilderIn.begin(7, DefaultVertexFormats.BLOCK);
+		bufferBuilderIn.setTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
 	}
 
 	/**
@@ -232,7 +245,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * FOR INTERNAL USE ONLY<br>
 	 *
 	 * @param blockRenderLayer the {@link BlockRenderLayer} to get the {@link BufferBuilder}
-	 *
 	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
 	 */
 	private BufferBuilder getBufferBuilderForBlockRenderLayer(final BlockRenderLayer blockRenderLayer) {
@@ -264,32 +276,18 @@ public class RebuildChunkBlockEvent extends Event {
 
 	/**
 	 * @param blockRenderLayer the {@link BlockRenderLayer}
-	 *
 	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
 	 */
 	public BufferBuilder startOrContinueLayer(final BlockRenderLayer blockRenderLayer) {
 
 		final BufferBuilder bufferbuilder = this.getBufferBuilderForBlockRenderLayer(blockRenderLayer);
 
-		if (! this.getCompiledChunk().isLayerStarted(blockRenderLayer)) {
+		if (!this.getCompiledChunk().isLayerStarted(blockRenderLayer)) {
 			this.getCompiledChunk().setLayerStarted(blockRenderLayer);
 			preRenderBlocks(bufferbuilder, this.getRenderChunkPosition());
 		}
 
 		return bufferbuilder;
-	}
-
-	/**
-	 * FOR INTERNAL USE ONLY<br>
-	 * Sets translation for and tarts the {@link BufferBuilder}
-	 *
-	 * @param bufferBuilderIn the {@link BufferBuilder} to set translation for and start
-	 * @param pos             the pos to get translations from
-	 */
-	private static void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
-
-		bufferBuilderIn.begin(7, DefaultVertexFormats.BLOCK);
-		bufferBuilderIn.setTranslation(- pos.getX(), - pos.getY(), - pos.getZ());
 	}
 
 }

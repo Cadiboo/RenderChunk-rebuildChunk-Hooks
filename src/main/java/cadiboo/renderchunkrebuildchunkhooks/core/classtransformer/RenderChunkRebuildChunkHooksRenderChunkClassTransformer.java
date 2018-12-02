@@ -9,7 +9,12 @@ import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.*;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.util.Printer;
 import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -23,7 +28,9 @@ import java.util.List;
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 import static cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
 import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
-import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.*;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_RENDER_WORLD_BLOCK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
+import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK;
 
 /**
  * @author Cadiboo
@@ -45,23 +52,24 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	// TODO dump it in the Minecraft directory?
 	//	public static final boolean DEBUG_DUMP_BYTECODE = false;
 
-	public static final boolean DEBUG_EVERYTHING   = false;
-	public static final boolean DEBUG_CLASSES      = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_FIELDS       = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_EVERYTHING = false;
+	public static final boolean DEBUG_CLASSES = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_FIELDS = DEBUG_EVERYTHING | false;
 	//may cause issues, use with care
-	public static final boolean DEBUG_NAMES        = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_TYPES        = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_STACKS       = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_METHODS      = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_NAMES = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_TYPES = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_STACKS = DEBUG_EVERYTHING | false;
+	public static final boolean DEBUG_METHODS = DEBUG_EVERYTHING | false;
 	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | false;
 
-	public static final boolean REMOVE_BetterFoliagesModifications         = BETTER_FOLIAGE & true;
-	public static final boolean INJECT_RebuildChunkPreEvent                = true;
+	public static final boolean REMOVE_BetterFoliagesModifications = BETTER_FOLIAGE & true;
+	public static final boolean INJECT_RebuildChunkPreEvent = true;
 	public static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
-	public static final boolean INJECT_RebuildChunkBlockRenderInTypeEvent  = true;
-	public static final boolean INJECT_RebuildChunkBlockEvent              = true;
-	public static final boolean INJECT_RebuildChunkPostEvent               = true;
-
+	public static final boolean INJECT_RebuildChunkBlockRenderInTypeEvent = true;
+	public static final boolean INJECT_RebuildChunkBlockEvent = true;
+	public static final boolean INJECT_RebuildChunkPostEvent = true;
+	public static final Printer PRINTER = new Textifier();
+	public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 	static {
 
 		if (DEBUG_NAMES) {
@@ -99,8 +107,24 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	}
 
-	public static final Printer            PRINTER              = new Textifier();
-	public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
+	public static String insnToString(final AbstractInsnNode insn) {
+
+		insn.accept(TRACE_METHOD_VISITOR);
+		final StringWriter sw = new StringWriter();
+		PRINTER.print(new PrintWriter(sw));
+		PRINTER.getText().clear();
+		return sw.toString().trim();
+	}
+
+	public static String fieldToString(final FieldNode field) {
+
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw);
+		field.accept(new TraceClassVisitor(pw));
+		PRINTER.print(pw);
+		PRINTER.getText().clear();
+		return sw.toString().trim();
+	}
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
@@ -111,7 +135,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (! transformedName.equals(RENDER_CHUNK.getClassName())) {
+		if (!transformedName.equals(RENDER_CHUNK.getClassName())) {
 			return basicClass;
 		}
 
@@ -155,7 +179,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 			//TODO RENDER_CHUNK_REBUILD_CHUNK.matches()
 
-			if (! method.desc.equals(RENDER_CHUNK_REBUILD_CHUNK.getDescriptor())) {
+			if (!method.desc.equals(RENDER_CHUNK_REBUILD_CHUNK.getDescriptor())) {
 				if (DEBUG_METHODS) {
 					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" did not match");
 				}
@@ -401,24 +425,5 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public abstract boolean injectRebuildChunkBlockRenderInTypeEventHook(InsnList instructions);
 
 	public abstract boolean injectRebuildChunkPostEventHook(InsnList instructions);
-
-	public static String insnToString(final AbstractInsnNode insn) {
-
-		insn.accept(TRACE_METHOD_VISITOR);
-		final StringWriter sw = new StringWriter();
-		PRINTER.print(new PrintWriter(sw));
-		PRINTER.getText().clear();
-		return sw.toString().trim();
-	}
-
-	public static String fieldToString(final FieldNode field) {
-
-		final StringWriter sw = new StringWriter();
-		final PrintWriter pw = new PrintWriter(sw);
-		field.accept(new TraceClassVisitor(pw));
-		PRINTER.print(pw);
-		PRINTER.getText().clear();
-		return sw.toString().trim();
-	}
 
 }
