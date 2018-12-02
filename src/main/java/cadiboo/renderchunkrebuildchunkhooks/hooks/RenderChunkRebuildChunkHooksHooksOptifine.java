@@ -1,6 +1,5 @@
 package cadiboo.renderchunkrebuildchunkhooks.hooks;
 
-import cadiboo.renderchunkrebuildchunkhooks.config.ModConfig;
 import cadiboo.renderchunkrebuildchunkhooks.event.optifine.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
