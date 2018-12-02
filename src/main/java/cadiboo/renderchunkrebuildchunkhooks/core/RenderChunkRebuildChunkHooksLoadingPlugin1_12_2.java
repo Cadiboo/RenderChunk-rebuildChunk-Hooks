@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.Map;
 
 import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID;
@@ -25,7 +26,7 @@ import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHo
 @Name(MOD_NAME)
 @MCVersion("1.12.2")
 @TransformerExclusions({"cadiboo.renderchunkrebuildchunkhooks.core."})
-/** How early your core mod is called - Use > 1000 to work with srg names */
+/* How early your core mod is called - Use > 1000 to work with srg names */ //??? needs higher than 1001??? 0xBADC0DE works
 //@SortingIndex(value = 1001)
 @SortingIndex(value = 0xBADC0DE)
 //put in _VM_ arguments -Dfml.coreMods.load=cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
@@ -34,14 +35,15 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	public static final String CORE_MARKER = MOD_ID + "_loaded";
 
 	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME + " Core Plugin");
+	public static File MOD_LOCATION = null;
 
 	public static ObfuscationHelper.ObfuscationLevel OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.OBFUSCATED;
 
 	public static boolean OPTIFINE = false;
-	public static boolean OptifineCheckDone = false;
+	private static boolean OptifineCheckDone = false;
 
 	public static boolean BETTER_FOLIAGE = false;
-	public static boolean BetterFoliageCheckDone = false;
+	private static boolean BetterFoliageCheckDone = false;
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
 		LOGGER.info("Initialising " + this.getClass().getSimpleName() + " at version " + this.getVersion());
@@ -78,6 +80,8 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	public void injectData(final Map<String, Object> data) {
 		final boolean runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
 		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+		MOD_LOCATION = (File)data.get("coremodLocation");
 
 		if (runtimeDeobfuscationEnabled) {
 			OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.SRG;

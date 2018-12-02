@@ -1,6 +1,7 @@
 package cadiboo.renderchunkrebuildchunkhooks.mod;
 
 import cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
+import cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import joptsimple.internal.Strings;
@@ -8,6 +9,8 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLFileResourcePack;
+import net.minecraftforge.fml.client.FMLFolderResourcePack;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.LoadController;
@@ -16,6 +19,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +31,7 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
 	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";
 	public static final String MOD_VERSION = "0.0.0.0";
+	public static final String MOD_FULL_VERSION = "1.12.2-" + MOD_VERSION + "-alpha16";
 	// Directly reference a log4j logger.
 	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 	static {
@@ -38,7 +43,6 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 	}
 
 	public RenderChunkRebuildChunkHooksDummyModContainer() {
-
 		super(new ModMetadata());
 
 		final ArrayList<String> description = new ArrayList<>();
@@ -58,7 +62,7 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 		final ModMetadata meta = this.getMetadata();
 		meta.modId = MOD_ID;
 		meta.name = MOD_NAME;
-		meta.version = MOD_VERSION;
+		meta.version = MOD_FULL_VERSION;
 		meta.credits = "The Forge and FML guys for Forge and FML and Cadiboo for making the mod";
 		meta.authorList = Arrays.asList("Cadiboo", "CosmicDan");
 		meta.description = Strings.join(description, "\n");
@@ -66,12 +70,10 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 		meta.updateJSON = "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/update.json";
 		meta.screenshots = new String[0];
 		meta.logoFile = "/" + MOD_ID + "_logo.png";
-
 	}
 
 	@Subscribe
 	public void preInit(final FMLPreInitializationEvent event) {
-
 		if (!event.getSide().isClient()) {
 			return;
 		}
@@ -83,11 +85,9 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 		tryPreloadRenderChunk();
 
 		tryRegisterBetterFoliageCompatibleEventSubscriber();
-
 	}
 
 	private void tryPreloadRenderChunk() {
-
 		LOGGER.info("Preloading RenderChunk...");
 		{
 			RenderChunk.class.getName();
@@ -96,11 +96,9 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 			LOGGER.info("Initialised RenderChunk");
 		}
 		LOGGER.info("Successfully preloaded RenderChunk!");
-
 	}
 
 	private void tryRegisterBetterFoliageCompatibleEventSubscriber() {
-
 		if (BETTER_FOLIAGE) {
 			LOGGER.info("Registering BetterFoliage compatibility EventSubscriber...");
 			final Class<?> betterFoliageCompatibilityEventSubscriberClass;
@@ -117,28 +115,35 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 			}
 			LOGGER.info("Registered BetterFoliage compatibility EventSubscriber");
 		}
-
 	}
 
 	@Override
 	public boolean registerBus(final EventBus bus, final LoadController controller) {
-
 		bus.register(this);
 		return true;
-
 	}
 
 	@Override
 	public String getGuiClassName() {
-
 		return RenderChunkRebuildChunkHooksGuiFactory.class.getName();
 
 	}
 
 	@Override
 	public boolean shouldLoadInEnvironment() {
-
 		return FMLCommonHandler.instance().getSide().isClient();
+	}
+
+	// load our lang file (crashes in dev, works perfectly in release environment. FFS honestly what the fuck)
+	@Override
+	public File getSource() {
+		return RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.MOD_LOCATION;
+	}
+
+	// load our lang file (crashes in dev, works perfectly in release environment. FFS honestly what the fuck)
+	@Override
+	public Class<?> getCustomResourcePackClass() {
+		return getSource().isDirectory() ? FMLFolderResourcePack.class : FMLFileResourcePack.class;
 	}
 
 }
