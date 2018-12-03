@@ -42,14 +42,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
-
 		return super.transform(unTransformedName, transformedName, basicClass);
 
 	}
 
 	@Override
 	public void injectHooks(InsnList instructions) {
-
 		super.injectHooks(instructions);
 
 	}
@@ -64,12 +62,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 */
 	@Override
 	public boolean injectRebuildChunkPreEventHook(InsnList instructions) {
-
 		FieldInsnNode PUTSTATIC_renderChunksUpdated_Node = null;
 
 		// Find the bytecode instruction for "++renderChunksUpdated" ("PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-
 			if (instruction.getOpcode() == PUTSTATIC) {
 				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
 					if (RENDER_CHUNK_RENDER_CHUNKS_UPDATED.matches((FieldInsnNode) instruction)) {
@@ -189,7 +185,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 */
 	@Override
 	public boolean injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
-
 		final AbstractInsnNode canRenderInLayer = InjectionHelper.getCanRenderInBlockInjectionPoint(instructions);
 
 		if (canRenderInLayer == null) {
@@ -286,124 +281,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	}
 
 	/**
-	 * find GETSTATIC net/minecraft/util/EnumBlockRenderType.INVISIBLE : Lnet/minecraft/util/EnumBlockRenderType;
-	 * get line number for GETSTATIC instruction
-	 * get next IF_ACMPEQ (jump if objects are equal) instruction
-	 * delete everything between line number and IF_ACMPEQz
-	 *
-	 * @param instructions the instructions for the method
-	 * @return if the injection was successful
-	 */
-	@Override
-	public boolean injectRebuildChunkBlockRenderInTypeEventHook(InsnList instructions) {
-
-		FieldInsnNode GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = null;
-
-		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-
-			if (instruction.getOpcode() == GETSTATIC) {
-				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
-					if (ENUM_BLOCK_RENDER_TYPE_INVISIBLE.matches((FieldInsnNode) instruction)) {
-						GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = (FieldInsnNode) instruction;
-						break;
-					}
-				}
-			}
-
-		}
-
-		if (GETSTATIC_EnumBlockRenderType_INVISIBLE_Node == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return false;
-		}
-
-		LineNumberNode preExistingLineNumberNode = null;
-
-		// go back up the instructions until we find the Line Number Node
-		for (int i = instructions.indexOf(GETSTATIC_EnumBlockRenderType_INVISIBLE_Node) - 1; i >= 0; i--) {
-			if (instructions.get(i).getType() != AbstractInsnNode.LINE) {
-				continue;
-			}
-			preExistingLineNumberNode = (LineNumberNode) instructions.get(i);
-			break;
-		}
-
-		if (preExistingLineNumberNode == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return false;
-		}
-
-		JumpInsnNode preExistingIF_ACMPEQNode = null;
-
-		// go back down the instructions until we find the first IF_ACMPEQ instruction
-		for (int i = instructions.indexOf(GETSTATIC_EnumBlockRenderType_INVISIBLE_Node); i < instructions.indexOf(GETSTATIC_EnumBlockRenderType_INVISIBLE_Node) + 5; i++) {
-			if (instructions.get(i).getType() != AbstractInsnNode.JUMP_INSN) {
-				continue;
-			}
-			preExistingIF_ACMPEQNode = (JumpInsnNode) instructions.get(i);
-			break;
-		}
-
-		if (preExistingIF_ACMPEQNode == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return false;
-		}
-
-		LabelNode returnLabel = preExistingIF_ACMPEQNode.label;
-
-		//remove all instructions between the line number and the IF_ACMPEQ instruction<br>
-		ArrayList<AbstractInsnNode> instructionsToRemove = new ArrayList<>();
-		for (int i = instructions.indexOf(preExistingLineNumberNode) + 1; i < instructions.indexOf(preExistingIF_ACMPEQNode); ++i) {
-			instructionsToRemove.add(instructions.get(i));
-		}
-		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
-			//			LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
-			instructions.remove(instructionToRemove);
-		}
-
-		final InsnList tempInstructionList = new InsnList();
-
-		/*
-		 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-		 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-		 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-		 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-		 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-		 * @param renderChunkPosition       the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-		 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-		 * @param blockPos                  the {@link BlockPos.MutableBlockPos position} of the block being assessed
-		 * @param block                     the {@link Block block} being assessed
-		 * @param blockState                the {@link IBlockState state} of the block being assessed
-		 *
-		 * @return if the block should be rendered
-		 */
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderChunk - renderChunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockAccess_chunkCacheOF)); // worldView | blockAccess | chunkCacheOF
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockRendererDispatcher
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // visGraph
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockPos
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); // block
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); // iblockstate
-
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "canBlockRenderInType",
-				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/optifine/BlockPosM;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;)Z", false));
-		tempInstructionList.add(new JumpInsnNode(IFEQ, returnLabel));
-
-		// Inject our instructions right BEFORE IF_ACMPEQ
-		instructions.insertBefore(preExistingIF_ACMPEQNode, tempInstructionList);
-
-		instructions.remove(preExistingIF_ACMPEQNode);
-
-		return true;
-
-	}
-
-	/**
 	 * find "blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);"<br>
 	 * "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z"<br>
 	 * get return label<br>
@@ -415,12 +292,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 */
 	@Override
 	public boolean injectRebuildChunkBlockEventHook(InsnList instructions) {
-
 		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
 
 		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-
 			if (instruction.getOpcode() == INVOKEVIRTUAL) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
 					if (BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.matches((MethodInsnNode) instruction)) {
@@ -542,6 +417,122 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	}
 
 	/**
+	 * find GETSTATIC net/minecraft/util/EnumBlockRenderType.INVISIBLE : Lnet/minecraft/util/EnumBlockRenderType;
+	 * get line number for GETSTATIC instruction
+	 * get next IF_ACMPEQ (jump if objects are equal) instruction
+	 * delete everything between line number and IF_ACMPEQz
+	 *
+	 * @param instructions the instructions for the method
+	 * @return if the injection was successful
+	 */
+	@Override
+	public boolean injectRebuildChunkBlockRenderInTypeEventHook(InsnList instructions) {
+		FieldInsnNode GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = null;
+
+		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
+		for (AbstractInsnNode instruction : instructions.toArray()) {
+			if (instruction.getOpcode() == GETSTATIC) {
+				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
+					if (ENUM_BLOCK_RENDER_TYPE_INVISIBLE.matches((FieldInsnNode) instruction)) {
+						GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = (FieldInsnNode) instruction;
+						break;
+					}
+				}
+			}
+
+		}
+
+		if (GETSTATIC_EnumBlockRenderType_INVISIBLE_Node == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return false;
+		}
+
+		LineNumberNode preExistingLineNumberNode = null;
+
+		// go back up the instructions until we find the Line Number Node
+		for (int i = instructions.indexOf(GETSTATIC_EnumBlockRenderType_INVISIBLE_Node) - 1; i >= 0; i--) {
+			if (instructions.get(i).getType() != AbstractInsnNode.LINE) {
+				continue;
+			}
+			preExistingLineNumberNode = (LineNumberNode) instructions.get(i);
+			break;
+		}
+
+		if (preExistingLineNumberNode == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return false;
+		}
+
+		JumpInsnNode preExistingIF_ACMPEQNode = null;
+
+		// go back down the instructions until we find the first IF_ACMPEQ instruction
+		for (int i = instructions.indexOf(GETSTATIC_EnumBlockRenderType_INVISIBLE_Node); i < instructions.indexOf(GETSTATIC_EnumBlockRenderType_INVISIBLE_Node) + 5; i++) {
+			if (instructions.get(i).getType() != AbstractInsnNode.JUMP_INSN) {
+				continue;
+			}
+			preExistingIF_ACMPEQNode = (JumpInsnNode) instructions.get(i);
+			break;
+		}
+
+		if (preExistingIF_ACMPEQNode == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return false;
+		}
+
+		LabelNode returnLabel = preExistingIF_ACMPEQNode.label;
+
+		//remove all instructions between the line number and the IF_ACMPEQ instruction<br>
+		ArrayList<AbstractInsnNode> instructionsToRemove = new ArrayList<>();
+		for (int i = instructions.indexOf(preExistingLineNumberNode) + 1; i < instructions.indexOf(preExistingIF_ACMPEQNode); ++i) {
+			instructionsToRemove.add(instructions.get(i));
+		}
+		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
+			//			LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
+			instructions.remove(instructionToRemove);
+		}
+
+		final InsnList tempInstructionList = new InsnList();
+
+		/*
+		 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
+		 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+		 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+		 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
+		 * @param renderChunkPosition       the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
+		 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+		 * @param blockPos                  the {@link BlockPos.MutableBlockPos position} of the block being assessed
+		 * @param block                     the {@link Block block} being assessed
+		 * @param blockState                the {@link IBlockState state} of the block being assessed
+		 *
+		 * @return if the block should be rendered
+		 */
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderChunk - renderChunk
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockAccess_chunkCacheOF)); // worldView | blockAccess | chunkCacheOF
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockRendererDispatcher
+		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
+		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // visGraph
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockPos
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); // block
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); // iblockstate
+
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "canBlockRenderInType",
+				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/optifine/override/ChunkCacheOF;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/optifine/BlockPosM;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;)Z", false));
+		tempInstructionList.add(new JumpInsnNode(IFEQ, returnLabel));
+
+		// Inject our instructions right BEFORE IF_ACMPEQ
+		instructions.insertBefore(preExistingIF_ACMPEQNode, tempInstructionList);
+
+		instructions.remove(preExistingIF_ACMPEQNode);
+
+		return true;
+
+	}
+
+	/**
 	 * find last return statement in method<br>
 	 * inject before<br>
 	 *
@@ -550,7 +541,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine ext
 	 */
 	@Override
 	public boolean injectRebuildChunkPostEventHook(InsnList instructions) {
-
 		InsnNode RETURN_Node = null;
 
 		//Iterate backwards over the instructions to get the last return statement in the method

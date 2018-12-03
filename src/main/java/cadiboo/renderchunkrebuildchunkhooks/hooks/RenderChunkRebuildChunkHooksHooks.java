@@ -53,7 +53,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	public static final MethodHandle COMPILED_CHUNK_SET_LAYER_USED_HANDLE = getMethodHandle();
 
 	private static Method getMethodAndMakeItAccessable() {
-
 		final Method method = ReflectionHelper.findMethod(CompiledChunk.class, "setLayerUsed", "func_178486_a", BlockRenderLayer.class);
 		method.setAccessible(true);
 		return method;
@@ -61,7 +60,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	}
 
 	private static MethodHandle getMethodHandle() {
-
 		try {
 			return MethodHandles.publicLookup().unreflect(COMPILED_CHUNK_SET_LAYER_USED);
 		} catch (final IllegalAccessException illegalAccessException) {
@@ -75,7 +73,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @param blockRenderLayer the {@link BlockRenderLayer}
 	 */
 	public static void compiledchunk_setLayerUsed(final CompiledChunk compiledchunk, final BlockRenderLayer blockRenderLayer) {
-
 		try {
 			COMPILED_CHUNK_SET_LAYER_USED_HANDLE.invokeExact(compiledchunk, blockRenderLayer);
 		} catch (final Throwable throwable) {
@@ -98,7 +95,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean onRebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
-
 		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, renderChunkPosition, x, y, z);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPreEvent()) {
@@ -125,7 +121,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
-
 		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInLayerEvent()) {
@@ -157,7 +152,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean canBlockRenderInType(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState) {
-
 		final RebuildChunkBlockRenderInTypeEvent event = new RebuildChunkBlockRenderInTypeEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockState.getRenderType());
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInTypeEvent()) {
@@ -201,7 +195,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 */
 	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer,
 	                                               final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
-
 		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockEvent()) {
@@ -227,7 +220,6 @@ public class RenderChunkRebuildChunkHooksHooks {
 	 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
 	 */
 	public static void onRebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCache worldView, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
-
 		final RebuildChunkPostEvent event = new RebuildChunkPostEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, worldView, visGraph, setTileEntities, lockCompileTask);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPostEvent()) {

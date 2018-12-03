@@ -15,7 +15,6 @@ public class BetterFoliageCompatibilityEventSubscriber {
 	public static final Logger LOGGER = LogManager.getLogger();
 
 	public BetterFoliageCompatibilityEventSubscriber() {
-
 		LOGGER.info("instantiating " + this.getClass().getSimpleName());
 
 	}
@@ -23,7 +22,6 @@ public class BetterFoliageCompatibilityEventSubscriber {
 	//because BetterFoliage's name starts with "b" it will get called early anyway, and I want to keep HIGHEST and HIGH for mods that actually need them
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = false)
 	public void callBetterFoliageHooks_renderWorldBlock_onRebuildChunkBlockEvent(final RebuildChunkBlockEvent event) {
-
 		final BlockRenderLayer blockRenderLayer = event.getBlockRenderLayer();
 
 		boolean used = Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), blockRenderLayer);
@@ -37,7 +35,6 @@ public class BetterFoliageCompatibilityEventSubscriber {
 	//because BetterFoliage's name starts with "b" it will get called early anyway, and I want to keep HIGHEST and HIGH for mods that actually need them
 	@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = false)
 	public void callBetterFoliageHooks_canRenderBlockInLayer_onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
-
 		boolean shouldRender = Hooks.canRenderBlockInLayer(event.getBlockState().getBlock(), event.getBlockState(), event.getBlockRenderLayer());
 
 		if (shouldRender) {

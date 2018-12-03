@@ -2,6 +2,7 @@ package cadiboo.renderchunkrebuildchunkhooks.mod;
 
 import cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
 import cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2;
+import cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import joptsimple.internal.Strings;
@@ -117,10 +118,25 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 		}
 	}
 
+	//will always be null in dev environment, will never be null in release environment
+	@Override
+	public File getSource() {
+		return RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.MOD_LOCATION;
+	}
+
 	@Override
 	public boolean registerBus(final EventBus bus, final LoadController controller) {
 		bus.register(this);
 		return true;
+	}
+
+	// load our lang file
+	@Override
+	public Class<?> getCustomResourcePackClass() {
+		// without this it crashes in dev, even though it works perfectly in release environment
+		if (RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL == ObfuscationHelper.ObfuscationLevel.DEOBFUSCATED)
+			return super.getCustomResourcePackClass();
+		return getSource().isDirectory() ? FMLFolderResourcePack.class : FMLFileResourcePack.class;
 	}
 
 	@Override
@@ -132,18 +148,6 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 	@Override
 	public boolean shouldLoadInEnvironment() {
 		return FMLCommonHandler.instance().getSide().isClient();
-	}
-
-	// load our lang file (crashes in dev, works perfectly in release environment. FFS honestly what the fuck)
-	@Override
-	public File getSource() {
-		return RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.MOD_LOCATION;
-	}
-
-	// load our lang file (crashes in dev, works perfectly in release environment. FFS honestly what the fuck)
-	@Override
-	public Class<?> getCustomResourcePackClass() {
-		return getSource().isDirectory() ? FMLFolderResourcePack.class : FMLFileResourcePack.class;
 	}
 
 }

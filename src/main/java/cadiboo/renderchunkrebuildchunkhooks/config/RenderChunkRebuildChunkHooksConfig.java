@@ -33,9 +33,7 @@ public class RenderChunkRebuildChunkHooksConfig {
 		sync();
 	}
 
-	public static void sync() {
-
-		//general
+	public static void sync() {        //general
 		enableHooks = config.get(
 				CATEGORY_GENERAL, "enableHooks", true
 		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableHooks").getBoolean();

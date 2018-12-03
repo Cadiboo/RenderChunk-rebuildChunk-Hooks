@@ -35,16 +35,13 @@ import static org.objectweb.asm.Type.VOID_TYPE;
 public class ObfuscationHelper {
 
 	public enum ObfuscationLevel {
-
 		DEOBFUSCATED,
 		SRG,
 		OBFUSCATED;
 
 	}
 
-	public enum ObfuscationClass {
-
-		//um, MCPBot says that RenderChunk is bxp (on 1.12 mappings), but when I run Minecraft (on 1.12.2) it says that RenderChunk is bxr. Using Minecraft 1.12.2 obfname
+	public enum ObfuscationClass {        //um, MCPBot says that RenderChunk is bxp (on 1.12 mappings), but when I run Minecraft (on 1.12.2) it says that RenderChunk is bxr. Using Minecraft 1.12.2 obfname
 		RENDER_CHUNK("net/minecraft/client/renderer/chunk/RenderChunk", "net/minecraft/client/renderer/chunk/RenderChunk", "bxr"),
 		CHUNK_COMPILE_TASK_GENERATOR("net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "bxl"),
 		VIS_GRAPH("net/minecraft/client/renderer/chunk/VisGraph", "net/minecraft/client/renderer/chunk/VisGraph", "bxs"),
@@ -72,7 +69,6 @@ public class ObfuscationHelper {
 		private final String obfuscatedName;
 
 		ObfuscationClass(String deobfuscatedName, String srgName, String obfuscatedName) {
-
 			this.deobfuscatedName = deobfuscatedName;
 			this.srgName = srgName;
 			this.obfuscatedName = obfuscatedName;
@@ -85,7 +81,6 @@ public class ObfuscationHelper {
 		 * @return the correct internal name for the current environment
 		 */
 		public String getInternalName() {
-
 			switch (OBFUSCATION_LEVEL) {
 				case DEOBFUSCATED:
 					return this.deobfuscatedName;
@@ -105,15 +100,12 @@ public class ObfuscationHelper {
 		 * @return the correct name for the current environment
 		 */
 		public String getClassName() {
-
 			return Type.getObjectType(this.getInternalName()).getClassName();
 
 		}
 	}
 
-	public enum ObfuscationField {
-
-		// instance fields
+	public enum ObfuscationField {        // instance fields
 		RENDER_CHUNK_POSITION(RENDER_CHUNK, "position", "field_178586_f", "o", MUTABLE_BLOCK_POS),
 		RENDER_CHUNK_RENDER_GLOBAL(RENDER_CHUNK, "renderGlobal", "field_178589_e", "e", RENDER_GLOBAL),
 		RENDER_CHUNK_WORLD_VIEW(RENDER_CHUNK, "worldView", "field_189564_r", "r", CHUNK_CACHE),
@@ -137,7 +129,6 @@ public class ObfuscationHelper {
 		private final Object type;
 
 		ObfuscationField(ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object type) {
-
 			this.owner = owner;
 			this.deobfuscatedName = deobfuscatedName;
 			this.srgName = srgName;
@@ -147,7 +138,6 @@ public class ObfuscationHelper {
 		}
 
 		public ObfuscationClass getOwner() {
-
 			return owner;
 
 		}
@@ -158,7 +148,6 @@ public class ObfuscationHelper {
 		 * @return the correct name for the current environment
 		 */
 		public String getName() {
-
 			switch (OBFUSCATION_LEVEL) {
 				case DEOBFUSCATED:
 					return this.deobfuscatedName;
@@ -173,7 +162,6 @@ public class ObfuscationHelper {
 		}
 
 		public String getDescriptor() {
-
 			final Type type;
 			if (this.type instanceof ObfuscationClass) {
 				type = Type.getObjectType(((ObfuscationClass) this.type).getInternalName());
@@ -188,7 +176,6 @@ public class ObfuscationHelper {
 		}
 
 		public boolean matches(FieldInsnNode field) {
-
 			if (!field.owner.equals(this.getOwner().getInternalName())) {
 				return false;
 			}
@@ -208,7 +195,6 @@ public class ObfuscationHelper {
 	}
 
 	public enum ObfuscationMethod {
-
 		RENDER_CHUNK_REBUILD_CHUNK(RENDER_CHUNK, "rebuildChunk", "func_178581_b", "b", VOID_TYPE, new Object[]{
 				FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR
 		}, false),
@@ -228,9 +214,7 @@ public class ObfuscationHelper {
 		BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER(BETTER_FOLIAGE_HOOKS, "canRenderBlockInLayer", "canRenderBlockInLayer", "canRenderBlockInLayer", BOOLEAN_TYPE, new Object[]{
 				BLOCK, I_BLOCK_STATE, BLOCK_RENDER_LAYER
 		}, false),
-		OPTIFINE_REFLECTOR_METHOD_EXISTS(OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[]{
-
-		}, false),
+		OPTIFINE_REFLECTOR_METHOD_EXISTS(OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[]{}, false),
 		BETTER_FOLIAGE_RENDER_WORLD_BLOCK(BETTER_FOLIAGE_HOOKS, "renderWorldBlock", "renderWorldBlock", "renderWorldBlock", BOOLEAN_TYPE, new Object[]{
 				BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
 		}, false),
@@ -246,7 +230,6 @@ public class ObfuscationHelper {
 		private final boolean isInterface;
 
 		ObfuscationMethod(ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object returnType, Object[] params, boolean isInterface) {
-
 			this.owner = owner;
 			this.deobfuscatedName = deobfuscatedName;
 			this.srgName = srgName;
@@ -258,7 +241,6 @@ public class ObfuscationHelper {
 		}
 
 		public ObfuscationClass getOwner() {
-
 			return owner;
 
 		}
@@ -269,7 +251,6 @@ public class ObfuscationHelper {
 		 * @return the correct name for the current environment
 		 */
 		public String getName() {
-
 			switch (OBFUSCATION_LEVEL) {
 				case DEOBFUSCATED:
 					return this.deobfuscatedName;
@@ -284,7 +265,6 @@ public class ObfuscationHelper {
 		}
 
 		public String getDescriptor() {
-
 			final Type returnType;
 			if (this.returnType instanceof ObfuscationClass) {
 				returnType = Type.getObjectType(((ObfuscationClass) this.returnType).getInternalName());
@@ -297,7 +277,6 @@ public class ObfuscationHelper {
 			final ArrayList<Type> params = new ArrayList<>();
 
 			for (Object paramObject : this.params) {
-
 				final Type param;
 				if (paramObject instanceof ObfuscationClass) {
 					param = Type.getObjectType(((ObfuscationClass) paramObject).getInternalName());
@@ -316,19 +295,16 @@ public class ObfuscationHelper {
 		}
 
 		public Type getType() {
-
 			return Type.getMethodType(this.getDescriptor());
 
 		}
 
 		public boolean isInterface() {
-
 			return isInterface;
 
 		}
 
 		public boolean matches(MethodInsnNode method) {
-
 			if (!method.owner.equals(this.getOwner().getInternalName())) {
 				return false;
 			}

@@ -23,7 +23,6 @@ public class RebuildChunkPreEventTest {
 
 	@SubscribeEvent
 	public static void onRebuildChunkPreEvent(final RebuildChunkPreEvent event) {
-
 		if (!ENABLED) {
 			return;
 		}

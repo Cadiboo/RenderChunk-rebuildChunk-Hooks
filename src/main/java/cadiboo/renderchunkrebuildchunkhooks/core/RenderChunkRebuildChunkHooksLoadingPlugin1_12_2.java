@@ -26,7 +26,8 @@ import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHo
 @Name(MOD_NAME)
 @MCVersion("1.12.2")
 @TransformerExclusions({"cadiboo.renderchunkrebuildchunkhooks.core."})
-/* How early your core mod is called - Use > 1000 to work with srg names */ //??? needs higher than 1001??? 0xBADC0DE works
+/* How early your core mod is called - Use > 1000 to work with srg names */
+//??? needs higher than 1001??? 0xBADC0DE works
 //@SortingIndex(value = 1001)
 @SortingIndex(value = 0xBADC0DE)
 //put in _VM_ arguments -Dfml.coreMods.load=cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
@@ -40,9 +41,8 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 	public static ObfuscationHelper.ObfuscationLevel OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.OBFUSCATED;
 
 	public static boolean OPTIFINE = false;
-	private static boolean OptifineCheckDone = false;
-
 	public static boolean BETTER_FOLIAGE = false;
+	private static boolean OptifineCheckDone = false;
 	private static boolean BetterFoliageCheckDone = false;
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
@@ -81,7 +81,7 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 		final boolean runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
 		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-		MOD_LOCATION = (File)data.get("coremodLocation");
+		MOD_LOCATION = (File) data.get("coremodLocation");
 
 		if (runtimeDeobfuscationEnabled) {
 			OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.SRG;
@@ -113,20 +113,20 @@ public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoad
 			} catch (final Exception e) {
 				OPTIFINE = false;
 				OptifineCheckDone = true;
-				LOGGER.info("has not found Optifine, using normal (Forge) ClassTransformer");
+				LOGGER.info("did not detect Optifine, using normal (Forge) ClassTransformer");
 			}
 		}
 
 		if (!BetterFoliageCheckDone) {
 			try {
-				final Class<?> betterFollageClient = Class.forName("mods.betterfoliage.client.Hooks", false, Loader.instance().getModClassLoader());
+				final Class<?> betterFoliageClient = Class.forName("mods.betterfoliage.client.Hooks", false, Loader.instance().getModClassLoader());
 				BETTER_FOLIAGE = true;
 				BetterFoliageCheckDone = true;
-				LOGGER.info("detected BetterFolliage, compatibility features will be enabled");
+				LOGGER.info("detected BetterFoliage, compatibility features will be enabled");
 			} catch (final Exception e) {
 				BETTER_FOLIAGE = false;
 				BetterFoliageCheckDone = true;
-				LOGGER.info("has not detected BetterFolliage, proceeding normally");
+				LOGGER.info("did not detect BetterFoliage, proceeding normally");
 			}
 		}
 	}

@@ -29,7 +29,6 @@ public class RebuildChunkBlockEventTest {
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
-
 		if (!ENABLED) {
 			return;
 		}

@@ -20,6 +20,7 @@ import net.optifine.override.ChunkCacheOF;
  * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block could render in.<br>
  * Setting the result of this event to {@link Result#DENY} prevents the parts of the block in this {@link BlockRenderLayer BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).<br>
  * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}<br>
+ * Cancel the event to stop mods further down the listener list from receiving the event
  *
  * @author Cadiboo
  * @see RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)

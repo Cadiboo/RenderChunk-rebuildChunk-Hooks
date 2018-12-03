@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 
@@ -17,11 +18,13 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
  * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} the block could render in.<br>
  * Setting the result of this event to {@link net.minecraftforge.fml.common.eventhandler.Event.Result#DENY} prevents the parts of the block in this {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).<br>
  * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}<br>
+ * Cancel the event to stop mods further down the listener list from receiving the event
  *
  * @author Cadiboo
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
  */
 @HasResult
+@Cancelable
 public class RebuildChunkBlockRenderInLayerEvent extends Event {
 
 	private final RenderChunk renderChunk;
@@ -48,7 +51,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
 	 */
 	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache chunkCache, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
-
 		this.renderChunk = renderChunk;
 		this.chunkCache = chunkCache;
 		this.generator = chunkCompileTaskGenerator;
@@ -65,7 +67,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the instance of {@link RenderChunk} the event is being fired for
 	 */
 	public RenderChunk getRenderChunk() {
-
 		return this.renderChunk;
 	}
 
@@ -73,7 +74,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the {@link ChunkCache} passed in
 	 */
 	public ChunkCache getChunkCache() {
-
 		return this.chunkCache;
 	}
 
@@ -81,7 +81,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the {@link ChunkCompileTaskGenerator} passed in
 	 */
 	public ChunkCompileTaskGenerator getGenerator() {
-
 		return this.generator;
 	}
 
@@ -89,7 +88,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the {@link CompiledChunk} passed in
 	 */
 	public CompiledChunk getCompiledChunk() {
-
 		return this.compiledchunk;
 	}
 
@@ -97,7 +95,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the {@link BlockRendererDispatcher} passed in
 	 */
 	public BlockRendererDispatcher getBlockRendererDispatcher() {
-
 		return this.blockRendererDispatcher;
 	}
 
@@ -105,7 +102,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the position passed in
 	 */
 	public MutableBlockPos getRenderChunkPosition() {
-
 		return this.renderChunkPosition;
 	}
 
@@ -113,7 +109,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the {@link VisGraph} passed in
 	 */
 	public VisGraph getVisGraph() {
-
 		return this.visGraph;
 	}
 
@@ -121,7 +116,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the position of the block passed in
 	 */
 	public MutableBlockPos getBlockPos() {
-
 		return this.blockPos;
 	}
 
@@ -129,7 +123,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the {@link IBlockState state} of the block passed in
 	 */
 	public IBlockState getBlockState() {
-
 		return this.blockState;
 	}
 
@@ -137,7 +130,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @return the {@link BlockRenderLayer} of the block passed in
 	 */
 	public BlockRenderLayer getBlockRenderLayer() {
-
 		return this.blockRenderLayer;
 	}
 

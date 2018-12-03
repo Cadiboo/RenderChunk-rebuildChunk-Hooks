@@ -70,7 +70,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 */
 	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache chunkCache, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
 	                              final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
-
 		this.renderChunk = renderChunk;
 		this.renderGlobal = renderGlobal;
 		this.chunkCache = chunkCache;
@@ -98,7 +97,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param pos             the pos to get translations from
 	 */
 	private static void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
-
 		bufferBuilderIn.begin(7, DefaultVertexFormats.BLOCK);
 		bufferBuilderIn.setTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
 	}
@@ -107,7 +105,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the instance of {@link RenderChunk} the event is being fired for
 	 */
 	public RenderChunk getRenderChunk() {
-
 		return this.renderChunk;
 	}
 
@@ -115,7 +112,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link RenderGlobal} passed in
 	 */
 	public RenderGlobal getRenderGlobal() {
-
 		return renderGlobal;
 	}
 
@@ -123,7 +119,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link ChunkCache} passed in
 	 */
 	public ChunkCache getChunkCache() {
-
 		return this.chunkCache;
 	}
 
@@ -131,7 +126,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link ChunkCompileTaskGenerator} passed in
 	 */
 	public ChunkCompileTaskGenerator getGenerator() {
-
 		return this.generator;
 	}
 
@@ -139,7 +133,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link CompiledChunk} passed in
 	 */
 	public CompiledChunk getCompiledChunk() {
-
 		return this.compiledchunk;
 	}
 
@@ -147,7 +140,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link BlockRendererDispatcher} passed in
 	 */
 	public BlockRendererDispatcher getBlockRendererDispatcher() {
-
 		return this.blockRendererDispatcher;
 	}
 
@@ -155,7 +147,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link IBlockState state} of the block passed in
 	 */
 	public IBlockState getBlockState() {
-
 		return this.blockState;
 	}
 
@@ -163,7 +154,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the position of the block passed in
 	 */
 	public MutableBlockPos getBlockPos() {
-
 		return this.blockPos;
 	}
 
@@ -171,7 +161,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link BufferBuilder} passed in
 	 */
 	public BufferBuilder getBufferBuilder() {
-
 		return this.bufferBuilder;
 	}
 
@@ -179,7 +168,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the position passed in
 	 */
 	public MutableBlockPos getRenderChunkPosition() {
-
 		return this.renderChunkPosition;
 	}
 
@@ -187,7 +175,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link BlockRenderLayer} passed in
 	 */
 	public BlockRenderLayer getBlockRenderLayer() {
-
 		return this.blockRenderLayer;
 	}
 
@@ -197,7 +184,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return an array of booleans mapped to {@link BlockRenderLayer#ordinal()}
 	 */
 	public boolean[] getUsedBlockRenderLayers() {
-
 		return this.usedBlockRenderLayers;
 	}
 
@@ -205,7 +191,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the X passed in
 	 */
 	public float getX() {
-
 		return this.x;
 	}
 
@@ -213,7 +198,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the Y passed in
 	 */
 	public float getY() {
-
 		return this.y;
 	}
 
@@ -221,7 +205,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the Z passed in
 	 */
 	public float getZ() {
-
 		return this.z;
 	}
 
@@ -229,7 +212,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link HashSet} of all {@link TileEntity TileEntities} with global renderers
 	 */
 	public HashSet<TileEntity> getTileEntitiesWithGlobalRenderers() {
-
 		return this.tileEntitiesWithGlobalRenderers;
 	}
 
@@ -237,7 +219,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link VisGraph} passed in
 	 */
 	public VisGraph getVisGraph() {
-
 		return this.visGraph;
 	}
 
@@ -248,7 +229,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
 	 */
 	private BufferBuilder getBufferBuilderForBlockRenderLayer(final BlockRenderLayer blockRenderLayer) {
-
 		return this.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(blockRenderLayer);
 	}
 
@@ -259,7 +239,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param used             if the {@link BlockRenderLayer} will be rendered
 	 */
 	public void setBlockRenderLayerUsed(final BlockRenderLayer blockRenderLayer, final boolean used) {
-
 		this.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] = used;
 	}
 
@@ -270,7 +249,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @param used             if the {@link BlockRenderLayer} will be rendered (if false will not make it false if it was previously true)
 	 */
 	public void setBlockRenderLayerUsedWithOrOpperation(final BlockRenderLayer blockRenderLayer, final boolean used) {
-
 		this.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] |= used;
 	}
 
@@ -279,7 +257,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
 	 */
 	public BufferBuilder startOrContinueLayer(final BlockRenderLayer blockRenderLayer) {
-
 		final BufferBuilder bufferbuilder = this.getBufferBuilderForBlockRenderLayer(blockRenderLayer);
 
 		if (!this.getCompiledChunk().isLayerStarted(blockRenderLayer)) {

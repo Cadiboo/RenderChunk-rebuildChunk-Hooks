@@ -42,7 +42,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
 	 */
 	public RebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache chunkCache, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
-
 		this.renderChunk = renderChunk;
 		this.renderGlobal = renderGlobal;
 		this.chunkCache = chunkCache;
@@ -58,7 +57,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the instance of {@link RenderChunk} the event is being fired for
 	 */
 	public RenderChunk getRenderChunk() {
-
 		return this.renderChunk;
 	}
 
@@ -66,7 +64,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the {@link RenderGlobal} passed in
 	 */
 	public RenderGlobal getRenderGlobal() {
-
 		return this.renderGlobal;
 	}
 
@@ -74,7 +71,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the {@link ChunkCache} passed in
 	 */
 	public ChunkCache getChunkCache() {
-
 		return this.chunkCache;
 	}
 
@@ -82,7 +78,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the {@link ChunkCompileTaskGenerator} passed in
 	 */
 	public ChunkCompileTaskGenerator getGenerator() {
-
 		return this.generator;
 	}
 
@@ -90,7 +85,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the {@link CompiledChunk} passed in
 	 */
 	public CompiledChunk getCompiledChunk() {
-
 		return this.compiledchunk;
 	}
 
@@ -98,7 +92,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the position passed in
 	 */
 	public MutableBlockPos getRenderChunkPosition() {
-
 		return this.renderChunkPosition;
 	}
 
@@ -106,7 +99,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the X passed in
 	 */
 	public float getX() {
-
 		return this.x;
 	}
 
@@ -114,7 +106,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the Y passed in
 	 */
 	public float getY() {
-
 		return this.y;
 	}
 
@@ -122,7 +113,6 @@ public class RebuildChunkPreEvent extends Event {
 	 * @return the Z passed in
 	 */
 	public float getZ() {
-
 		return this.z;
 	}
 

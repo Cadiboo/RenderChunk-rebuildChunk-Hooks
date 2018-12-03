@@ -20,7 +20,6 @@ public class RenderChunkRebuildChunkHooksConfigGui extends GuiConfig {
 	}
 
 	private static List<IConfigElement> getConfigElements() {
-
 		final ArrayList<IConfigElement> configElements = new ArrayList<>();
 		for (String categoryName : RenderChunkRebuildChunkHooksConfig.config.getCategoryNames()) {
 			final IConfigElement configElement = new ConfigElement(RenderChunkRebuildChunkHooksConfig.config.getCategory(categoryName).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + categoryName));

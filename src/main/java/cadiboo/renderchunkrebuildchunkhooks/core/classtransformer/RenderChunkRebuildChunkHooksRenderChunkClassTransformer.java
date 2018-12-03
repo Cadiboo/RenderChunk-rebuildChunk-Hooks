@@ -71,7 +71,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final Printer PRINTER = new Textifier();
 	public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 	static {
-
 		if (DEBUG_NAMES) {
 			ObfuscationHelper.ObfuscationLevel oldObfuscationLevel = OBFUSCATION_LEVEL;
 			for (ObfuscationHelper.ObfuscationLevel obfuscationLevel : ObfuscationHelper.ObfuscationLevel.values()) {
@@ -108,7 +107,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	}
 
 	public static String insnToString(final AbstractInsnNode insn) {
-
 		insn.accept(TRACE_METHOD_VISITOR);
 		final StringWriter sw = new StringWriter();
 		PRINTER.print(new PrintWriter(sw));
@@ -117,7 +115,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	}
 
 	public static String fieldToString(final FieldNode field) {
-
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		field.accept(new TraceClassVisitor(pw));
@@ -128,7 +125,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
-
 		if (DEBUG_CLASSES) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {
 				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(RENDER_CHUNK.getClassName()) + ", transformedName equals: " + transformedName.equals(RENDER_CHUNK.getClassName()));
@@ -175,9 +171,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			LOGGER.info("RebuildChunk descriptor: " + RENDER_CHUNK_REBUILD_CHUNK.getDescriptor());
 		}
 
-		for (final MethodNode method : classNode.methods) {
-
-			//TODO RENDER_CHUNK_REBUILD_CHUNK.matches()
+		for (final MethodNode method : classNode.methods) {            //TODO RENDER_CHUNK_REBUILD_CHUNK.matches()
 
 			if (!method.desc.equals(RENDER_CHUNK_REBUILD_CHUNK.getDescriptor())) {
 				if (DEBUG_METHODS) {
@@ -246,7 +240,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	}
 
 	public void injectHooks(InsnList instructions) {
-
 		if (INJECT_RebuildChunkPreEvent) {
 			LOGGER.info("injecting RebuildChunkPreEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
@@ -367,9 +360,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public abstract boolean injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions);
 
-	public boolean removeBetterFoliagesModifications(InsnList instructions) {
-
-		//		// where: RenderChunk.rebuildChunk()
+	public boolean removeBetterFoliagesModifications(InsnList instructions) {        //		// where: RenderChunk.rebuildChunk()
 		//		// what: replace call to BlockRendererDispatcher.renderBlock()
 		//		// why: allows us to perform additional rendering for each block
 		//		transformMethod(Refs.rebuildChunk) {
@@ -393,7 +384,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 		// Find the bytecode instruction for "Hooks.renderWorldBlock" ("INVOKESTATIC mods/betterfoliage/client/Hooks.renderWorldBlock (Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/BlockRenderLayer;)Z")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
 					if (BETTER_FOLIAGE_RENDER_WORLD_BLOCK.matches((MethodInsnNode) instruction)) {

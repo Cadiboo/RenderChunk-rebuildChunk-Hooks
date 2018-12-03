@@ -26,7 +26,6 @@ public class RebuildChunkBlockRenderInLayerEventTest {
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
-
 		if (!ENABLED) {
 			return;
 		}

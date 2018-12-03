@@ -13,7 +13,6 @@ public class RenderChunkRebuildChunkHooksGuiFactory implements IModGuiFactory {
 
 	@Override
 	public void initialize(final Minecraft minecraftInstance) {
-
 	}
 
 	@Override

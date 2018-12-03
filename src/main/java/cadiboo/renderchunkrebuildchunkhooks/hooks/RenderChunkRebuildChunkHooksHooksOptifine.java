@@ -39,14 +39,12 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	public static final Field CHUNK_CACHE_OF_CHUNK_CACHE = getFieldAndMakeItAccessable();
 
 	private static Field getFieldAndMakeItAccessable() {
-
 		final Field field = ReflectionHelper.findField(ChunkCacheOF.class, "chunkCache");
 		field.setAccessible(true);
 		return field;
 	}
 
 	public static ChunkCache getChunkCacheFromChunkCacheOF(ChunkCacheOF chunkCacheOF) {
-
 		try {
 			return (ChunkCache) CHUNK_CACHE_OF_CHUNK_CACHE.get(chunkCacheOF);
 		} catch (IllegalAccessException illegalAccessException) {
@@ -68,7 +66,6 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean onRebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockPos.MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
-
 		final RebuildChunkPreOptifineEvent event = new RebuildChunkPreOptifineEvent(renderChunk, renderGlobal, chunkCacheOF, generator, compiledChunk, renderChunkPosition, x, y, z);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPreEvent()) {
@@ -94,7 +91,6 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final BlockPos.MutableBlockPos renderChunkPosition, final VisGraph visGraph, final BlockPosM blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
-
 		final RebuildChunkBlockRenderInLayerOptifineEvent event = new RebuildChunkBlockRenderInLayerOptifineEvent(renderChunk, chunkCacheOF, chunkCompileTaskGenerator, compiledChunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInLayerEvent()) {
@@ -125,7 +121,6 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
 	public static boolean canBlockRenderInType(final RenderChunk renderChunk, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final BlockPos.MutableBlockPos renderChunkPosition, final VisGraph visGraph, final BlockPosM blockPos, final Block block, final IBlockState blockState) {
-
 		final RebuildChunkBlockRenderInTypeOptifineEvent event = new RebuildChunkBlockRenderInTypeOptifineEvent(renderChunk, chunkCacheOF, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockState.getRenderType());
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInTypeEvent()) {
@@ -169,7 +164,6 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	 */
 	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCacheOF chunkCacheOF, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledChunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final BlockPosM blockPos, final BufferBuilder bufferBuilder, final BlockPos.MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer,
 	                                               final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
-
 		final RebuildChunkBlockOptifineEvent event = new RebuildChunkBlockOptifineEvent(renderChunk, renderGlobal, chunkCacheOF, generator, compiledChunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockEvent()) {
@@ -194,7 +188,6 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
 	 */
 	public static void onRebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, BlockPos.MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
-
 		final RebuildChunkPostOptifineEvent event = new RebuildChunkPostOptifineEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, chunkCacheOF, visGraph, setTileEntities, lockCompileTask);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPostEvent()) {

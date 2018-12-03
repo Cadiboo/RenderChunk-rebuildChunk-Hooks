@@ -16,7 +16,6 @@ import static cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.O
 public class InjectionHelper implements Opcodes {
 
 	public static AbstractInsnNode getCanRenderInBlockInjectionPoint(InsnList instructions) {
-
 		if (OPTIFINE && BETTER_FOLIAGE) {
 			return getCanRenderInBlockInjectionPointOptifineBetterFoliage(instructions);
 		} else if (OPTIFINE) {
@@ -30,13 +29,10 @@ public class InjectionHelper implements Opcodes {
 	}
 
 	private static AbstractInsnNode getCanRenderInBlockInjectionPointVanillaForge(InsnList instructions) {
-
 		MethodInsnNode INVOKEVIRTUAL_Block_canRenderInLayer_Node = null;
 
 		// Find the bytecode instruction for "block.canRenderInLayer(iblockstate, blockrenderlayer);" ("INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-
-			// L44
+		for (AbstractInsnNode instruction : instructions.toArray()) {            // L44
 			// LINENUMBER 191 L44
 			// ALOAD 17: block
 			// ALOAD 16: iblockstate
@@ -58,14 +54,11 @@ public class InjectionHelper implements Opcodes {
 	}
 
 	private static FieldInsnNode getCanRenderInBlockInjectionPointOptifine(InsnList instructions) {
-
 		FieldInsnNode GETSTATIC_Reflector_ForgeBlock_canRenderInLayer = null;
 
 		// Find the bytecode instruction for "block.canRenderInLayer(iblockstate, blockrenderlayer);" ("INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")
 		find_GETSTATIC_Reflector_ForgeBlock_canRenderInLayer:
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-
-			//NO! Not the right one
+		for (AbstractInsnNode instruction : instructions.toArray()) {            //NO! Not the right one
 			//			LINENUMBER 237 L26
 			//#			GETSTATIC net/optifine/reflect/Reflector.ForgeBlock_canRenderInLayer : Lnet/optifine/reflect/ReflectorMethod;
 			//			INVOKEVIRTUAL net/optifine/reflect/ReflectorMethod.exists ()Z
@@ -97,7 +90,6 @@ public class InjectionHelper implements Opcodes {
 			final int indexOfFieldInsnNode = instructions.indexOf(fieldInsnNode);
 
 			for (int i = indexOfFieldInsnNode; i < indexOfFieldInsnNode + 10; i++) {
-
 				final AbstractInsnNode instruction2 = instructions.get(i);
 
 				if (instruction2.getOpcode() == INVOKEVIRTUAL) {
@@ -121,13 +113,10 @@ public class InjectionHelper implements Opcodes {
 	}
 
 	private static AbstractInsnNode getCanRenderInBlockInjectionPointBetterFoliage(InsnList instructions) {
-
 		MethodInsnNode INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = null;
 
 		// Find the bytecode instruction for "block.canRenderInLayer(iblockstate, blockrenderlayer);" ("INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z")
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-
-			//		// where: RenderChunk.rebuildChunk()
+		for (AbstractInsnNode instruction : instructions.toArray()) {            //		// where: RenderChunk.rebuildChunk()
 			//		// what: invoke code to overrule result of Block.canRenderInLayer()
 			//		// why: allows us to render transparent quads for blocks which are only on the SOLID layer
 			//		transformMethod(Refs.rebuildChunk) {
@@ -162,12 +151,9 @@ public class InjectionHelper implements Opcodes {
 	}
 
 	private static AbstractInsnNode getCanRenderInBlockInjectionPointOptifineBetterFoliage(InsnList instructions) {
-
 		MethodInsnNode INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = null;
 
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-
-			//		// where: RenderChunk.rebuildChunk()
+		for (AbstractInsnNode instruction : instructions.toArray()) {            //		// where: RenderChunk.rebuildChunk()
 			//		// what: invoke code to overrule result of Block.canRenderInLayer()
 			//		// why: allows us to render transparent quads for blocks which are only on the SOLID layer
 			//		transformMethod(Refs.rebuildChunk) {

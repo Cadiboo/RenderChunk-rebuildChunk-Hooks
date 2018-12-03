@@ -34,14 +34,12 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
-
 		return super.transform(unTransformedName, transformedName, basicClass);
 
 	}
 
 	@Override
 	public void injectHooks(InsnList instructions) {
-
 		super.injectHooks(instructions);
 
 	}
@@ -56,12 +54,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 */
 	@Override
 	public boolean injectRebuildChunkPreEventHook(InsnList instructions) {
-
 		FieldInsnNode PUTSTATIC_renderChunksUpdated_Node = null;
 
 		// Find the bytecode instruction for "++renderChunksUpdated" ("PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-
 			if (instruction.getOpcode() == PUTSTATIC) {
 				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
 					if (RENDER_CHUNK_RENDER_CHUNKS_UPDATED.matches((FieldInsnNode) instruction)) {
@@ -163,7 +159,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 */
 	@Override
 	public boolean injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions) {
-
 		final AbstractInsnNode INVOKEVIRTUAL_Block_canRenderInLayer_Node = InjectionHelper.getCanRenderInBlockInjectionPoint(instructions);
 
 		if (INVOKEVIRTUAL_Block_canRenderInLayer_Node == null) {
@@ -246,12 +241,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 */
 	@Override
 	public boolean injectRebuildChunkBlockEventHook(InsnList instructions) {
-
 		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
 
 		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-
 			if (instruction.getOpcode() == INVOKEVIRTUAL) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
 					if (BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.matches((MethodInsnNode) instruction)) {
@@ -384,12 +377,10 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 */
 	@Override
 	public boolean injectRebuildChunkBlockRenderInTypeEventHook(InsnList instructions) {
-
 		FieldInsnNode GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = null;
 
 		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-
 			if (instruction.getOpcode() == GETSTATIC) {
 				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
 					if (ENUM_BLOCK_RENDER_TYPE_INVISIBLE.matches((FieldInsnNode) instruction)) {
@@ -501,7 +492,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge
 	 */
 	@Override
 	public boolean injectRebuildChunkPostEventHook(InsnList instructions) {
-
 		InsnNode RETURN_Node = null;
 
 		//Iterate backwards over the instructions to get the last return statement in the method
