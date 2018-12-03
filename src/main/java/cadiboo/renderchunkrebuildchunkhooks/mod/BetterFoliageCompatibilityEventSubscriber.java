@@ -16,7 +16,6 @@ public class BetterFoliageCompatibilityEventSubscriber {
 
 	public BetterFoliageCompatibilityEventSubscriber() {
 		LOGGER.info("instantiating " + this.getClass().getSimpleName());
-
 	}
 
 	//because BetterFoliage's name starts with "b" it will get called early anyway, and I want to keep HIGHEST and HIGH for mods that actually need them
@@ -29,7 +28,6 @@ public class BetterFoliageCompatibilityEventSubscriber {
 		event.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] |= used;
 
 		event.setCanceled(true);
-
 	}
 
 	//because BetterFoliage's name starts with "b" it will get called early anyway, and I want to keep HIGHEST and HIGH for mods that actually need them
@@ -42,7 +40,6 @@ public class BetterFoliageCompatibilityEventSubscriber {
 		} else {
 			event.setResult(Event.Result.DENY);
 		}
-
 	}
 
 }
