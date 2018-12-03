@@ -1,3 +1,27 @@
 {
-	
+	"homepage": "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/releases/latest/",
+	"promos": {
+		"1.12.2-latest": "1.0.1.0",
+		"1.12.2-recommended": "1.0.1.0"
+	},
+	"1.12.2": {
+		"1.0.1.0": "Cadiboo: Refactoring & made Layer and Type events cancellable (causes minor mod version increment)\nCadiboo: Modified LICENSE",
+		"1.0.0.0": "Cadiboo: All bugs fixed (I think), First release",
+		"0.0.0.0-alpha16": "Cadiboo: Fix #2 completely (lang also works now)\nCadiboo: Refactoring & code style",
+		"0.0.0.0-alpha15": "Cadiboo: Config\nCadiboo: Refactoring\nCadiboo: added option to force reload chunks on config change\nCadiboo: added BlockPosM getter in Optifine events",
+		"0.0.0.0-alpha14": "Cadiboo: Fix stupid copy pasta bug",
+		"0.0.0.0-alpha13": "Cadiboo: Added a new hook (RebuildChunkBlockRenderInTypeEvent)",
+		"0.0.0.0-alpha12": "Cadiboo: Everything works perfectly except the config :/ - It works in the dev environment though!",
+		"0.0.0.0-alpha11": "Cadiboo: BetterFoliage stuff",
+		"0.0.0.0-alpha10": "Cadiboo: ASM stuff",
+		"0.0.0.0-alpha9": "Cadiboo: Redid a bunch of the ASM & obfuscation stuff",
+		"0.0.0.0-alpha8": "Cadiboo: Initial BetterFoliage compatibility",
+		"0.0.0.0-alpha7": "Cadiboo: Actually works in non-dev environment\nCadiboo: changed \"deobfuscated\" names\nCadiboo: actually targets the right method\nCadiboo: actually injects properly\nCadiboo: fixed typo where Optifine hook was posting non-Optifine event",
+		"0.0.0.0-alpha6": "Cadiboo: Now doesn't crash outside a dev environment",
+		"0.0.0.0-alpha5": "Cadiboo: Optifine compatibility!",
+		"0.0.0.0-alpha4": "Cadiboo: Added RebuildChunkPostEvent hook and started on Optifine compatibility",
+		"0.0.0.0-alpha3": "Cadiboo: Re-wrote mod to use proper ASM, This version doesn't have any compatibility features.",
+		"0.0.0.0-alpha2": "Cadiboo: Small bug fixes to alpha1",
+		"0.0.0.0-alpha1": "Cadiboo: Initial Release, Replaces RenderChunk#rebuildChunk with code redirecting to our own method. No compatibility with any other core mods who modify RenderChunk#rebuildChunk."
+	}
 }
