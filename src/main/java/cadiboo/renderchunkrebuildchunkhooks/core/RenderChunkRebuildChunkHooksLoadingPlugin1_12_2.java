@@ -29,7 +29,7 @@ import static cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHo
 /* How early your core mod is called - Use > 1000 to work with srg names */
 //??? needs higher than 1001??? 0xBADC0DE works
 //@SortingIndex(value = 1001)
-@SortingIndex(value = 0xBADC0DE)
+@SortingIndex(value = 0xBAD_C0DE)
 //put in _VM_ arguments -Dfml.coreMods.load=cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
 public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoadingPlugin {
 
