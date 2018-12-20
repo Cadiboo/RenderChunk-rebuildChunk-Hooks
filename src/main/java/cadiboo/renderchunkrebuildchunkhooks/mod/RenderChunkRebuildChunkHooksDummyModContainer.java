@@ -1,5 +1,6 @@
 package cadiboo.renderchunkrebuildchunkhooks.mod;
 
+import cadiboo.renderchunkrebuildchunkhooks.compatibility.BetterFoliageCompatibilityEventSubscriber;
 import cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
 import cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2;
 import cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
@@ -21,7 +22,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -104,13 +104,9 @@ public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModConta
 			LOGGER.info("Registering BetterFoliage compatibility EventSubscriber...");
 			final Class<?> betterFoliageCompatibilityEventSubscriberClass;
 			try {
-				betterFoliageCompatibilityEventSubscriberClass = Class.forName("cadiboo.renderchunkrebuildchunkhooks.mod.BetterFoliageCompatibilityEventSubscriber");
-
-				final Object betterFoliageCompatibilityEventSubscriber = betterFoliageCompatibilityEventSubscriberClass.getConstructors()[0].newInstance();
-
-				MinecraftForge.EVENT_BUS.register(betterFoliageCompatibilityEventSubscriber);
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-				CrashReport crashReport = new CrashReport("Error finding or registering BetterFoliage compatible EventSubscriber", exception);
+				MinecraftForge.EVENT_BUS.register(new BetterFoliageCompatibilityEventSubscriber());
+			} catch (Exception exception) {
+				CrashReport crashReport = new CrashReport("Error Registering BetterFoliage compatibility EventSubscriber", exception);
 				crashReport.makeCategory("Registering BetterFoliage compatibility EventSubscriber");
 				throw new ReportedException(crashReport);
 			}

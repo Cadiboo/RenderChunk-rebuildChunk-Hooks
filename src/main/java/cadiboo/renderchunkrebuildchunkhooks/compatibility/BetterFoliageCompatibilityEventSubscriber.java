@@ -1,4 +1,4 @@
-package cadiboo.renderchunkrebuildchunkhooks.mod;
+package cadiboo.renderchunkrebuildchunkhooks.compatibility;
 
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
