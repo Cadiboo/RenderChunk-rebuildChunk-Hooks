@@ -1,7 +1,7 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks;
+package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import com.google.common.base.Preconditions;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -25,7 +25,7 @@ import java.util.Random;
 public class RebuildChunkBlockEventTest {
 
 	public static final String MODID = "rebuild_chunk_block_event_test";
-	public static final boolean ENABLED = false;
+	public static final boolean ENABLED = true;
 
 	@SubscribeEvent
 	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
@@ -70,17 +70,9 @@ public class RebuildChunkBlockEventTest {
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers());
 		Preconditions.checkNotNull(event.getVisGraph());
 
-		if (new Random().nextBoolean()) {
-			//			event.setCanceled(true);
-			for (int i = 0; i < event.getUsedBlockRenderLayers().length; i++) {
-				event.getUsedBlockRenderLayers()[i] = false;
-			}
+		if (new Random().nextInt(16) == 0) {
+			event.setCanceled(true);
 		}
-
-		//		if (!event.getBlockState().getMaterial().blocksLight()) {
-		//			event.setCanceled(false);
-		//			event.getBlockRendererDispatcher().renderBlock(Blocks.GLASS.getDefaultState(), event.getBlockPos(), event.getWorldView(), event.getBufferBuilder());
-		//		}
 
 	}
 

@@ -1,7 +1,7 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks;
+package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import com.google.common.base.Preconditions;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -22,7 +22,7 @@ public class RebuildChunkPostEventTest {
 
 	public static final String MODID = "rebuild_chunk_post_event_test";
 
-	public static final boolean ENABLED = false;
+	public static final boolean ENABLED = true;
 
 	@SubscribeEvent
 	public static void onRebuildChunkPostEvent(final RebuildChunkPostEvent event) {

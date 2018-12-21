@@ -242,7 +242,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	}
 
 	public void injectHooks(InsnList instructions) {
-//		if (true) return;
 		if (INJECT_RebuildChunkPreEvent) {
 			LOGGER.info("injecting RebuildChunkPreEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {

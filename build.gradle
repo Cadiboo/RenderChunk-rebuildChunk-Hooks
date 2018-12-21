@@ -19,6 +19,12 @@ apply plugin: 'org.spongepowered.mixin'
 // Only edit below this line unless you know what you're doing
 // The above code adds and enables the necessary things for Forge and Mixins to be setup.
 
+repositories {
+	mavenCentral()
+	maven { url 'https://libraries.minecraft.net/' }
+	maven { url = "https://files.minecraftforge.net/maven" }
+	maven { url = 'https://repo.spongepowered.org/maven/' }
+}
 
 version = "1.12.2-0.1.0"
 group = "io.github.cadiboo.renderchunkrebuildchunkhooks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -53,6 +59,7 @@ minecraft {
 }
 
 dependencies {
+
 	// you may put jars on which you depend on in ./libs
 	// or you may define them like so..
 	//compile "some.group:artifact:version:classifier"
@@ -73,6 +80,11 @@ dependencies {
 	// for more info...
 	// http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
 	// http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+	// compile files('./run/mods/OptiFine_1.12.2_HD_U_E3.jar') // adds Optifine to the dev env
+	// compile files('./run/mods/BetterFoliage-MC1.12-2.2.0.jar') // adds BetterFoliage to the dev env
+
+	compile 'org.spongepowered:mixin:0.7.11-SNAPSHOT' // adds Mixins to the dev env
 
 }
 
@@ -107,4 +119,9 @@ processResources {
 	//move our Access Transformer to META-INF
 	rename '(.+_at.cfg)', 'META-INF/$1'
 	
+}
+
+mixin {
+       // Specify "notch" or "searge" here
+       defaultObfuscationEnv searge
 }

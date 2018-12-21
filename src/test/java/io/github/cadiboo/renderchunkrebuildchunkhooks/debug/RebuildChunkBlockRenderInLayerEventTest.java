@@ -1,6 +1,6 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks;
+package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import com.google.common.base.Preconditions;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
