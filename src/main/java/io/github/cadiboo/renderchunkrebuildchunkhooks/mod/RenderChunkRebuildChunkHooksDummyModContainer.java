@@ -2,7 +2,7 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.mod;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.compatibility.BetterFoliageCompatibilityEventSubscriber;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -25,7 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
 
 public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModContainer {
 
@@ -116,7 +116,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	//will always be null in dev environment, will never be null in release environment
 	@Override
 	public File getSource() {
-		return RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.MOD_LOCATION;
+		return RenderChunkRebuildChunkHooksLoadingPlugin.MOD_LOCATION;
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	@Override
 	public Class<?> getCustomResourcePackClass() {
 		// without this it crashes in dev, even though it works perfectly in release environment
-		if (RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL == ObfuscationHelper.ObfuscationLevel.DEOBFUSCATED)
+		if (RenderChunkRebuildChunkHooksLoadingPlugin.OBFUSCATION_LEVEL == ObfuscationHelper.ObfuscationLevel.DEOBFUSCATED)
 			return super.getCustomResourcePackClass();
 		return getSource().isDirectory() ? FMLFolderResourcePack.class : FMLFileResourcePack.class;
 	}

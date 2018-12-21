@@ -1,9 +1,8 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
+import com.google.common.base.Preconditions;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
-import com.google.common.collect.ImmutableList;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,13 +20,17 @@ import org.objectweb.asm.util.Textifier;
 import org.objectweb.asm.util.TraceClassVisitor;
 import org.objectweb.asm.util.TraceMethodVisitor;
 
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.*;
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.*;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_RENDER_WORLD_BLOCK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK;
 
 /**
  * @author Cadiboo
@@ -38,52 +41,33 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.Obfuscati
 // http://www.minecraftforge.net/forum/topic/32600-1710-strange-error-with-custom-event-amp-event-handler/?do=findComment&comment=172480
 public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer implements IClassTransformer, Opcodes, IStacks {
 
-	public static final int CLASS_WRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
+	private static final int CLASS_WRITER_FLAGS = ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES;
 	// skip class reader reading frames if the class writer is going to compute them for us (if it is you should get a warning that this being 0 is dead code)
-	public static final int CLASS_READER_FLAGS = (CLASS_WRITER_FLAGS & ClassWriter.COMPUTE_FRAMES) == ClassWriter.COMPUTE_FRAMES ? ClassReader.SKIP_FRAMES : 0;
+	private static final int CLASS_READER_FLAGS = (CLASS_WRITER_FLAGS & ClassWriter.COMPUTE_FRAMES) == ClassWriter.COMPUTE_FRAMES ? ClassReader.SKIP_FRAMES : 0;
 
-	public static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
-	// TODO dump it in the Minecraft directory?
-	//	public static final boolean DEBUG_DUMP_BYTECODE = false;
+	public static boolean DEBUG_EVERYTHING = false;
 
-	public static final boolean DEBUG_EVERYTHING = false;
-	public static final boolean DEBUG_CLASSES = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_FIELDS = DEBUG_EVERYTHING | false;
-	//may cause issues, use with care
-	public static final boolean DEBUG_NAMES = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_TYPES = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_STACKS = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_METHODS = DEBUG_EVERYTHING | false;
-	public static final boolean DEBUG_INSTRUCTIONS = DEBUG_EVERYTHING | false;
+	public static boolean DEBUG_DUMP_BYTECODE = false;
+	public static String DEBUG_DUMP_BYTECODE_DIR = null;
 
-	public static final boolean REMOVE_BetterFoliagesModifications = RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE & true;
-	public static final boolean INJECT_RebuildChunkPreEvent = true;
-	public static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
-	public static final boolean INJECT_RebuildChunkBlockRenderInTypeEvent = true;
-	public static final boolean INJECT_RebuildChunkBlockEvent = true;
-	public static final boolean INJECT_RebuildChunkPostEvent = true;
-	public static final Printer PRINTER = new Textifier();
-	public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
+	public static boolean DEBUG_CLASSES = false;
+	public static boolean DEBUG_FIELDS = false;
+	public static boolean DEBUG_TYPES = false;
+	public static boolean DEBUG_STACKS = false;
+	public static boolean DEBUG_METHODS = false;
+	public static boolean DEBUG_INSTRUCTIONS = false;
+
+	private static final boolean REMOVE_BetterFoliagesModifications = RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
+	private static final boolean INJECT_RebuildChunkPreEvent = true;
+	private static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
+	private static final boolean INJECT_RebuildChunkBlockRenderInTypeEvent = true;
+	private static final boolean INJECT_RebuildChunkBlockEvent = true;
+	private static final boolean INJECT_RebuildChunkPostEvent = true;
+	private static final Printer PRINTER = new Textifier();
+	private static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 	static {
-		if (DEBUG_NAMES) {
-			ObfuscationLevel oldObfuscationLevel = RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
-			for (ObfuscationLevel obfuscationLevel : ObfuscationLevel.values()) {
-				LOGGER.warn("Debbuging names for " + obfuscationLevel.name());
-				RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL = obfuscationLevel;
-				for (final ObfuscationClass obfuscationClass : ObfuscationClass.values()) {
-					LOGGER.info("ObfuscationClass {}: {}, {}", obfuscationClass.name(), obfuscationClass.getClassName(), obfuscationClass.getInternalName());
-				}
-				for (final ObfuscationField obfuscationField : ObfuscationField.values()) {
-					LOGGER.info("ObfuscationField {}: {}, {}, {}", obfuscationField.name(), obfuscationField.getOwner(), obfuscationField.getName(), obfuscationField.getDescriptor());
-				}
-				for (final ObfuscationMethod obfuscationMethod : values()) {
-					LOGGER.info("ObfuscationMethod {}: {}, {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getName(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
-				}
-			}
-			RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL = oldObfuscationLevel;
-		}
-
 		if (DEBUG_STACKS) {
 			for (final Field field : IStacks.class.getFields()) {
 				Object value;
@@ -130,23 +114,24 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			return basicClass;
 		}
 
-		//		if (DEBUG_DUMP_BYTECODE) {
-		//			try {
-		//				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
-		//				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
-		//				final ClassReader reader = new ClassReader(basicClass);
-		//				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
-		//				reader.accept(tracingVisitor, 0);
-		//
-		//				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/before_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
-		//				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
-		//				fileOutputStream.write(basicClass);
-		//				fileOutputStream.close();
-		//			} catch (final Exception exception) {
-		//				LOGGER.error("Failed to dump bytecode of classes before injecting hooks!");
-		//				exception.printStackTrace();
-		//			}
-		//		}
+		if (DEBUG_DUMP_BYTECODE) {
+			try {
+				Preconditions.checkNotNull(DEBUG_DUMP_BYTECODE_DIR, "debug dump bytecode dir before");
+				final Path pathToFile = Paths.get(DEBUG_DUMP_BYTECODE_DIR + "before_hooks.txt");
+				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+				final ClassReader reader = new ClassReader(basicClass);
+				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+				reader.accept(tracingVisitor, 0);
+
+				final Path pathToClass = Paths.get(DEBUG_DUMP_BYTECODE_DIR + "before_hooks.class");
+				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+				fileOutputStream.write(basicClass);
+				fileOutputStream.close();
+			} catch (final Exception exception) {
+				LOGGER.error("Failed to dump bytecode of classes before injecting hooks!");
+				exception.printStackTrace();
+			}
+		}
 
 		LOGGER.info("Preparing to inject hooks into \"" + transformedName + "\" (RenderChunk)");
 
@@ -204,25 +189,26 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 			LOGGER.info("Injected hooks successfully!");
 
-			//			if (DEBUG_DUMP_BYTECODE) {
-			//				try {
-			//					final byte[] bytes = out.toByteArray();
-			//
-			//					final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".txt");
-			//					final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
-			//					final ClassReader reader = new ClassReader(bytes);
-			//					final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
-			//					reader.accept(tracingVisitor, 0);
-			//
-			//					final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/after_hooks" + /* (System.nanoTime() & 0xFF) + */ ".class");
-			//					final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
-			//					fileOutputStream.write(bytes);
-			//					fileOutputStream.close();
-			//				} catch (final Exception exception) {
-			//					LOGGER.error("Failed to dump bytecode of classes after injecting hooks!");
-			//					exception.printStackTrace();
-			//				}
-			//			}
+			if (DEBUG_DUMP_BYTECODE) {
+				try {
+					Preconditions.checkNotNull(DEBUG_DUMP_BYTECODE_DIR, "debug dump bytecode dir after");
+					final byte[] bytes = out.toByteArray();
+
+					final Path pathToFile = Paths.get(DEBUG_DUMP_BYTECODE_DIR+"after_hooks.txt");
+					final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
+					final ClassReader reader = new ClassReader(bytes);
+					final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
+					reader.accept(tracingVisitor, 0);
+
+					final Path pathToClass = Paths.get(DEBUG_DUMP_BYTECODE_DIR+"after_hooks.class");
+					final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
+					fileOutputStream.write(bytes);
+					fileOutputStream.close();
+				} catch (final Exception exception) {
+					LOGGER.error("Failed to dump bytecode of classes after injecting hooks!");
+					exception.printStackTrace();
+				}
+			}
 
 			return out.toByteArray();
 		} catch (final Exception e) {
@@ -273,7 +259,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE && REMOVE_BetterFoliagesModifications) {
+		if (RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE && REMOVE_BetterFoliagesModifications) {
 			LOGGER.info("removing BetterFoliage's modifications...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {

@@ -1,5 +1,7 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.core;
 
+import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
@@ -18,7 +20,11 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
+
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID;
 
 @Name(RenderChunkRebuildChunkHooksDummyModContainer.MOD_NAME)
 @MCVersion("1.12.2")
@@ -27,12 +33,12 @@ import java.util.Map;
 //??? needs higher than 1001??? 0xBADC0DE works
 //@SortingIndex(value = 1001)
 @SortingIndex(value = 0xBAD_C0DE)
-//put in _VM_ arguments -Dfml.coreMods.load=io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
-public final class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoadingPlugin {
+//put in _VM_ arguments -Dfml.coreMods.load=io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin
+public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoadingPlugin {
 
-	public static final String CORE_MARKER = RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID + "_loaded";
+	public static final String CORE_MARKER = MOD_ID;
 
-	public static final Logger LOGGER = LogManager.getLogger(RenderChunkRebuildChunkHooksDummyModContainer.MOD_NAME + " Core Plugin");
+	private static final Logger LOGGER = LogManager.getLogger(RenderChunkRebuildChunkHooksDummyModContainer.MOD_NAME + " Core Plugin");
 	public static File MOD_LOCATION = null;
 
 	public static ObfuscationHelper.ObfuscationLevel OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.OBFUSCATED;
@@ -42,13 +48,9 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IF
 	private static boolean OptifineCheckDone = false;
 	private static boolean BetterFoliageCheckDone = false;
 
-	public RenderChunkRebuildChunkHooksLoadingPlugin1_12_2() {
-		LOGGER.info("Initialising " + this.getClass().getSimpleName() + " at version " + this.getVersion());
-		Launch.blackboard.put(CORE_MARKER, this.getVersion());
-	}
-
-	public String getVersion() {
-		return "1.12.2";
+	public RenderChunkRebuildChunkHooksLoadingPlugin() {
+		LOGGER.debug("Initialising " + this.getClass().getSimpleName());
+		Launch.blackboard.put(CORE_MARKER, "loaded");
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IF
 		detectOtherCoremods();
 
 		if (OPTIFINE) {
-			return new String[]{"RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine"};
+			return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine.class.getName()};
 		} else {
 			return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName()};
 		}
@@ -77,6 +79,21 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IF
 	public void injectData(final Map<String, Object> data) {
 		final boolean runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
 		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+
+		final HashMap<String, String> args = (HashMap<String, String>) Launch.blackboard.get("launchArgs");
+
+		final boolean debugEverything = Boolean.valueOf(args.get("--debugEverything"));
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_EVERYTHING = debugEverything;
+
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE = Boolean.valueOf(args.get("--dumpBytecode")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE_DIR = data.get("mcLocation") + "/" + MOD_ID + "/dumps/";
+
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_CLASSES = Boolean.valueOf(args.get("--debugClasses")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_FIELDS = Boolean.valueOf(args.get("--debugFields")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_TYPES = Boolean.valueOf(args.get("--debugTypes")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_STACKS = Boolean.valueOf(args.get("--debugStacks")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_METHODS = Boolean.valueOf(args.get("--debugMethods")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_INSTRUCTIONS = Boolean.valueOf(args.get("--debugInstructions")) | debugEverything;
 
 		MOD_LOCATION = (File) data.get("coremodLocation");
 
@@ -124,6 +141,27 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IF
 				BETTER_FOLIAGE = false;
 				BetterFoliageCheckDone = true;
 				LOGGER.info("did not detect BetterFoliage, proceeding normally");
+			}
+		}
+	}
+
+	/**
+	 * Logs all {@link java.lang.reflect.Field Field}s and their values of an object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
+	 *
+	 * @param objects the objects to dump.
+	 */
+	public static void dump(final Object... objects) {
+		for (final Object obj : objects) {
+			final Field[] fields = obj.getClass().getDeclaredFields();
+			LOGGER.info("Dump of " + obj + ":");
+			for (int i = 0; i < fields.length; i++) {
+				try {
+					fields[i].setAccessible(true);
+					LOGGER.info(fields[i].getName() + " - " + fields[i].get(obj));
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					LOGGER.info("Error getting field " + fields[i].getName());
+					LOGGER.info(e.getLocalizedMessage());
+				}
 			}
 		}
 	}
