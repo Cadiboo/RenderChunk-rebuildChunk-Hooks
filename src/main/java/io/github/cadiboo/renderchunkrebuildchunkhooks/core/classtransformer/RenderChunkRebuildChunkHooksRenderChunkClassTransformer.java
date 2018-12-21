@@ -46,6 +46,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	private static final int CLASS_READER_FLAGS = (CLASS_WRITER_FLAGS & ClassWriter.COMPUTE_FRAMES) == ClassWriter.COMPUTE_FRAMES ? ClassReader.SKIP_FRAMES : 0;
 
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER_MINIFED = LogManager.getLogger("RCRCHClassTransformer");
 
 	public static boolean DEBUG_EVERYTHING = false;
 
@@ -77,8 +78,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					LOGGER.info(field.getName() + ": " + value);
 
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					LOGGER.error("Error logging stacks!");
-					e.printStackTrace();
+					LOGGER_MINIFED.error("Error logging stacks!", e);
 				}
 			}
 		}
@@ -104,6 +104,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
+
 		if (DEBUG_CLASSES) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {
 				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(ObfuscationClass.RENDER_CHUNK.getClassName()) + ", transformedName equals: " + transformedName.equals(ObfuscationClass.RENDER_CHUNK.getClassName()));
@@ -118,18 +119,19 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			try {
 				Preconditions.checkNotNull(DEBUG_DUMP_BYTECODE_DIR, "debug dump bytecode dir before");
 				final Path pathToFile = Paths.get(DEBUG_DUMP_BYTECODE_DIR + "before_hooks.txt");
+				pathToFile.toFile().getParentFile().mkdirs();
 				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
 				final ClassReader reader = new ClassReader(basicClass);
 				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
 				reader.accept(tracingVisitor, 0);
 
 				final Path pathToClass = Paths.get(DEBUG_DUMP_BYTECODE_DIR + "before_hooks.class");
+				pathToClass.toFile().getParentFile().mkdirs();
 				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
 				fileOutputStream.write(basicClass);
 				fileOutputStream.close();
-			} catch (final Exception exception) {
-				LOGGER.error("Failed to dump bytecode of classes before injecting hooks!");
-				exception.printStackTrace();
+			} catch (final Exception e) {
+				LOGGER_MINIFED.error("Failed to dump bytecode of classes before injecting hooks!", e);
 			}
 		}
 
@@ -194,26 +196,26 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 					Preconditions.checkNotNull(DEBUG_DUMP_BYTECODE_DIR, "debug dump bytecode dir after");
 					final byte[] bytes = out.toByteArray();
 
-					final Path pathToFile = Paths.get(DEBUG_DUMP_BYTECODE_DIR+"after_hooks.txt");
+					final Path pathToFile = Paths.get(DEBUG_DUMP_BYTECODE_DIR + "after_hooks.txt");
+					pathToFile.toFile().getParentFile().mkdirs();
 					final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
 					final ClassReader reader = new ClassReader(bytes);
 					final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
 					reader.accept(tracingVisitor, 0);
 
-					final Path pathToClass = Paths.get(DEBUG_DUMP_BYTECODE_DIR+"after_hooks.class");
+					final Path pathToClass = Paths.get(DEBUG_DUMP_BYTECODE_DIR + "after_hooks.class");
+					pathToClass.toFile().getParentFile().mkdirs();
 					final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
 					fileOutputStream.write(bytes);
 					fileOutputStream.close();
-				} catch (final Exception exception) {
-					LOGGER.error("Failed to dump bytecode of classes after injecting hooks!");
-					exception.printStackTrace();
+				} catch (final Exception e) {
+					LOGGER_MINIFED.error("Failed to dump bytecode of classes after injecting hooks!", e);
 				}
 			}
 
 			return out.toByteArray();
 		} catch (final Exception e) {
-			e.printStackTrace();
-			LOGGER.error("FAILED to inject hooks!!! Discarding changes.");
+			LOGGER_MINIFED.error("FAILED to inject hooks!!! Discarding changes.", e);
 			LOGGER.warn("Any mods that depend on the hooks provided by this mod will not work");
 			return basicClass;
 		}
@@ -377,7 +379,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		}
 
 		if (INVOKESTATIC_Hooks_renderWorldBlock_Node == null) {
-			new RuntimeException("Couldn't find BetterFoliage's modifications!").printStackTrace();
+			LOGGER_MINIFED.info("Error!", new RuntimeException("Couldn't find BetterFoliage's modifications!"));
 			return false;
 		}
 
