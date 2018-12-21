@@ -111,7 +111,9 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 	}
 
 	private boolean getArgsBoolean(final String arg) {
-		return Boolean.valueOf(System.getProperty("D" + arg)) | Boolean.valueOf(System.getProperty(arg));
+		final boolean result = Boolean.valueOf(System.getProperty("D" + arg)) | Boolean.valueOf(System.getProperty(arg));
+		LOGGER.debug("Argument " + arg + ": " + result);
+		return result;
 	}
 
 	@Override
@@ -143,27 +145,6 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 				BETTER_FOLIAGE = false;
 				BetterFoliageCheckDone = true;
 				LOGGER.info("did not detect BetterFoliage, proceeding normally");
-			}
-		}
-	}
-
-	/**
-	 * Logs all {@link java.lang.reflect.Field Field}s and their values of an object with the {@link org.apache.logging.log4j.Level#INFO INFO} level.
-	 *
-	 * @param objects the objects to dump.
-	 */
-	public static void dump(final Object... objects) {
-		for (final Object obj : objects) {
-			final Field[] fields = obj.getClass().getDeclaredFields();
-			LOGGER.info("Dump of " + obj + ":");
-			for (int i = 0; i < fields.length; i++) {
-				try {
-					fields[i].setAccessible(true);
-					LOGGER.info(fields[i].getName() + " - " + fields[i].get(obj));
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					LOGGER.info("Error getting field " + fields[i].getName());
-					LOGGER.info(e.getLocalizedMessage());
-				}
 			}
 		}
 	}
