@@ -22,7 +22,7 @@ import java.util.Map;
 
 @Name(RenderChunkRebuildChunkHooksDummyModContainer.MOD_NAME)
 @MCVersion("1.12.2")
-@TransformerExclusions({"cadiboo.renderchunkrebuildchunkhooks.core."})
+@TransformerExclusions({"io.github.cadiboo.renderchunkrebuildchunkhooks.core."})
 /* How early your core mod is called - Use > 1000 to work with srg names */
 //??? needs higher than 1001??? 0xBADC0DE works
 //@SortingIndex(value = 1001)
