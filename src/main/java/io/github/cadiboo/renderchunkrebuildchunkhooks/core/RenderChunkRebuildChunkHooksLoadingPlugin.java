@@ -21,10 +21,10 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_VERSION;
 
 @Name(RenderChunkRebuildChunkHooksDummyModContainer.MOD_NAME)
 @MCVersion("1.12.2")
@@ -49,8 +49,8 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 	private static boolean BetterFoliageCheckDone = false;
 
 	public RenderChunkRebuildChunkHooksLoadingPlugin() {
-		LOGGER.debug("Initialising " + this.getClass().getSimpleName());
-		Launch.blackboard.put(CORE_MARKER, "loaded");
+		LOGGER.debug("Initialising " + this.getClass().getSimpleName() + " version: " + MOD_VERSION);
+		Launch.blackboard.put(CORE_MARKER, MOD_VERSION);
 	}
 
 	@Override
