@@ -80,18 +80,18 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		final boolean runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
 		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-		final boolean debugEverything = Boolean.valueOf(System.getProperty("DdebugEverything"));
+		final boolean debugEverything = getArgsBoolean("debugEverything");
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_EVERYTHING = debugEverything;
 
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE = Boolean.valueOf(System.getProperty("DdumpBytecode")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE = getArgsBoolean("dumpBytecode") | debugEverything;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE_DIR = data.get("mcLocation") + "/" + MOD_ID + "/dumps/";
 
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_CLASSES = Boolean.valueOf(System.getProperty("DdebugClasses")) | debugEverything;
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_FIELDS = Boolean.valueOf(System.getProperty("DdebugFields")) | debugEverything;
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_TYPES = Boolean.valueOf(System.getProperty("DdebugTypes")) | debugEverything;
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_STACKS = Boolean.valueOf(System.getProperty("DdebugStacks")) | debugEverything;
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_METHODS = Boolean.valueOf(System.getProperty("DdebugMethods")) | debugEverything;
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_INSTRUCTIONS = Boolean.valueOf(System.getProperty("DdebugInstructions")) | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_CLASSES = getArgsBoolean("debugClasses") | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_FIELDS = getArgsBoolean("debugFields") | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_TYPES = getArgsBoolean("debugTypes") | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_STACKS = getArgsBoolean("debugStacks") | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_METHODS = getArgsBoolean("debugMethods") | debugEverything;
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_INSTRUCTIONS = getArgsBoolean("debugInstructions") | debugEverything;
 
 		MOD_LOCATION = (File) data.get("coremodLocation");
 
@@ -108,6 +108,10 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		RebuildChunkBlockRenderInLayerEvent.class.getName();
 		RebuildChunkBlockEvent.class.getName();
 		LOGGER.info("Successfully Pre-loaded event classes");
+	}
+
+	private boolean getArgsBoolean(final String arg) {
+		return Boolean.valueOf(System.getProperty("D" + arg)) | Boolean.valueOf(System.getProperty(arg));
 	}
 
 	@Override
