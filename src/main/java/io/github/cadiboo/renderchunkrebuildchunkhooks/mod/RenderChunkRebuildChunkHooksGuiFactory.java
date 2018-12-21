@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RenderChunkRebuildChunkHooksGuiFactory implements IModGuiFactory {
+public final class RenderChunkRebuildChunkHooksGuiFactory implements IModGuiFactory {
 
 	@Override
 	public void initialize(final Minecraft minecraftInstance) {

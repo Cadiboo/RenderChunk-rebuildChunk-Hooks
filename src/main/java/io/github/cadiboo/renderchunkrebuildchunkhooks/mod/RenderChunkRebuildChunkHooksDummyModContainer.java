@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 
-public class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModContainer {
+public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModContainer {
 
 	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
 	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";

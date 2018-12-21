@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderChunkRebuildChunkHooksEventSubscriber {
+public final class RenderChunkRebuildChunkHooksEventSubscriber {
 
 	/**
 	 * Inject the new values and save to the config file when the config has been changed from the GUI.
