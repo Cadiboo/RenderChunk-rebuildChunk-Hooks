@@ -13,7 +13,7 @@ import java.util.List;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig.LANG_PREFIX;
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
-public class RenderChunkRebuildChunkHooksConfigGui extends GuiConfig {
+public final class RenderChunkRebuildChunkHooksConfigGui extends GuiConfig {
 
 	public RenderChunkRebuildChunkHooksConfigGui(final GuiScreen parentScreen) {
 		super(parentScreen, getConfigElements(), RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID, false, false, I18n.format(LANG_PREFIX + "title"));

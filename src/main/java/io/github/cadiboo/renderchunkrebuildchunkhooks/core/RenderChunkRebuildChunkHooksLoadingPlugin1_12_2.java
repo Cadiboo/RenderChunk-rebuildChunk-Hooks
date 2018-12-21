@@ -27,8 +27,8 @@ import java.util.Map;
 //??? needs higher than 1001??? 0xBADC0DE works
 //@SortingIndex(value = 1001)
 @SortingIndex(value = 0xBAD_C0DE)
-//put in _VM_ arguments -Dfml.coreMods.load=RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
-public class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoadingPlugin {
+//put in _VM_ arguments -Dfml.coreMods.load=io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2
+public final class RenderChunkRebuildChunkHooksLoadingPlugin1_12_2 implements IFMLLoadingPlugin {
 
 	public static final String CORE_MARKER = RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID + "_loaded";
 

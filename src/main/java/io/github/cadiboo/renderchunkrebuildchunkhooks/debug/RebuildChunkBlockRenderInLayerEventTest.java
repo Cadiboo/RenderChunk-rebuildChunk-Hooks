@@ -19,7 +19,7 @@ import java.util.Random;
 
 @Mod(modid = RebuildChunkBlockRenderInLayerEventTest.MODID, name = "RebuildChunkBlockRenderInLayerEventTest", version = "1.0", acceptableRemoteVersions = "*")
 @Mod.EventBusSubscriber
-public class RebuildChunkBlockRenderInLayerEventTest {
+public final class RebuildChunkBlockRenderInLayerEventTest {
 
 	public static final String MODID = "rebuild_chunk_block_render_in_layer_event_test";
 	public static final boolean ENABLED = false;

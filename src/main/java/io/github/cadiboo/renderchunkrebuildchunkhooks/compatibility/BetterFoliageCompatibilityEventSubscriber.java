@@ -10,9 +10,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BetterFoliageCompatibilityEventSubscriber {
+public final class BetterFoliageCompatibilityEventSubscriber {
 
-	public static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public BetterFoliageCompatibilityEventSubscriber() {
 		LOGGER.info("instantiating " + this.getClass().getSimpleName());

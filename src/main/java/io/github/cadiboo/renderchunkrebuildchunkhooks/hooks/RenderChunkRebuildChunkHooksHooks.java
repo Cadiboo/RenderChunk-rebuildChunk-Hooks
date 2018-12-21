@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author Cadiboo
  */
-public class RenderChunkRebuildChunkHooksHooks {
+public final class RenderChunkRebuildChunkHooksHooks {
 
 	/**
 	 * An accessible reference to the method {@link CompiledChunk#setLayerUsed(BlockRenderLayer)}

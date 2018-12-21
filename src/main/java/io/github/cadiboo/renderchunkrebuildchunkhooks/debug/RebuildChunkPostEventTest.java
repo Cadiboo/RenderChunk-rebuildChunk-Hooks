@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Mod.EventBusSubscriber
 @Mod(modid = RebuildChunkPostEventTest.MODID, name = "RebuildChunkPostEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
-public class RebuildChunkPostEventTest {
+public final class RebuildChunkPostEventTest {
 
 	public static final String MODID = "rebuild_chunk_post_event_test";
 

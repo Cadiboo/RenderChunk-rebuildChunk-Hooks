@@ -15,7 +15,7 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber
 @Mod(modid = RebuildChunkPreEventTest.MODID, name = "RebuildChunkPreEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
-public class RebuildChunkPreEventTest {
+public final class RebuildChunkPreEventTest {
 
 	public static final String MODID = "rebuild_chunk_pre_event_test";
 

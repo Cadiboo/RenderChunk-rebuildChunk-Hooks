@@ -7,7 +7,7 @@ import java.io.File;
 
 import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
-public class RenderChunkRebuildChunkHooksConfig {
+public final class RenderChunkRebuildChunkHooksConfig {
 
 	public static final String CONFIG_VERSION = "0.0.0";
 	public static final String LANG_PREFIX = RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID + ".config.";
