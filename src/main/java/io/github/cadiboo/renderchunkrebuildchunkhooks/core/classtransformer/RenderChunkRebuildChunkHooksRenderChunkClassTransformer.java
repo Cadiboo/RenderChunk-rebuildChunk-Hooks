@@ -3,6 +3,7 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 import com.google.common.collect.ImmutableList;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +31,8 @@ import java.util.List;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.BETTER_FOLIAGE;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.values;
 
 /**
  * @author Cadiboo
@@ -75,7 +78,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			for (ObfuscationHelper.ObfuscationLevel obfuscationLevel : ObfuscationHelper.ObfuscationLevel.values()) {
 				LOGGER.warn("Debbuging names for " + obfuscationLevel.name());
 				OBFUSCATION_LEVEL = obfuscationLevel;
-				for (final ObfuscationHelper.ObfuscationClass obfuscationClass : ObfuscationHelper.ObfuscationClass.values()) {
+				for (final ObfuscationClass obfuscationClass : values()) {
 					LOGGER.info("ObfuscationClass {}: {}, {}", obfuscationClass.name(), obfuscationClass.getClassName(), obfuscationClass.getInternalName());
 				}
 				for (final ObfuscationHelper.ObfuscationField obfuscationField : ObfuscationHelper.ObfuscationField.values()) {
@@ -105,30 +108,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	}
 
-	public static boolean dumpClass(String name, byte[] bytes) {
-		if (bytes != null) {
-			try {
-				final Path pathToFile = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/Optifine/" + name + ".txt");
-				pathToFile.toFile().createNewFile();
-				final PrintWriter filePrinter = new PrintWriter(pathToFile.toFile());
-				final ClassReader reader = new ClassReader(bytes);
-				final TraceClassVisitor tracingVisitor = new TraceClassVisitor(filePrinter);
-				reader.accept(tracingVisitor, 0);
-
-				final Path pathToClass = Paths.get("/Users/" + System.getProperty("user.name") + "/Desktop/Optifine/" + name + ".class");
-				pathToClass.toFile().createNewFile();
-				final FileOutputStream fileOutputStream = new FileOutputStream(pathToClass.toFile());
-				fileOutputStream.write(bytes);
-				fileOutputStream.close();
-			} catch (final Exception exception) {
-				LOGGER.error("Failed to dump bytecode of class! " + name);
-				exception.printStackTrace();
-			}
-			return true;
-		}
-		return false;
-	}
-
 	public static String insnToString(final AbstractInsnNode insn) {
 		insn.accept(TRACE_METHOD_VISITOR);
 		final StringWriter sw = new StringWriter();
@@ -150,11 +129,11 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 		if (DEBUG_CLASSES) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {
-				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(ObfuscationHelper.ObfuscationClass.RENDER_CHUNK.getClassName()) + ", transformedName equals: " + transformedName.equals(ObfuscationHelper.ObfuscationClass.RENDER_CHUNK.getClassName()));
+				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(RENDER_CHUNK.getClassName()) + ", transformedName equals: " + transformedName.equals(RENDER_CHUNK.getClassName()));
 			}
 		}
 
-		if (!transformedName.equals(ObfuscationHelper.ObfuscationClass.RENDER_CHUNK.getClassName())) {
+		if (!transformedName.equals(RENDER_CHUNK.getClassName())) {
 			return basicClass;
 		}
 
