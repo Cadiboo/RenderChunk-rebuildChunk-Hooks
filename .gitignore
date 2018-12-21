@@ -21,10 +21,6 @@ build
 # other
 eclipse
 run
-
-# Important setup
-!/src/
-!/src/*
 *.DS_Store*
 
 # Vital git files
