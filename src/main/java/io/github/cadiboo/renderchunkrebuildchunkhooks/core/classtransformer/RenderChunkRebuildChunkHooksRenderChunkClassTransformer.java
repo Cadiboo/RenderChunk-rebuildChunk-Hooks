@@ -227,7 +227,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			LOGGER.info("injecting RebuildChunkPreEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.injectRebuildChunkPreEventHook(instructions)) {
@@ -237,7 +237,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 		}
@@ -246,7 +246,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			LOGGER.info("injecting RebuildChunkBlockRenderInLayerEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.injectRebuildChunkBlockRenderInLayerEventHook(instructions)) {
@@ -256,7 +256,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 		}
@@ -265,7 +265,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			LOGGER.info("removing BetterFoliage's modifications...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.removeBetterFoliagesModifications(instructions)) {
@@ -275,7 +275,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 		}
@@ -284,7 +284,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			LOGGER.info("injecting RebuildChunkBlockRenderInTypeEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.injectRebuildChunkBlockRenderInTypeEventHook(instructions)) {
@@ -294,7 +294,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 		}
@@ -303,7 +303,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			LOGGER.info("injecting RebuildChunkBlockEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.injectRebuildChunkBlockEventHook(instructions)) {
@@ -313,7 +313,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 		}
@@ -322,7 +322,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			LOGGER.info("injecting RebuildChunkPostEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.injectRebuildChunkPostEventHook(instructions)) {
@@ -332,7 +332,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
-					LOGGER.info(insnToString(instructions.get(i)));
+					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 		}
