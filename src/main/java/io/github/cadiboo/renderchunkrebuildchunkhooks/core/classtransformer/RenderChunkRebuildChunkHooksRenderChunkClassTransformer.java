@@ -26,6 +26,9 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.*;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.*;
+
 /**
  * @author Cadiboo
  * @see <a href="http://www.egtry.com/java/bytecode/asm/tree_transform">http://www.egtry.com/java/bytecode/asm/tree_transform</a>
@@ -66,17 +69,17 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 	static {
 		if (DEBUG_NAMES) {
-			ObfuscationHelper.ObfuscationLevel oldObfuscationLevel = RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
-			for (ObfuscationHelper.ObfuscationLevel obfuscationLevel : ObfuscationHelper.ObfuscationLevel.values()) {
+			ObfuscationLevel oldObfuscationLevel = RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL;
+			for (ObfuscationLevel obfuscationLevel : ObfuscationLevel.values()) {
 				LOGGER.warn("Debbuging names for " + obfuscationLevel.name());
 				RenderChunkRebuildChunkHooksLoadingPlugin1_12_2.OBFUSCATION_LEVEL = obfuscationLevel;
-				for (final ObfuscationHelper.ObfuscationClass obfuscationClass : ObfuscationHelper.ObfuscationClass.values()) {
+				for (final ObfuscationClass obfuscationClass : ObfuscationClass.values()) {
 					LOGGER.info("ObfuscationClass {}: {}, {}", obfuscationClass.name(), obfuscationClass.getClassName(), obfuscationClass.getInternalName());
 				}
-				for (final ObfuscationHelper.ObfuscationField obfuscationField : ObfuscationHelper.ObfuscationField.values()) {
+				for (final ObfuscationField obfuscationField : ObfuscationField.values()) {
 					LOGGER.info("ObfuscationField {}: {}, {}, {}", obfuscationField.name(), obfuscationField.getOwner(), obfuscationField.getName(), obfuscationField.getDescriptor());
 				}
-				for (final ObfuscationHelper.ObfuscationMethod obfuscationMethod : ObfuscationHelper.ObfuscationMethod.values()) {
+				for (final ObfuscationMethod obfuscationMethod : values()) {
 					LOGGER.info("ObfuscationMethod {}: {}, {}, {}, {}", obfuscationMethod.name(), obfuscationMethod.getOwner(), obfuscationMethod.getName(), obfuscationMethod.getDescriptor(), obfuscationMethod.isInterface());
 				}
 			}
@@ -121,11 +124,11 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 		if (DEBUG_CLASSES) {
 			if ((unTransformedName.startsWith("b") || unTransformedName.startsWith("net.minecraft.client.renderer.chunk.")) || (transformedName.startsWith("b") || transformedName.startsWith("net.minecraft.client.renderer.chunk."))) {
-				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(ObfuscationHelper.ObfuscationClass.RENDER_CHUNK.getClassName()) + ", transformedName equals: " + transformedName.equals(ObfuscationHelper.ObfuscationClass.RENDER_CHUNK.getClassName()));
+				LOGGER.info("unTransformedName: " + unTransformedName + ", transformedName: " + transformedName + ", unTransformedName equals: " + unTransformedName.equals(ObfuscationClass.RENDER_CHUNK.getClassName()) + ", transformedName equals: " + transformedName.equals(ObfuscationClass.RENDER_CHUNK.getClassName()));
 			}
 		}
 
-		if (!transformedName.equals(ObfuscationHelper.ObfuscationClass.RENDER_CHUNK.getClassName())) {
+		if (!transformedName.equals(ObfuscationClass.RENDER_CHUNK.getClassName())) {
 			return basicClass;
 		}
 
@@ -161,13 +164,13 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		}
 
 		if (DEBUG_TYPES) {
-			LOGGER.info("RebuildChunk type: " + ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK.getType());
-			LOGGER.info("RebuildChunk descriptor: " + ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK.getDescriptor());
+			LOGGER.info("RebuildChunk type: " + RENDER_CHUNK_REBUILD_CHUNK.getType());
+			LOGGER.info("RebuildChunk descriptor: " + RENDER_CHUNK_REBUILD_CHUNK.getDescriptor());
 		}
 
 		for (final MethodNode method : classNode.methods) {            //TODO RENDER_CHUNK_REBUILD_CHUNK.matches()
 
-			if (!method.desc.equals(ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK.getDescriptor())) {
+			if (!method.desc.equals(RENDER_CHUNK_REBUILD_CHUNK.getDescriptor())) {
 				if (DEBUG_METHODS) {
 					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" did not match");
 				}
@@ -380,7 +383,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		for (AbstractInsnNode instruction : instructions.toArray()) {
 			if (instruction.getOpcode() == INVOKESTATIC) {
 				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_RENDER_WORLD_BLOCK.matches((MethodInsnNode) instruction)) {
+					if (BETTER_FOLIAGE_RENDER_WORLD_BLOCK.matches((MethodInsnNode) instruction)) {
 						INVOKESTATIC_Hooks_renderWorldBlock_Node = (MethodInsnNode) instruction;
 						break;
 					}
@@ -395,7 +398,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		}
 
 		// add back BlockRenderDispatcher.renderBlock ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
-		instructions.insert(INVOKESTATIC_Hooks_renderWorldBlock_Node, new MethodInsnNode(INVOKEVIRTUAL, ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getOwner().getInternalName(), ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getName(), ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getDescriptor(), ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.isInterface()));
+		instructions.insert(INVOKESTATIC_Hooks_renderWorldBlock_Node, new MethodInsnNode(INVOKEVIRTUAL, BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getOwner().getInternalName(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getName(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getDescriptor(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.isInterface()));
 
 		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node.getPrevious());
 		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node);
