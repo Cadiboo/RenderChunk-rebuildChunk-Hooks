@@ -31,8 +31,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 
 	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
 	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";
-	public static final String MOD_VERSION = "1.0.1.0";
-	public static final String MOD_FULL_VERSION = "1.12.2-" + MOD_VERSION + "";
+	public static final String MOD_VERSION = "@VERSION@";
 	// Directly reference a log4j logger.
 	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 	static {
@@ -63,7 +62,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 		final ModMetadata meta = this.getMetadata();
 		meta.modId = MOD_ID;
 		meta.name = MOD_NAME;
-		meta.version = MOD_FULL_VERSION;
+		meta.version = MOD_VERSION;
 		meta.credits = "The Forge and FML guys for Forge and FML and Cadiboo for making the mod";
 		meta.authorList = Arrays.asList("Cadiboo", "CosmicDan");
 		meta.description = Strings.join(description, "\n");
