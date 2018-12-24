@@ -10,17 +10,15 @@ We currently support any combination of the below **on the same Forge version**
 
 | Name          | Version       | Forge Version         | Minecraft Version|
 | ------------- | ------------- | --------------------- | ---------------- |
-| Forge         | 14.23.5.2775  | 1.12.2 - 14.23.5.2775 | 1.12.2           |
-| BetterFoliage | MC1.12-2.2.0  | 1.12.2 - 14.23.5.2775 | 1.12.2           |
+| Forge         | 14.23.5.2795  | 1.12.2 - 14.23.5.2795 | 1.12.2           |
+| BetterFoliage | MC1.12-2.2.0  | 1.12.2 - 14.23.5.2795 | 1.12.2           |
+| Optifine      | HD_U_E3       | 1.12.2 - 14.23.5.2795 | 1.12.2           |
 | Forge         | 14.23.5.2768  | 1.12.2 - 14.23.5.2768 | 1.12.2           |
 | BetterFoliage | MC1.12-2.2.0  | 1.12.2 - 14.23.5.2768 | 1.12.2           |
-| Forge         | 14.23.4.2725  | 1.12.2 - 14.23.4.2725 | 1.12.2           |
-| BetterFoliage | MC1.12-2.2.0  | 1.12.2 - 14.23.4.2725 | 1.12.2           |
-| Optifine      | HD_U_E2       | 1.12.2 - 14.23.4.2725 | 1.12.2           |
 
 Note: The mod _should_ work all Forge 1.12.2 versions (actually all 1.12.x versions if you remove the in-code version restrictions) but due to the amount of work required to test the mod on all of them, we only officially support the above versions.
 ## Compatibility
-I've just added compatibility with Optifine HD_U_E2!
+I've just added compatibility with Optifine HD_U_E3!
 If another core-mod tries to tamper with RenderChunk#rebuildChunk, it is possible that the game will crash. Report it to me and them, and I'll try and fix it myself or work with them to solve the problem!
 ### It is up to the authors of mods who use these hooks to make sure they don't break anything!
 #### Use Forge's Render Pipeline where possible!
