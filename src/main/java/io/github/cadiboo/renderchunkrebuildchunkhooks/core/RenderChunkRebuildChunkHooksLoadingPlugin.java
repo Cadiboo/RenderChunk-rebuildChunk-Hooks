@@ -6,6 +6,8 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.Rend
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInTypeEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer;
 import net.minecraft.launchwrapper.Launch;
@@ -106,7 +108,9 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		LOGGER.info("Pre-loading event classes...");
 		RebuildChunkPreEvent.class.getName();
 		RebuildChunkBlockRenderInLayerEvent.class.getName();
+		RebuildChunkBlockRenderInTypeEvent.class.getName();
 		RebuildChunkBlockEvent.class.getName();
+		RebuildChunkPostEvent.class.getName();
 		LOGGER.info("Successfully Pre-loaded event classes");
 	}
 
