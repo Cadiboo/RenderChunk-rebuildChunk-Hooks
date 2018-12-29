@@ -10,7 +10,6 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 
 /**
@@ -25,9 +24,8 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
  */
 @HasResult
 @Cancelable
-public class RebuildChunkBlockRenderInTypeEvent extends Event {
+public class RebuildChunkBlockRenderInTypeEvent extends RebuildChunkEvent {
 
-	private final RenderChunk renderChunk;
 	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
 	private final CompiledChunk compiledchunk;
@@ -51,8 +49,7 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @param blockRenderType           the {@link EnumBlockRenderType} of the block being assessed
 	 */
 	public RebuildChunkBlockRenderInTypeEvent(final RenderChunk renderChunk, final ChunkCache chunkCache, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final EnumBlockRenderType blockRenderType) {
-
-		this.renderChunk = renderChunk;
+		super(renderChunk);
 		this.chunkCache = chunkCache;
 		this.generator = chunkCompileTaskGenerator;
 		this.compiledchunk = compiledchunk;
@@ -65,18 +62,9 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	}
 
 	/**
-	 * @return the instance of {@link RenderChunk} the event is being fired for
-	 */
-	public RenderChunk getRenderChunk() {
-
-		return this.renderChunk;
-	}
-
-	/**
 	 * @return the {@link ChunkCache} passed in
 	 */
 	public ChunkCache getChunkCache() {
-
 		return this.chunkCache;
 	}
 
@@ -84,7 +72,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the {@link ChunkCompileTaskGenerator} passed in
 	 */
 	public ChunkCompileTaskGenerator getGenerator() {
-
 		return this.generator;
 	}
 
@@ -92,7 +79,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the {@link CompiledChunk} passed in
 	 */
 	public CompiledChunk getCompiledChunk() {
-
 		return this.compiledchunk;
 	}
 
@@ -100,7 +86,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the {@link BlockRendererDispatcher} passed in
 	 */
 	public BlockRendererDispatcher getBlockRendererDispatcher() {
-
 		return this.blockRendererDispatcher;
 	}
 
@@ -108,7 +93,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the position passed in
 	 */
 	public MutableBlockPos getRenderChunkPosition() {
-
 		return this.renderChunkPosition;
 	}
 
@@ -116,7 +100,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the {@link VisGraph} passed in
 	 */
 	public VisGraph getVisGraph() {
-
 		return this.visGraph;
 	}
 
@@ -124,7 +107,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the position of the block passed in
 	 */
 	public MutableBlockPos getBlockPos() {
-
 		return this.blockPos;
 	}
 
@@ -132,7 +114,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the {@link IBlockState state} of the block passed in
 	 */
 	public IBlockState getBlockState() {
-
 		return this.blockState;
 	}
 
@@ -140,7 +121,6 @@ public class RebuildChunkBlockRenderInTypeEvent extends Event {
 	 * @return the {@link EnumBlockRenderType} of the block passed in
 	 */
 	public EnumBlockRenderType getBlockRenderType() {
-
 		return this.blockRenderType;
 	}
 

@@ -10,7 +10,6 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 
 /**
@@ -25,9 +24,8 @@ import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
  */
 @HasResult
 @Cancelable
-public class RebuildChunkBlockRenderInLayerEvent extends Event {
+public class RebuildChunkBlockRenderInLayerEvent extends RebuildChunkEvent {
 
-	private final RenderChunk renderChunk;
 	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
 	private final CompiledChunk compiledchunk;
@@ -51,7 +49,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
 	 */
 	public RebuildChunkBlockRenderInLayerEvent(final RenderChunk renderChunk, final ChunkCache chunkCache, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
-		this.renderChunk = renderChunk;
+		super(renderChunk);
 		this.chunkCache = chunkCache;
 		this.generator = chunkCompileTaskGenerator;
 		this.compiledchunk = compiledchunk;
@@ -61,13 +59,6 @@ public class RebuildChunkBlockRenderInLayerEvent extends Event {
 		this.blockPos = blockPos;
 		this.blockState = blockState;
 		this.blockRenderLayer = blockRenderLayer;
-	}
-
-	/**
-	 * @return the instance of {@link RenderChunk} the event is being fired for
-	 */
-	public RenderChunk getRenderChunk() {
-		return this.renderChunk;
 	}
 
 	/**

@@ -3,6 +3,7 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInTypeEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.EnumEventType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
@@ -50,6 +51,13 @@ public class RebuildChunkBlockRenderInTypeOptifineEvent extends RebuildChunkBloc
 	}
 
 	/**
+	 * @return the type of event
+	 */
+	public EnumEventType getType() {
+		return EnumEventType.FORGE_OPTIFINE;
+	}
+
+	/**
 	 * @return the {@link ChunkCacheOF} passed in
 	 */
 	public ChunkCacheOF getChunkCacheOF() {
@@ -62,5 +70,7 @@ public class RebuildChunkBlockRenderInTypeOptifineEvent extends RebuildChunkBloc
 	public BlockPosM getBlockPosM() {
 		return blockPosM;
 	}
+
+
 
 }

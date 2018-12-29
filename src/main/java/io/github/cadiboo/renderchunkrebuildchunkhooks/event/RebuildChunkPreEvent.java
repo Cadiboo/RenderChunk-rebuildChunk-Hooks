@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Called when a {@link net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called.<br>
@@ -18,9 +17,8 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
  */
 @Cancelable
-public class RebuildChunkPreEvent extends Event {
+public class RebuildChunkPreEvent extends RebuildChunkEvent {
 
-	private final RenderChunk renderChunk;
 	private final RenderGlobal renderGlobal;
 	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
@@ -42,7 +40,7 @@ public class RebuildChunkPreEvent extends Event {
 	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
 	 */
 	public RebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache chunkCache, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
-		this.renderChunk = renderChunk;
+		super(renderChunk);
 		this.renderGlobal = renderGlobal;
 		this.chunkCache = chunkCache;
 		this.generator = generator;
@@ -51,13 +49,6 @@ public class RebuildChunkPreEvent extends Event {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-	}
-
-	/**
-	 * @return the instance of {@link RenderChunk} the event is being fired for
-	 */
-	public RenderChunk getRenderChunk() {
-		return this.renderChunk;
 	}
 
 	/**

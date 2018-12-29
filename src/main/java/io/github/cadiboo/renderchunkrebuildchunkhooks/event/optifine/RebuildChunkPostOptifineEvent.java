@@ -2,6 +2,7 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.EnumEventType;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -42,6 +43,13 @@ public class RebuildChunkPostOptifineEvent extends RebuildChunkPostEvent {
 	public RebuildChunkPostOptifineEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
 		super(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), visGraph, setTileEntities, lockCompileTask);
 		this.chunkCacheOF = chunkCacheOF;
+	}
+
+	/**
+	 * @return the type of event
+	 */
+	public EnumEventType getType() {
+		return EnumEventType.FORGE_OPTIFINE;
 	}
 
 	/**

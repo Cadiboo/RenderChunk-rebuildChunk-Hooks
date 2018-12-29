@@ -2,6 +2,7 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.EnumEventType;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -21,7 +22,7 @@ import net.optifine.override.ChunkCacheOF;
 @Cancelable
 public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 
-	final ChunkCacheOF chunkCacheOF;
+	private final ChunkCacheOF chunkCacheOF;
 
 	/**
 	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
@@ -37,6 +38,13 @@ public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 	public RebuildChunkPreOptifineEvent(RenderChunk renderChunk, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, float x, float y, float z) {
 		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, renderChunkPosition, x, y, z);
 		this.chunkCacheOF = chunkCacheOF;
+	}
+
+	/**
+	 * @return the type of event
+	 */
+	public EnumEventType getType() {
+		return EnumEventType.FORGE_OPTIFINE;
 	}
 
 	/**

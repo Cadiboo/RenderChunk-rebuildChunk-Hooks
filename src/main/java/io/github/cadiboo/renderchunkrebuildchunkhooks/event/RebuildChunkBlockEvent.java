@@ -8,14 +8,11 @@ import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.HashSet;
 
@@ -29,9 +26,8 @@ import java.util.HashSet;
  * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
  */
 @Cancelable
-public class RebuildChunkBlockEvent extends Event {
+public class RebuildChunkBlockEvent extends RebuildChunkEvent {
 
-	private final RenderChunk renderChunk;
 	private final RenderGlobal renderGlobal;
 	private final ChunkCache chunkCache;
 	private final ChunkCompileTaskGenerator generator;
@@ -70,7 +66,7 @@ public class RebuildChunkBlockEvent extends Event {
 	 */
 	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache chunkCache, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
 	                              final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
-		this.renderChunk = renderChunk;
+		super(renderChunk);
 		this.renderGlobal = renderGlobal;
 		this.chunkCache = chunkCache;
 		this.generator = generator;
@@ -87,25 +83,6 @@ public class RebuildChunkBlockEvent extends Event {
 		this.z = z;
 		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
 		this.visGraph = visGraph;
-	}
-
-	/**
-	 * FOR INTERNAL USE ONLY<br>
-	 * Sets translation for and tarts the {@link BufferBuilder}
-	 *
-	 * @param bufferBuilderIn the {@link BufferBuilder} to set translation for and start
-	 * @param pos             the pos to get translations from
-	 */
-	private static void preRenderBlocks(final BufferBuilder bufferBuilderIn, final BlockPos pos) {
-		bufferBuilderIn.begin(7, DefaultVertexFormats.BLOCK);
-		bufferBuilderIn.setTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
-	}
-
-	/**
-	 * @return the instance of {@link RenderChunk} the event is being fired for
-	 */
-	public RenderChunk getRenderChunk() {
-		return this.renderChunk;
 	}
 
 	/**
@@ -223,16 +200,6 @@ public class RebuildChunkBlockEvent extends Event {
 	}
 
 	/**
-	 * FOR INTERNAL USE ONLY<br>
-	 *
-	 * @param blockRenderLayer the {@link BlockRenderLayer} to get the {@link BufferBuilder}
-	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
-	 */
-	private BufferBuilder getBufferBuilderForBlockRenderLayer(final BlockRenderLayer blockRenderLayer) {
-		return this.getGenerator().getRegionRenderCacheBuilder().getWorldRendererByLayer(blockRenderLayer);
-	}
-
-	/**
 	 * Only used BlockRenderLayers will be part of the rebuilt chunk
 	 *
 	 * @param blockRenderLayer the {@link BlockRenderLayer}
@@ -250,21 +217,6 @@ public class RebuildChunkBlockEvent extends Event {
 	 */
 	public void setBlockRenderLayerUsedWithOrOpperation(final BlockRenderLayer blockRenderLayer, final boolean used) {
 		this.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] |= used;
-	}
-
-	/**
-	 * @param blockRenderLayer the {@link BlockRenderLayer}
-	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
-	 */
-	public BufferBuilder startOrContinueLayer(final BlockRenderLayer blockRenderLayer) {
-		final BufferBuilder bufferbuilder = this.getBufferBuilderForBlockRenderLayer(blockRenderLayer);
-
-		if (!this.getCompiledChunk().isLayerStarted(blockRenderLayer)) {
-			this.getCompiledChunk().setLayerStarted(blockRenderLayer);
-			preRenderBlocks(bufferbuilder, this.getRenderChunkPosition());
-		}
-
-		return bufferbuilder;
 	}
 
 }

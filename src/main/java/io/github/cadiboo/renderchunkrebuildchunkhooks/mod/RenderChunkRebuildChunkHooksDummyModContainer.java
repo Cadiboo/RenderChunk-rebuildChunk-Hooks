@@ -1,11 +1,11 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.mod;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.compatibility.BetterFoliageCompatibilityEventSubscriber;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import joptsimple.internal.Strings;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.crash.CrashReport;
@@ -116,6 +116,9 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	//will always be null in dev environment, will never be null in release environment
 	@Override
 	public File getSource() {
+		if (RenderChunkRebuildChunkHooksLoadingPlugin.OBFUSCATION_LEVEL == ObfuscationHelper.ObfuscationLevel.DEOBFUSCATED) {
+			return super.getSource();
+		}
 		return RenderChunkRebuildChunkHooksLoadingPlugin.MOD_LOCATION;
 	}
 
@@ -129,8 +132,9 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	@Override
 	public Class<?> getCustomResourcePackClass() {
 		// without this it crashes in dev, even though it works perfectly in release environment
-		if (RenderChunkRebuildChunkHooksLoadingPlugin.OBFUSCATION_LEVEL == ObfuscationHelper.ObfuscationLevel.DEOBFUSCATED)
+		if (RenderChunkRebuildChunkHooksLoadingPlugin.OBFUSCATION_LEVEL == ObfuscationHelper.ObfuscationLevel.DEOBFUSCATED) {
 			return super.getCustomResourcePackClass();
+		}
 		return getSource().isDirectory() ? FMLFolderResourcePack.class : FMLFileResourcePack.class;
 	}
 

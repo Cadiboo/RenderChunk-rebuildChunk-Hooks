@@ -20,9 +20,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Cadiboo
  * @see RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
  */
-public class RebuildChunkPostEvent extends Event {
+public class RebuildChunkPostEvent extends RebuildChunkEvent {
 
-	private final RenderChunk renderChunk;
 	private final float x;
 	private final float y;
 	private final float z;
@@ -50,7 +49,7 @@ public class RebuildChunkPostEvent extends Event {
 	 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
 	 */
 	public RebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCache chunkCache, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
-		this.renderChunk = renderChunk;
+		super(renderChunk);
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -62,13 +61,6 @@ public class RebuildChunkPostEvent extends Event {
 		this.visGraph = visGraph;
 		this.setTileEntities = setTileEntities;
 		this.lockCompileTask = lockCompileTask;
-	}
-
-	/**
-	 * @return the instance of {@link RenderChunk} the event is being fired for
-	 */
-	public RenderChunk getRenderChunk() {
-		return this.renderChunk;
 	}
 
 	/**

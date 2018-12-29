@@ -1,8 +1,8 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.core;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifine;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID;
@@ -60,9 +59,9 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		detectOtherCoremods();
 
 		if (OPTIFINE) {
-			return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformerOptifine.class.getName()};
+			return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifine.class.getName()};
 		} else {
-			return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformerVanillaForge.class.getName()};
+			return new String[]{RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge.class.getName()};
 		}
 	}
 
