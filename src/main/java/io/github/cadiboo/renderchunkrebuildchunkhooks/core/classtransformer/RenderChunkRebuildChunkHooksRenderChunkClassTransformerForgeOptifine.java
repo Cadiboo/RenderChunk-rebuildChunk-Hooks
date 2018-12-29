@@ -227,7 +227,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 			instructionsToRemove.add(instructions.get(i));
 		}
 		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
-			//			LOGGER.warn("removing instrcution :"+insnToString(instructionToRemove));
+			//			MOD_LOGGER.warn("removing instrcution :"+insnToString(instructionToRemove));
 			instructions.remove(instructionToRemove);
 		}
 
@@ -480,7 +480,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 			instructionsToRemove.add(instructions.get(i));
 		}
 		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
-			//			LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
+			//			MOD_LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
 			instructions.remove(instructionToRemove);
 		}
 

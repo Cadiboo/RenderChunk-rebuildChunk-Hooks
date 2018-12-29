@@ -429,7 +429,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 			instructionsToRemove.add(instructions.get(i));
 		}
 		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
-			//			LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
+			//			MOD_LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
 			instructions.remove(instructionToRemove);
 		}
 

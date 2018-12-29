@@ -1,5 +1,7 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.mod;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.compatibility.BetterFoliageCompatibilityEventSubscriber;
@@ -13,17 +15,27 @@ import net.minecraft.util.ReportedException;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLFileResourcePack;
 import net.minecraftforge.fml.client.FMLFolderResourcePack;
+import net.minecraftforge.fml.common.CertificateHelper;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.LoadController;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nullable;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
 
@@ -32,8 +44,20 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
 	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";
 	public static final String MOD_VERSION = "@VERSION@";
+	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
 	// Directly reference a log4j logger.
-	public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+	public static final Logger MOD_LOGGER = LogManager.getLogger(MOD_NAME);
+	private static final URL UPDATE_JSON_URL;
+	static {
+		URL url = null;
+		try {
+			url = new URL("https://raw.githubusercontent.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/master/update.json");
+		} catch (MalformedURLException e) {
+			MOD_LOGGER.error("Error setting update.json url", e);
+		}
+		UPDATE_JSON_URL = url;
+	}
+
 	static {
 		if (MOD_ID.length() > 64) {
 			final IllegalStateException exception = new IllegalStateException("Mod Id is too long!");
@@ -41,6 +65,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 			crashReport.makeCategory("Constructing Mod");
 		}
 	}
+	private Certificate certificate = null;
 
 	public RenderChunkRebuildChunkHooksDummyModContainer() {
 		super(new ModMetadata());
@@ -67,7 +92,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 		meta.authorList = Arrays.asList("Cadiboo", "CosmicDan");
 		meta.description = Strings.join(description, "\n");
 		meta.url = "https://cadiboo.github.io/projects/" + MOD_ID;
-		meta.updateJSON = "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/update.json";
+		meta.updateJSON = UPDATE_JSON_URL.toString();
 		meta.screenshots = new String[0];
 		meta.logoFile = "/" + MOD_ID + "_logo.png";
 	}
@@ -88,19 +113,19 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	}
 
 	private void tryPreloadRenderChunk() {
-		LOGGER.info("Preloading RenderChunk...");
+		MOD_LOGGER.info("Preloading RenderChunk...");
 		{
 			RenderChunk.class.getName();
-			LOGGER.info("Loaded RenderChunk, initialising...");
+			MOD_LOGGER.info("Loaded RenderChunk, initialising...");
 			final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
-			LOGGER.info("Initialised RenderChunk");
+			MOD_LOGGER.info("Initialised RenderChunk");
 		}
-		LOGGER.info("Successfully preloaded RenderChunk!");
+		MOD_LOGGER.info("Successfully preloaded RenderChunk!");
 	}
 
 	private void tryRegisterBetterFoliageCompatibleEventSubscriber() {
 		if (BETTER_FOLIAGE) {
-			LOGGER.info("Registering BetterFoliage compatibility EventSubscriber...");
+			MOD_LOGGER.info("Registering BetterFoliage compatibility EventSubscriber...");
 			final Class<?> betterFoliageCompatibilityEventSubscriberClass;
 			try {
 				MinecraftForge.EVENT_BUS.register(new BetterFoliageCompatibilityEventSubscriber());
@@ -109,7 +134,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 				crashReport.makeCategory("Registering BetterFoliage compatibility EventSubscriber");
 				throw new ReportedException(crashReport);
 			}
-			LOGGER.info("Registered BetterFoliage compatibility EventSubscriber");
+			MOD_LOGGER.info("Registered BetterFoliage compatibility EventSubscriber");
 		}
 	}
 
@@ -146,6 +171,47 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	@Override
 	public boolean shouldLoadInEnvironment() {
 		return FMLCommonHandler.instance().getSide().isClient();
+	}
+
+	@Nullable
+	@Override
+	public Certificate getSigningCertificate() {
+		return certificate;
+	}
+
+	//TODO: copy more stuff from FMLModContainer and see if that fixes some hacks I'm doing & problems I have
+	@Subscribe
+	public void constructMod(FMLConstructionEvent event) {
+		final File source = Loader.instance().activeModContainer().getSource();
+
+//		Fingerprint stuff, coppied from {@link FMLModContainer }
+		Certificate[] certificates = getClass().getProtectionDomain().getCodeSource().getCertificates();
+		ImmutableList<String> certList = CertificateHelper.getFingerprints(certificates);
+		Set<String> sourceFingerprints = ImmutableSet.copyOf(certList);
+
+		String expectedFingerprint = CERTIFICATE_FINGERPRINT;
+
+		boolean fingerprintNotPresent = true;
+
+		if (expectedFingerprint != null && !expectedFingerprint.isEmpty()) {
+			if (!sourceFingerprints.contains(expectedFingerprint)) {
+				Level warnLevel = source.isDirectory() ? Level.TRACE : Level.ERROR;
+				FMLLog.log.log(warnLevel, "The mod {} is expecting signature {} for source {}, however there is no signature matching that description", getModId(), expectedFingerprint, source.getName());
+			} else {
+				this.certificate = certificates[certList.indexOf(expectedFingerprint)];
+				fingerprintNotPresent = false;
+			}
+		}
+	}
+
+	@Override
+	public URL getUpdateUrl() {
+		return UPDATE_JSON_URL;
+	}
+
+	@Override
+	public Disableable canBeDisabled() {
+		return Disableable.YES;
 	}
 
 }
