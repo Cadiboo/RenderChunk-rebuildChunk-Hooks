@@ -1,10 +1,11 @@
 {
 	"homepage": "https://Cadiboo.github.io/projects/render_chunk_rebuild_chunk_hooks/",
 	"promos": {
-		"1.12.2-latest": "0.2.0",
-		"1.12.2-recommended": "0.2.0"
+		"1.12.2-latest": "0.2.2",
+		"1.12.2-recommended": "0.2.2"
 	},
 	"1.12.2": {
+		"0.2.2": "Cadiboo: Optimised imports\nCadiboo: Fixed big bug with reflection (Using Float.class instead of float.class)\nCadiboo: Fixed big bug with reflection (Invoking the wrong method handle)",
 		"0.2.1": "Cadiboo: Maven and Gradle don't like spaces in filenames, so now we use - instead",
 		"0.2.0": "Cadiboo: Added Signature replacement to gradle\nCadiboo: Added Jar-signing code\nCadiboo: Fixed update JSON\nCadiboo: Made mod \"disableable\"\nCadiboo: Added Jar-signing gradle stuff\nCadiboo: Added event Types\nCadiboo: Added utility methods to invoke inaccessible methods\nCadiboo: Rename class transformers to better reflect their purpose\nCadiboo: Cleaned up code",
 		"0.1.1": "Cadiboo: Fixed 2 of the events not getting pre-loaded\nCadiboo: Cleaned build",
