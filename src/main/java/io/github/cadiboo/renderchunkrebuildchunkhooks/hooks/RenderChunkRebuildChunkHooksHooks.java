@@ -41,14 +41,37 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	private static final MethodHandle compiledChunk_setLayerUsed;
 
+	private static final MethodHandle renderChunk_preRenderBlocks;
+
+	private static final MethodHandle renderChunk_postRenderBlocks;
+
 	static {
+		final CrashReport crashReport;
 		try {
 			// newer forge versions
 //			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178486_a", Void.class, BlockRenderLayer.class));
 			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(CompiledChunk.class, "setLayerUsed", "func_178486_a", BlockRenderLayer.class));
 		} catch (final IllegalAccessException | UnableToFindMethodException e) {
-			CrashReport crashReport = new CrashReport("Error getting method handle for CompiledChunk#setLayerUsed!", e);
+			crashReport = new CrashReport("Error getting method handle for CompiledChunk#setLayerUsed!", e);
 			crashReport.makeCategory("Reflectively Accessing CompiledChunk#setLayerUsed");
+			throw new ReportedException(crashReport);
+		}
+		try {
+			// newer forge versions
+//			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", Void.class, BufferBuilder.class, BlockPos.class));
+			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "preRenderBlocks", "func_178573_a", BufferBuilder.class, BlockPos.class));
+		} catch (IllegalAccessException e) {
+			crashReport = new CrashReport("Error getting method handle for RenderChunk#preRenderBlocks!", e);
+			crashReport.makeCategory("Reflectively Accessing RenderChunk#preRenderBlocks");
+			throw new ReportedException(crashReport);
+		}
+		try {
+			// newer forge versions
+//			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", Void.class, BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
+			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "postRenderBlocks", "func_178584_a", BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
+		} catch (IllegalAccessException e) {
+			crashReport = new CrashReport("Error getting method handle for RenderChunk#postRenderBlocks!", e);
+			crashReport.makeCategory("Reflectively Accessing RenderChunk#postRenderBlocks");
 			throw new ReportedException(crashReport);
 		}
 	}
@@ -65,19 +88,6 @@ public final class RenderChunkRebuildChunkHooksHooks {
 		} catch (final Throwable throwable) {
 			CrashReport crashReport = new CrashReport("Error invoking method handle for CompiledChunk#setLayerUsed!", throwable);
 			crashReport.makeCategory("Reflectively Accessing CompiledChunk#setLayerUsed");
-			throw new ReportedException(crashReport);
-		}
-	}
-
-	private static final MethodHandle renderChunk_preRenderBlocks;
-	static {
-		try {
-			// newer forge versions
-//			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", Void.class, BufferBuilder.class, BlockPos.class));
-			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "preRenderBlocks", "func_178573_a", BufferBuilder.class, BlockPos.class));
-		} catch (IllegalAccessException e) {
-			CrashReport crashReport = new CrashReport("Error getting method handle for RenderChunk#preRenderBlocks!", e);
-			crashReport.makeCategory("Reflectively Accessing RenderChunk#preRenderBlocks");
 			throw new ReportedException(crashReport);
 		}
 	}
@@ -99,19 +109,6 @@ public final class RenderChunkRebuildChunkHooksHooks {
 		}
 	}
 
-	private static final MethodHandle renderChunk_postRenderBlocks;
-	static {
-		try {
-			// newer forge versions
-//			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", Void.class, BlockRenderLayer.class, Float.class, Float.class, Float.class, BufferBuilder.class, CompiledChunk.class));
-			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "postRenderBlocks", "func_178584_a", BlockRenderLayer.class, Float.class, Float.class, Float.class, BufferBuilder.class, CompiledChunk.class));
-		} catch (IllegalAccessException e) {
-			CrashReport crashReport = new CrashReport("Error getting method handle for RenderChunk#postRenderBlocks!", e);
-			crashReport.makeCategory("Reflectively Accessing RenderChunk#postRenderBlocks");
-			throw new ReportedException(crashReport);
-		}
-	}
-
 	/**
 	 * Invokes {@link RenderChunk#postRenderBlocks(BlockRenderLayer, float, float, float, BufferBuilder, CompiledChunk)}
 	 *
@@ -125,7 +122,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 */
 	public static void renderChunk_postRenderBlocks(final RenderChunk renderChunk, BlockRenderLayer blockRenderLayer, float x, float y, float z, BufferBuilder bufferBuilder, CompiledChunk compiledChunk) {
 		try {
-			renderChunk_preRenderBlocks.invokeExact(renderChunk, blockRenderLayer, x, y, z, bufferBuilder, compiledChunk);
+			renderChunk_postRenderBlocks.invokeExact(renderChunk, blockRenderLayer, x, y, z, bufferBuilder, compiledChunk);
 		} catch (Throwable throwable) {
 			CrashReport crashReport = new CrashReport("Error invoking method handle for RenderChunk#postRenderBlocks!", throwable);
 			crashReport.makeCategory("Reflectively Accessing RenderChunk#postRenderBlocks");
@@ -135,6 +132,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	/**
 	 * Returns a started {@link BufferBuilder}
+	 *
 	 * @param blockRenderLayer the {@link BlockRenderLayer}
 	 * @param generator        the generator to get the {@link BufferBuilder} from
 	 * @param renderChunk      the instance of {@link RenderChunk}
@@ -148,6 +146,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	/**
 	 * Returns a started {@link BufferBuilder} and sets the appropriate index of usedBlockRenderLayers to true
+	 *
 	 * @param usedBlockRenderLayers the boolean array of used {@link BlockRenderLayer}s
 	 * @param blockRenderLayer      the {@link BlockRenderLayer}
 	 * @param generator             the generator to get the {@link BufferBuilder} from
@@ -164,6 +163,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	/**
 	 * Returns a started {@link BufferBuilder} and invokes compiledChunk_setLayerUsed directly.
 	 * Less efficient than other methods as this gets done for all layers who's index in usedBlockRenderLayers is true
+	 *
 	 * @param blockRenderLayer the {@link BlockRenderLayer}
 	 * @param generator        the generator to get the {@link BufferBuilder} from
 	 * @param renderChunk      the instance of {@link RenderChunk}
