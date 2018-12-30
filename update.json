@@ -1,10 +1,11 @@
 {
 	"homepage": "https://Cadiboo.github.io/projects/render_chunk_rebuild_chunk_hooks/",
 	"promos": {
-		"1.12.2-latest": "0.1.1",
-		"1.12.2-recommended": "0.1.1"
+		"1.12.2-latest": "0.2.0",
+		"1.12.2-recommended": "0.2.0"
 	},
 	"1.12.2": {
+		"0.2.0": "Cadiboo: Added Signature replacement to gradle\nCadiboo: Added Jar-signing code\nCadiboo: Fixed update JSON\nCadiboo: Made mod \"disableable\"\nCadiboo: Added Jar-signing gradle stuff\nCadiboo: Added event Types\nCadiboo: Added utility methods to invoke inaccessible methods\nCadiboo: Rename class transformers to better reflect their purpose\nCadiboo: Cleaned up code",
 		"0.1.1": "Cadiboo: Fixed 2 of the events not getting pre-loaded\nCadiboo: Cleaned build",
 		"0.1.0": "Cadiboo: Add semver to build.gradle\nCadiboo: Add debug JVM argument thing (very useful)\nCadiboo: 	Add -DdebugEverything=true to your JVM arguments in your launch profile to activate\nCadiboo: Minify the name of one of the ClassTransformer loggers\nCadiboo: Rename LoadingPlugin\nCadiboo: Automation of version (only need to change it in the build.gradle file now)\nCadiboo: Repackage to reflect web presence (cadiboo -> io.github.cadiboo)\nCadiboo: Added final to some classes that needed it\nCadiboo: Moved the BetterFoliage Compatibility EventSubscriber to its own package (compatibility)\nCadiboo: Remove Stringly typed instantiation of the BetterFoliage Compatibility EventSubscriber (apparently it wasn't necessary)\nCadiboo: Spaces -> Tabulations in build.gradle\nCadiboo: Added classes to .gitignore\nCadiboo: Compatible with Optifine HD_U_E3 on Forge #2795\nCadiboo: Remove decompiled BetterFoliage & Optifine code",
 		"1.0.1.0": "Cadiboo: Refactoring & made Layer and Type events cancellable (causes minor mod version increment)\nCadiboo: Modified LICENSE",
