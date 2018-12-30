@@ -48,6 +48,7 @@ minecraft {
 	useDepAts = true
 
 	replace "@VERSION@", project.version
+	replace '@FINGERPRINT@', project.findProperty('signSHA1')
 	replaceIn "io/github/cadiboo/renderchunkrebuildchunkhooks/mod/RenderChunkRebuildChunkHooksDummyModContainer.java"
 
 }
