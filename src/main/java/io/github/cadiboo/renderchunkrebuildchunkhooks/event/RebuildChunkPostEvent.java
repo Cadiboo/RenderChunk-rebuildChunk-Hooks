@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
