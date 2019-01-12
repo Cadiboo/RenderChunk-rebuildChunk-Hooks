@@ -8,8 +8,11 @@ import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.optifine.override.ChunkCacheOF;
+
+import javax.annotation.Nonnull;
 
 /**
  * Called when a {@link RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called when Optifine is present.<br>
@@ -43,6 +46,7 @@ public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 	/**
 	 * @return the type of event
 	 */
+	@Nonnull
 	public EnumEventType getType() {
 		return EnumEventType.FORGE_OPTIFINE;
 	}
@@ -52,6 +56,15 @@ public class RebuildChunkPreOptifineEvent extends RebuildChunkPreEvent {
 	 */
 	public ChunkCacheOF getChunkCacheOF() {
 		return chunkCacheOF;
+	}
+
+	/**
+	 * @return the {@link ChunkCacheOF} passed in
+	 */
+	@Nonnull
+	@Override
+	public IBlockAccess getIBlockAccess() {
+		return getChunkCacheOF();
 	}
 
 }

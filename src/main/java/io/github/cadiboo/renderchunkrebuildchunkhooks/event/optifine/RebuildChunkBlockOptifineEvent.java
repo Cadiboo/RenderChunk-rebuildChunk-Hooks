@@ -14,15 +14,18 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.optifine.BlockPosM;
 import net.optifine.override.ChunkCacheOF;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 
 /**
  * Called when a {@link RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called when Optifine is present.<br>
- * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block renders in.<br>
+ * This event is fired on the {@link MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block renders in.<br>
  * Canceling this event prevents the block from being rebuilt to the chunk (and therefore rendered).<br>
  * You can perform your own rendering in this event.<br>
  *
@@ -56,7 +59,7 @@ public class RebuildChunkBlockOptifineEvent extends RebuildChunkBlockEvent {
 	 */
 	public RebuildChunkBlockOptifineEvent(RenderChunk renderChunk, RenderGlobal renderGlobal, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, IBlockState blockState, BlockPosM blockPosM, BufferBuilder bufferBuilder, MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, BlockRenderLayer blockRenderLayer, float x, float y, float z, HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
 	                                      VisGraph visGraph) {
-		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, blockRendererDispatcher, blockState, new MutableBlockPos(blockPosM), bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
+		super(renderChunk, renderGlobal, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), generator, compiledchunk, blockRendererDispatcher, blockState, blockPosM, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
 		this.chunkCacheOF = chunkCacheOF;
 		this.blockPosM = blockPosM;
 	}
@@ -64,6 +67,7 @@ public class RebuildChunkBlockOptifineEvent extends RebuildChunkBlockEvent {
 	/**
 	 * @return the type of event
 	 */
+	@Nonnull
 	public EnumEventType getType() {
 		return EnumEventType.FORGE_OPTIFINE;
 	}
@@ -80,6 +84,15 @@ public class RebuildChunkBlockOptifineEvent extends RebuildChunkBlockEvent {
 	 */
 	public BlockPosM getBlockPosM() {
 		return blockPosM;
+	}
+
+	/**
+	 * @return the {@link ChunkCacheOF} passed in
+	 */
+	@Nonnull
+	@Override
+	public IBlockAccess getIBlockAccess() {
+		return getChunkCacheOF();
 	}
 
 }

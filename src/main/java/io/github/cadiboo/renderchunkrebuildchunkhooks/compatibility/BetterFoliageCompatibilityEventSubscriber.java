@@ -2,13 +2,18 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.compatibility;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockOptifineEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;
 import mods.betterfoliage.client.Hooks;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.EnumEventType.FORGE_OPTIFINE;
 
 public final class BetterFoliageCompatibilityEventSubscriber {
 
@@ -23,7 +28,7 @@ public final class BetterFoliageCompatibilityEventSubscriber {
 	public void callBetterFoliageHooks_renderWorldBlock_onRebuildChunkBlockEvent(final RebuildChunkBlockEvent event) {
 		final BlockRenderLayer blockRenderLayer = event.getBlockRenderLayer();
 
-		boolean used = Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getChunkCache(), event.getBufferBuilder(), blockRenderLayer);
+		boolean used = Hooks.renderWorldBlock(event.getBlockRendererDispatcher(), event.getBlockState(), event.getBlockPos(), event.getIBlockAccess(), event.getBufferBuilder(), blockRenderLayer);
 
 		event.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] |= used;
 

@@ -10,8 +10,10 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.optifine.override.ChunkCacheOF;
 
+import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -48,6 +50,8 @@ public class RebuildChunkPostOptifineEvent extends RebuildChunkPostEvent {
 	/**
 	 * @return the type of event
 	 */
+	@Nonnull
+	@Override
 	public EnumEventType getType() {
 		return EnumEventType.FORGE_OPTIFINE;
 	}
@@ -55,8 +59,18 @@ public class RebuildChunkPostOptifineEvent extends RebuildChunkPostEvent {
 	/**
 	 * @return the {@link ChunkCacheOF} passed in
 	 */
+	@Nonnull
 	public ChunkCacheOF getChunkCacheOF() {
 		return chunkCacheOF;
+	}
+
+	/**
+	 * @return the {@link ChunkCacheOF} passed in
+	 */
+	@Nonnull
+	@Override
+	public IBlockAccess getIBlockAccess() {
+		return getChunkCacheOF();
 	}
 
 }

@@ -1,8 +1,5 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -12,191 +9,50 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
+import javax.annotation.Nonnull;
 import java.util.HashSet;
 
 /**
- * Called when a {@link net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called.<br>
- * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link net.minecraft.util.BlockRenderLayer BlockRenderLayer} the block renders in.<br>
- * Canceling this event prevents the block from being rebuilt to the chunk (and therefore rendered).<br>
- * You can perform your own rendering in this event.<br>
+ * Called when a {@link RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called.
+ * This event is fired on the {@link MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block renders in.
+ * Canceling this event prevents the block from being rebuilt to the chunk (and therefore rendered).
+ * You can perform your own rendering in this event.
  *
  * @author Cadiboo
- * @see net.minecraft.client.renderer.chunk.RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
+ * @see RenderChunk#rebuildChunk(float, float, float, ChunkCompileTaskGenerator)
  */
 @Cancelable
 public class RebuildChunkBlockEvent extends RebuildChunkEvent {
 
-	private final RenderGlobal renderGlobal;
-	private final ChunkCache chunkCache;
-	private final ChunkCompileTaskGenerator generator;
-	private final CompiledChunk compiledchunk;
-	private final BlockRendererDispatcher blockRendererDispatcher;
-	private final IBlockState blockState;
-	private final MutableBlockPos blockPos;
-	private final BufferBuilder bufferBuilder;
-	private final MutableBlockPos renderChunkPosition;
-	private final BlockRenderLayer blockRenderLayer;
-	private final boolean[] usedBlockRenderLayers;
-	private final float x;
-	private final float y;
-	private final float z;
-	private final HashSet<TileEntity> tileEntitiesWithGlobalRenderers;
-	private final VisGraph visGraph;
-
 	/**
-	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
-	 * @param renderGlobal                    the {@link RenderGlobal} passed in
-	 * @param chunkCache                      the {@link ChunkCache} passed in
-	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in
-	 * @param compiledchunk                   the {@link CompiledChunk} passed in
-	 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher} passed in
-	 * @param blockState                      the {@link IBlockState state} of the block being rendered
-	 * @param blockPos                        the {@link MutableBlockPos position} of the block being rendered
-	 * @param bufferBuilder                   the {@link BufferBuilder} for the BlockRenderLayer
-	 * @param renderChunkPosition             the {@link MutableBlockPos position} passed in
-	 * @param usedBlockRenderLayers           the array of {@link BlockRenderLayer} that are being used
-	 * @param blockRenderLayer                the {@link BlockRenderLayer} of the block being rendered
-	 * @param x                               the translation X passed in
-	 * @param y                               the translation Y passed in
-	 * @param z                               the translation Z passed in
-	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in
-	 * @param visGraph                        the {@link VisGraph} passed in
+	 * @param renderChunk                     the instance of {@link RenderChunk}
+	 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
+	 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
+	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledChunk                   the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition             the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
+	 * @param chunkCache                      the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal                    the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
 	 */
-	public RebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache chunkCache, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer, final float x,
-	                              final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
-		super(renderChunk);
-		this.renderGlobal = renderGlobal;
-		this.chunkCache = chunkCache;
-		this.generator = generator;
-		this.compiledchunk = compiledchunk;
-		this.blockRendererDispatcher = blockRendererDispatcher;
-		this.blockState = blockState;
-		this.blockPos = blockPos;
-		this.bufferBuilder = bufferBuilder;
-		this.renderChunkPosition = renderChunkPosition;
-		this.usedBlockRenderLayers = usedBlockRenderLayers;
-		this.blockRenderLayer = blockRenderLayer;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
-		this.visGraph = visGraph;
-	}
-
-	/**
-	 * @return the {@link RenderGlobal} passed in
-	 */
-	public RenderGlobal getRenderGlobal() {
-		return renderGlobal;
-	}
-
-	/**
-	 * @return the {@link ChunkCache} passed in
-	 */
-	public ChunkCache getChunkCache() {
-		return this.chunkCache;
-	}
-
-	/**
-	 * @return the {@link ChunkCompileTaskGenerator} passed in
-	 */
-	public ChunkCompileTaskGenerator getGenerator() {
-		return this.generator;
-	}
-
-	/**
-	 * @return the {@link CompiledChunk} passed in
-	 */
-	public CompiledChunk getCompiledChunk() {
-		return this.compiledchunk;
-	}
-
-	/**
-	 * @return the {@link BlockRendererDispatcher} passed in
-	 */
-	public BlockRendererDispatcher getBlockRendererDispatcher() {
-		return this.blockRendererDispatcher;
-	}
-
-	/**
-	 * @return the {@link IBlockState state} of the block passed in
-	 */
-	public IBlockState getBlockState() {
-		return this.blockState;
-	}
-
-	/**
-	 * @return the position of the block passed in
-	 */
-	public MutableBlockPos getBlockPos() {
-		return this.blockPos;
-	}
-
-	/**
-	 * @return the {@link BufferBuilder} passed in
-	 */
-	public BufferBuilder getBufferBuilder() {
-		return this.bufferBuilder;
-	}
-
-	/**
-	 * @return the position passed in
-	 */
-	public MutableBlockPos getRenderChunkPosition() {
-		return this.renderChunkPosition;
-	}
-
-	/**
-	 * @return the {@link BlockRenderLayer} passed in
-	 */
-	public BlockRenderLayer getBlockRenderLayer() {
-		return this.blockRenderLayer;
-	}
-
-	/**
-	 * If a boolean is true then the corresponding {@link BlockRenderLayer} will be rendered
-	 *
-	 * @return an array of booleans mapped to {@link BlockRenderLayer#ordinal()}
-	 */
-	public boolean[] getUsedBlockRenderLayers() {
-		return this.usedBlockRenderLayers;
-	}
-
-	/**
-	 * @return the X passed in
-	 */
-	public float getX() {
-		return this.x;
-	}
-
-	/**
-	 * @return the Y passed in
-	 */
-	public float getY() {
-		return this.y;
-	}
-
-	/**
-	 * @return the Z passed in
-	 */
-	public float getZ() {
-		return this.z;
-	}
-
-	/**
-	 * @return the {@link HashSet} of all {@link TileEntity TileEntities} with global renderers
-	 */
-	public HashSet<TileEntity> getTileEntitiesWithGlobalRenderers() {
-		return this.tileEntitiesWithGlobalRenderers;
-	}
-
-	/**
-	 * @return the {@link VisGraph} passed in
-	 */
-	public VisGraph getVisGraph() {
-		return this.visGraph;
+	public RebuildChunkBlockEvent(
+			@Nonnull final RenderChunk renderChunk,
+			final int x,
+			final int y,
+			final int z,
+			@Nonnull final ChunkCompileTaskGenerator generator,
+			@Nonnull final CompiledChunk compiledChunk,
+			@Nonnull final MutableBlockPos renderChunkPosition,
+			@Nonnull final ChunkCache chunkCache,
+			@Nonnull final VisGraph visGraph,
+			@Nonnull final HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
+			@Nonnull final RenderGlobal renderGlobal) {
+		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkPosition, chunkCache, visGraph, tileEntitiesWithGlobalRenderers, renderGlobal);
 	}
 
 	/**
