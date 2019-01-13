@@ -15,6 +15,8 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ArrayList;
 
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_LOGGER;
+
 /**
  * @author Cadiboo
  * @see "http://www.egtry.com/java/bytecode/asm/tree_transform"
@@ -429,7 +431,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 			instructionsToRemove.add(instructions.get(i));
 		}
 		for (AbstractInsnNode instructionToRemove : instructionsToRemove) {
-			//			MOD_LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
+			if (RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_INSTRUCTIONS) {
+				MOD_LOGGER.warn("removing instruction :" + insnToString(instructionToRemove));
+			}
 			instructions.remove(instructionToRemove);
 		}
 
