@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,8 +22,9 @@ import java.util.HashSet;
 
 /**
  * Called when a {@link RenderChunk#rebuildChunk} is called.
- * This event is fired on the {@link MinecraftForge#EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block could render in.
- * Setting the result of this event to {@link Result#DENY} prevents the parts of the block in this {@link BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).
+ * This event is fired on the {@link MinecraftForge#EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer} the block could render in.
+ * Setting the result of this event to {@link Result#DENY} prevents the block from being rebuilt to the chunk (and therefore rendered).
+ * Setting this to {@link Result#DENY} can allow you to stuff including rendering models for blocks with render types of {@link EnumBlockRenderType#INVISIBLE} or {@link EnumBlockRenderType#LIQUID}
  * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}
  * Cancel the event to stop mods further down the listener list from receiving the event
  *
@@ -31,7 +33,7 @@ import java.util.HashSet;
  */
 @HasResult
 @Cancelable
-public class RebuildChunkBlockRenderInLayerEvent extends RebuildChunkEvent {
+public class RebuildChunkBlockRenderTypeAllowsRenderEvent extends RebuildChunkEvent {
 
 	@Nonnull
 	private final boolean[] usedBlockRenderLayers;
@@ -45,6 +47,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends RebuildChunkEvent {
 	private final Block block;
 	@Nonnull
 	private final BlockRenderLayer blockRenderLayer;
+	private final int blockRenderLayerOrdinal;
 
 	/**
 	 * @param renderChunk                     the instance of {@link RenderChunk}
@@ -64,8 +67,9 @@ public class RebuildChunkBlockRenderInLayerEvent extends RebuildChunkEvent {
 	 * @param blockState                      the {@link IBlockState} of the block the event is firing for
 	 * @param block                           the {@link Block} the event is firing for
 	 * @param blockRenderLayer                the {@link BlockRenderLayer} the event is firing for
+	 * @param blockRenderLayerOrdinal         the ordinal of the {@link BlockRenderLayer} the event is firing for
 	 */
-	public RebuildChunkBlockRenderInLayerEvent(
+	public RebuildChunkBlockRenderTypeAllowsRenderEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
@@ -82,7 +86,8 @@ public class RebuildChunkBlockRenderInLayerEvent extends RebuildChunkEvent {
 			@Nonnull final BlockPos blockPos,
 			@Nonnull final IBlockState blockState,
 			@Nonnull final Block block,
-			@Nonnull final BlockRenderLayer blockRenderLayer) {
+			@Nonnull final BlockRenderLayer blockRenderLayer,
+			final int blockRenderLayerOrdinal) {
 		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkPosition, chunkCache, visGraph, tileEntitiesWithGlobalRenderers, renderGlobal);
 		this.usedBlockRenderLayers = usedBlockRenderLayers;
 		this.blockRendererDispatcher = blockRendererDispatcher;
@@ -90,6 +95,7 @@ public class RebuildChunkBlockRenderInLayerEvent extends RebuildChunkEvent {
 		this.blockState = blockState;
 		this.block = block;
 		this.blockRenderLayer = blockRenderLayer;
+		this.blockRenderLayerOrdinal = blockRenderLayerOrdinal;
 	}
 
 	@Nonnull
@@ -120,6 +126,10 @@ public class RebuildChunkBlockRenderInLayerEvent extends RebuildChunkEvent {
 	@Nonnull
 	public BlockRenderLayer getBlockRenderLayer() {
 		return blockRenderLayer;
+	}
+
+	public int getBlockRenderLayerOrdinal() {
+		return blockRenderLayerOrdinal;
 	}
 
 }

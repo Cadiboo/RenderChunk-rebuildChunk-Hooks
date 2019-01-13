@@ -9,7 +9,7 @@ import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 
 public final class RenderChunkRebuildChunkHooksConfig {
 
-	public static final String CONFIG_VERSION = "0.0.0";
+	public static final String CONFIG_VERSION = "1.0.0";
 	public static final String LANG_PREFIX = RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID + ".config.";
 
 	public static final String POST_EVENTS_CATEGORY = "hooks";
@@ -22,7 +22,7 @@ public final class RenderChunkRebuildChunkHooksConfig {
 
 	private static boolean enableRebuildChunkPreEvent = true;
 	private static boolean enableRebuildChunkBlockRenderInLayerEvent = true;
-	private static boolean enableRebuildChunkBlockRenderInTypeEvent = true;
+	private static boolean enableRebuildChunkBlockTypeAllowsRenderEvent = true;
 	private static boolean enableRebuildChunkBlockEvent = true;
 	private static boolean enableRebuildChunkPostEvent = true;
 
@@ -33,35 +33,42 @@ public final class RenderChunkRebuildChunkHooksConfig {
 		sync();
 	}
 
-	public static void sync() {        //general
-		enableHooks = config.get(
-				CATEGORY_GENERAL, "enableHooks", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableHooks").getBoolean();
-		reloadChunksOnConfigChange = config.get(
-				CATEGORY_GENERAL, "reloadChunksOnConfigChange", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "reloadChunksOnConfigChange").getBoolean();
+	public static void sync() {
+		//general
+		{
+			enableHooks = config.get(
+					CATEGORY_GENERAL, "areHooksEnabled", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "areHooksEnabled").getBoolean();
+			reloadChunksOnConfigChange = config.get(
+					CATEGORY_GENERAL, "shouldReloadChunksOnConfigChange", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "shouldReloadChunksOnConfigChange").getBoolean();
+		}
 
 		//hooks
-		enableRebuildChunkPreEvent = config.get(
-				POST_EVENTS_CATEGORY, "enableRebuildChunkPreEvent", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkPreEvent").getBoolean();
-		enableRebuildChunkBlockRenderInLayerEvent = config.get(
-				POST_EVENTS_CATEGORY, "enableRebuildChunkBlockRenderInLayerEvent", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkBlockRenderInLayerEvent").getBoolean();
-		enableRebuildChunkBlockRenderInTypeEvent = config.get(
-				POST_EVENTS_CATEGORY, "enableRebuildChunkBlockRenderInTypeEvent", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkBlockRenderInTypeEvent").getBoolean();
-		enableRebuildChunkBlockEvent = config.get(
-				POST_EVENTS_CATEGORY, "enableRebuildChunkBlockEvent", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkBlockEvent").getBoolean();
-		enableRebuildChunkPostEvent = config.get(
-				POST_EVENTS_CATEGORY, "enableRebuildChunkPostEvent", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkPostEvent").getBoolean();
+		{
+			enableRebuildChunkPreEvent = config.get(
+					POST_EVENTS_CATEGORY, "enableRebuildChunkPreEvent", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkPreEvent").getBoolean();
+			enableRebuildChunkBlockRenderInLayerEvent = config.get(
+					POST_EVENTS_CATEGORY, "enableRebuildChunkBlockRenderInLayerEvent", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkBlockRenderInLayerEvent").getBoolean();
+			enableRebuildChunkBlockTypeAllowsRenderEvent = config.get(
+					POST_EVENTS_CATEGORY, "enableRebuildChunkBlockRenderInTypeEvent", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkBlockRenderInTypeEvent").getBoolean();
+			enableRebuildChunkBlockEvent = config.get(
+					POST_EVENTS_CATEGORY, "enableRebuildChunkBlockEvent", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkBlockEvent").getBoolean();
+			enableRebuildChunkPostEvent = config.get(
+					POST_EVENTS_CATEGORY, "enableRebuildChunkPostEvent", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "enableRebuildChunkPostEvent").getBoolean();
+		}
 
 		//tweaks
-		tweakRebuildChunkBlockRenderInType = config.get(
-				TWEAK_CATEGORY, "tweakRebuildChunkBlockRenderInType", true
-		).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "tweakRebuildChunkBlockRenderInType").getBoolean();
+		{
+			tweakRebuildChunkBlockRenderInType = config.get(
+					TWEAK_CATEGORY, "tweakRebuildChunkBlockRenderInType", true
+			).setLanguageKey(RenderChunkRebuildChunkHooksConfig.LANG_PREFIX + "tweakRebuildChunkBlockRenderInType").getBoolean();
+		}
 
 		if (config.hasChanged()) {
 			config.save();
@@ -70,11 +77,11 @@ public final class RenderChunkRebuildChunkHooksConfig {
 
 	//general
 
-	public static boolean enableHooks() {
+	public static boolean areHooksEnabled() {
 		return enableHooks;
 	}
 
-	public static boolean reloadChunksOnConfigChange() {
+	public static boolean shouldReloadChunksOnConfigChange() {
 		return reloadChunksOnConfigChange;
 	}
 
@@ -85,19 +92,19 @@ public final class RenderChunkRebuildChunkHooksConfig {
 	}
 
 	public static boolean shouldPostRebuildChunkBlockRenderInLayerEvent() {
-		return enableHooks() && enableRebuildChunkBlockRenderInLayerEvent;
+		return areHooksEnabled() && enableRebuildChunkBlockRenderInLayerEvent;
 	}
 
 	public static boolean shouldPostRebuildChunkBlockRenderInTypeEvent() {
-		return enableHooks() && enableRebuildChunkBlockRenderInTypeEvent;
+		return areHooksEnabled() && enableRebuildChunkBlockTypeAllowsRenderEvent;
 	}
 
 	public static boolean shouldPostRebuildChunkBlockEvent() {
-		return enableHooks() && enableRebuildChunkBlockEvent;
+		return areHooksEnabled() && enableRebuildChunkBlockEvent;
 	}
 
 	public static boolean shouldPostRebuildChunkPostEvent() {
-		return enableHooks() && enableRebuildChunkPostEvent;
+		return areHooksEnabled() && enableRebuildChunkPostEvent;
 	}
 
 	//tweaks

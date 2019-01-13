@@ -145,7 +145,7 @@
         if (!this.isChunkRegionEmpty(blockpos)) {
             ++RenderChunk.renderChunksUpdated;
             final ChunkCacheOF blockAccess = this.makeChunkCacheOF(blockpos);
-            if (RenderChunkRebuildChunkHooksHooks.onRebuildChunkPreEvent(this, this.renderGlobal, blockAccess, generator, compiledchunk, this.position, x, y, z)) {
+            if (RenderChunkRebuildChunkHooksHooksOptifine.rebuildChunkPreHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method)) {
                 return;
             }
             blockAccess.renderStart();
@@ -184,7 +184,7 @@
                 for (int ix = 0; ix < blockLayers.length; ++ix) {
                     BlockRenderLayer blockrenderlayer1 = blockLayers[ix];
                     if (forgeBlockCanRenderInLayerExists) {
-                        final boolean canRenderInLayer = RenderChunkRebuildChunkHooksHooks.canBlockRenderInLayer(this, blockAccess, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate, blockrenderlayer1);
+                        final boolean canRenderInLayer = RenderChunkRebuildChunkHooksHooksOptifine.canBlockRenderInLayerHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method);
                         if (!canRenderInLayer) {
                             continue;
                         }
@@ -194,7 +194,7 @@
                     }
                     blockrenderlayer1 = this.fixBlockLayer(iblockstate, blockrenderlayer1);
                     final int j = blockrenderlayer1.ordinal();
-                    if (RenderChunkRebuildChunkHooksHooks.canBlockRenderInType(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate)) {
+                    if (RenderChunkRebuildChunkHooksHooksOptifine.doesBlockTypeAllowRenderHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method)) {
                         final BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getWorldRendererByLayerId(j);
                         bufferbuilder.setBlockLayer(blockrenderlayer1);
                         final RenderEnv renderEnv = bufferbuilder.getRenderEnv((IBlockAccess)blockAccess, iblockstate, (BlockPos)blockpos$mutableblockpos);
@@ -205,7 +205,7 @@
                         }
                         final boolean[] array = aboolean;
                         final int n = j;
-                        if (!RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this, this.renderGlobal, blockAccess, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, array, blockrenderlayer1, x, y, z, lvt_10_1_, lvt_9_1_)) {
+                        if (!RenderChunkRebuildChunkHooksHooksOptifine.rebuildChunkBlockHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method)) {
                             array[n] |= blockrendererdispatcher.renderBlock(iblockstate, (BlockPos)blockpos$mutableblockpos, (IBlockAccess)blockAccess, bufferbuilder);
                         }
                         if (renderEnv.isOverlaysRendered()) {
@@ -252,5 +252,5 @@
         finally {
             this.lockCompileTask.unlock();
         }
-        RenderChunkRebuildChunkHooksHooks.onRebuildChunkPostEvent(this, x, y, z, generator, compiledchunk, this.position, this.renderGlobal, this.makeChunkCacheOF(blockpos), lvt_9_1_, this.setTileEntities, this.lockCompileTask);
+        RenderChunkRebuildChunkHooksHooksOptifine.rebuildChunkPostHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method);
     }

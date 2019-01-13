@@ -2,28 +2,34 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event.optifine;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.EnumEventType;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event.HasResult;
 import net.optifine.BlockPosM;
 import net.optifine.override.ChunkCacheOF;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
+
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF;
 
 /**
- * Called when a {@link RenderChunk#rebuildChunk RenderChunk.rebuildChunk} is called when Optifine is present.<br>
- * This event is fired on the {@link net.minecraftforge.common.MinecraftForge#EVENT_BUS EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block could render in.<br>
- * Setting the result of this event to {@link Result#DENY} prevents the parts of the block in this {@link BlockRenderLayer BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).<br>
- * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}<br>
+ * Called when a {@link RenderChunk#rebuildChunk} is called when Optifine is present.
+ * This event is fired on the {@link MinecraftForge#EVENT_BUS} for every block inside the chunk to be rebuilt and for every {@link BlockRenderLayer BlockRenderLayer} the block could render in.
+ * Setting the result of this event to {@link Result#DENY} prevents the parts of the block in this {@link BlockRenderLayer} from being rebuilt to the chunk (and therefore rendered).
+ * You should not perform your own rendering in this event. Perform your rendering in the {@link RebuildChunkBlockEvent}
  * Cancel the event to stop mods further down the listener list from receiving the event
  *
  * @author Cadiboo
@@ -36,19 +42,43 @@ public class RebuildChunkBlockRenderInLayerOptifineEvent extends RebuildChunkBlo
 	private final BlockPosM blockPosM;
 
 	/**
-	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-	 * @param chunkCacheOF              the {@link ChunkCacheOF} passed in from RenderChunk#rebuildChunk
-	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param blockPosM                 the {@link BlockPosM position} of the block being assessed
-	 * @param blockState                the {@link IBlockState state} of the block being assessed
-	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
+	 * @param renderChunk                     the instance of {@link RenderChunk}
+	 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
+	 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
+	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledChunk                   the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunkPosition             the {@link BlockPos position} passed in from RenderChunk#rebuildChunk
+	 * @param chunkCacheOF                    the {@link ChunkCacheOF} passed in from RenderChunk#rebuildChunk
+	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal                    the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+	 * @param usedBlockRenderLayers           the boolean[] of used {@link BlockRenderLayer}s
+	 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher}
+	 * @param blockPosM                       the {@link BlockPosM} of the block the event is firing for
+	 * @param blockState                      the {@link IBlockState} of the block the event is firing for
+	 * @param block                           the {@link Block} the event is firing for
+	 * @param blockRenderLayer                the {@link BlockRenderLayer} the event is firing for
 	 */
-	public RebuildChunkBlockRenderInLayerOptifineEvent(RenderChunk renderChunk, ChunkCacheOF chunkCacheOF, ChunkCompileTaskGenerator chunkCompileTaskGenerator, CompiledChunk compiledchunk, BlockRendererDispatcher blockRendererDispatcher, MutableBlockPos renderChunkPosition, VisGraph visGraph, BlockPosM blockPosM, IBlockState blockState, BlockRenderLayer blockRenderLayer) {
-		super(renderChunk, RenderChunkRebuildChunkHooksHooksOptifine.getChunkCacheFromChunkCacheOF(chunkCacheOF), chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, new MutableBlockPos(blockPosM), blockState, blockRenderLayer);
+	public RebuildChunkBlockRenderInLayerOptifineEvent(
+			@Nonnull final RenderChunk renderChunk,
+			final float x,
+			final float y,
+			final float z,
+			@Nonnull final ChunkCompileTaskGenerator generator,
+			@Nonnull final CompiledChunk compiledChunk,
+			@Nonnull final BlockPos renderChunkPosition,
+			@Nonnull final ChunkCacheOF chunkCacheOF,
+			@Nonnull final VisGraph visGraph,
+			@Nonnull final HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
+			@Nonnull final RenderGlobal renderGlobal,
+			@Nonnull final boolean[] usedBlockRenderLayers,
+			@Nonnull final BlockRendererDispatcher blockRendererDispatcher,
+			@Nonnull final BlockPosM blockPosM,
+			@Nonnull final IBlockState blockState,
+			@Nonnull final Block block,
+			@Nonnull final BlockRenderLayer blockRenderLayer) {
+		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkPosition, getChunkCacheFromChunkCacheOF(chunkCacheOF), visGraph, tileEntitiesWithGlobalRenderers, renderGlobal, usedBlockRenderLayers, blockRendererDispatcher, blockPosM, blockState, block, blockRenderLayer);
 		this.chunkCacheOF = chunkCacheOF;
 		this.blockPosM = blockPosM;
 	}
@@ -57,20 +87,17 @@ public class RebuildChunkBlockRenderInLayerOptifineEvent extends RebuildChunkBlo
 	 * @return the type of event
 	 */
 	@Nonnull
+	@Override
 	public EnumEventType getType() {
 		return EnumEventType.FORGE_OPTIFINE;
 	}
 
-	/**
-	 * @return the {@link ChunkCacheOF} passed in
-	 */
+	@Nonnull
 	public ChunkCacheOF getChunkCacheOF() {
 		return chunkCacheOF;
 	}
 
-	/**
-	 * @return the {@link BlockPosM} passed in
-	 */
+	@Nonnull
 	public BlockPosM getBlockPosM() {
 		return blockPosM;
 	}

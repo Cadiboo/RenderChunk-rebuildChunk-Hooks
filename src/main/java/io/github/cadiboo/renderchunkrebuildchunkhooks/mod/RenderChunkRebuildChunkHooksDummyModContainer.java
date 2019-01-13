@@ -2,6 +2,7 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.mod;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.compatibility.BetterFoliageCompatibilityEventSubscriber;
@@ -18,12 +19,14 @@ import net.minecraftforge.fml.client.FMLFolderResourcePack;
 import net.minecraftforge.fml.common.CertificateHelper;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.FMLModContainer;
 import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.versioning.ArtifactVersion;
+import net.minecraftforge.fml.common.versioning.DependencyParser;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +38,7 @@ import java.net.URL;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
@@ -45,6 +49,8 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";
 	public static final String MOD_VERSION = "@VERSION@";
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
+	public static final String DEPENDENCIES = "required-after:minecraft;" +
+			"required-after:forge@[14.23.5.2795,);";
 	// Directly reference a log4j logger.
 	public static final Logger MOD_LOGGER = LogManager.getLogger(MOD_NAME);
 	private static final URL UPDATE_JSON_URL;
@@ -65,6 +71,9 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 			crashReport.makeCategory("Constructing Mod");
 		}
 	}
+	private final List<ArtifactVersion> dependencies;
+	private final Set<ArtifactVersion> requiredMods;
+	private final List<ArtifactVersion> dependants;
 	private Certificate certificate = null;
 
 	public RenderChunkRebuildChunkHooksDummyModContainer() {
@@ -95,6 +104,51 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 		meta.updateJSON = UPDATE_JSON_URL.toString();
 		meta.screenshots = new String[0];
 		meta.logoFile = "/" + MOD_ID + "_logo.png";
+
+		DependencyParser dependencyParser = new DependencyParser(MOD_ID, FMLCommonHandler.instance().getSide());
+		DependencyParser.DependencyInfo info = dependencyParser.parseDependencies(DEPENDENCIES);
+
+		meta.dependencies = join(meta.dependencies, info.dependencies);
+		meta.requiredMods = join(meta.requiredMods, info.requirements);
+		meta.dependants = join(meta.dependants, info.dependants);
+
+		this.dependencies = meta.dependencies;
+		this.requiredMods = meta.requiredMods;
+		this.dependants = meta.dependants;
+
+	}
+
+	@SafeVarargs
+	private static <T> ArrayList<T> join(List<T>... lists) {
+		final ArrayList<T> arrayList = new ArrayList<>();
+		for (final List<T> list : lists) {
+			arrayList.addAll(list);
+		}
+		return arrayList;
+	}
+
+	@SafeVarargs
+	private static <T> Set<T> join(Set<T>... sets) {
+		final Set<T> newSet = Sets.newHashSet();
+		for (final Set<T> set : sets) {
+			newSet.addAll(set);
+		}
+		return newSet;
+	}
+
+	@Override
+	public List<ArtifactVersion> getDependants() {
+		return dependants;
+	}
+
+	@Override
+	public Set<ArtifactVersion> getRequirements() {
+		return requiredMods;
+	}
+
+	@Override
+	public List<ArtifactVersion> getDependencies() {
+		return dependencies;
 	}
 
 	@Subscribe
@@ -184,6 +238,8 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	public void constructMod(FMLConstructionEvent event) {
 		final File source = Loader.instance().activeModContainer().getSource();
 
+		FMLModContainer.Disableable.values();
+
 //		Fingerprint stuff, coppied from {@link FMLModContainer }
 		Certificate[] certificates = getClass().getProtectionDomain().getCodeSource().getCertificates();
 		ImmutableList<String> certList = CertificateHelper.getFingerprints(certificates);
@@ -193,15 +249,20 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 
 		boolean fingerprintNotPresent = true;
 
-		if (expectedFingerprint != null && !expectedFingerprint.isEmpty()) {
+		if (!expectedFingerprint.isEmpty()) {
 			if (!sourceFingerprints.contains(expectedFingerprint)) {
 				Level warnLevel = source.isDirectory() ? Level.TRACE : Level.ERROR;
-				FMLLog.log.log(warnLevel, "The mod {} is expecting signature {} for source {}, however there is no signature matching that description", getModId(), expectedFingerprint, source.getName());
+//				FMLLog.log.log(warnLevel, "The mod {} is expecting signature {} for source {}, however there is no signature matching that description", getModId(), expectedFingerprint, source.getName());
 			} else {
 				this.certificate = certificates[certList.indexOf(expectedFingerprint)];
 				fingerprintNotPresent = false;
 			}
 		}
+
+		if (fingerprintNotPresent) {
+			MOD_LOGGER.error("Certificate Fingerprint {} not present for source {}!", expectedFingerprint, source.getName());
+		}
+
 	}
 
 	@Override

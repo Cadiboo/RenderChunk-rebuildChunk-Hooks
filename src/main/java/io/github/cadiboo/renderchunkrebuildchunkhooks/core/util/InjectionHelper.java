@@ -8,6 +8,10 @@ import org.objectweb.asm.tree.MethodInsnNode;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.OPTIFINE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_CAN_RENDER_IN_LAYER;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.OPTIFINE_REFLECTOR_METHOD_EXISTS;
 
 public class InjectionHelper implements Opcodes {
 
@@ -37,13 +41,9 @@ public class InjectionHelper implements Opcodes {
 			// IFNE L45
 			// GOTO L46
 
-			if (instruction.getOpcode() == INVOKEVIRTUAL) {
-				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (ObfuscationHelper.ObfuscationMethod.BLOCK_CAN_RENDER_IN_LAYER.matches((MethodInsnNode) instruction)) {
-						INVOKEVIRTUAL_Block_canRenderInLayer_Node = (MethodInsnNode) instruction;
-						break;
-					}
-				}
+			if (BLOCK_CAN_RENDER_IN_LAYER.matches(instruction)) {
+				INVOKEVIRTUAL_Block_canRenderInLayer_Node = (MethodInsnNode) instruction;
+				break;
 			}
 		}
 		return INVOKEVIRTUAL_Block_canRenderInLayer_Node;
@@ -77,7 +77,7 @@ public class InjectionHelper implements Opcodes {
 
 			final FieldInsnNode fieldInsnNode = (FieldInsnNode) instruction;
 
-			if (!ObfuscationHelper.ObfuscationField.OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER.matches(fieldInsnNode)) {
+			if (!OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER.matches(fieldInsnNode)) {
 				continue;
 			}
 
@@ -88,12 +88,8 @@ public class InjectionHelper implements Opcodes {
 			for (int i = indexOfFieldInsnNode; i < indexOfFieldInsnNode + 10; i++) {
 				final AbstractInsnNode instruction2 = instructions.get(i);
 
-				if (instruction2.getOpcode() == INVOKEVIRTUAL) {
-					if (instruction2.getType() == AbstractInsnNode.METHOD_INSN) {
-						if (ObfuscationHelper.ObfuscationMethod.OPTIFINE_REFLECTOR_METHOD_EXISTS.matches((MethodInsnNode) instruction2)) {
-							continue find_GETSTATIC_Reflector_ForgeBlock_canRenderInLayer;
-						}
-					}
+				if (OPTIFINE_REFLECTOR_METHOD_EXISTS.matches(instruction2)) {
+					continue find_GETSTATIC_Reflector_ForgeBlock_canRenderInLayer;
 				}
 
 			}
@@ -133,13 +129,10 @@ public class InjectionHelper implements Opcodes {
 			//			}
 			//		}
 
-			if (instruction.getOpcode() == INVOKESTATIC) {
-				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER.matches((MethodInsnNode) instruction)) {
-						INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = (MethodInsnNode) instruction;
-						break;
-					}
-				}
+			if (BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER.matches(instruction)) {
+				INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = (MethodInsnNode) instruction;
+				break;
+
 			}
 		}
 		return INVOKESTATIC_Hooks_canRenderBlockInLayer_Node;
@@ -149,7 +142,8 @@ public class InjectionHelper implements Opcodes {
 	private static AbstractInsnNode getCanRenderInBlockInjectionPointOptifineBetterFoliage(InsnList instructions) {
 		MethodInsnNode INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = null;
 
-		for (AbstractInsnNode instruction : instructions.toArray()) {            //		// where: RenderChunk.rebuildChunk()
+		for (AbstractInsnNode instruction : instructions.toArray()) {
+			//		// where: RenderChunk.rebuildChunk()
 			//		// what: invoke code to overrule result of Block.canRenderInLayer()
 			//		// why: allows us to render transparent quads for blocks which are only on the SOLID layer
 			//		transformMethod(Refs.rebuildChunk) {
@@ -170,13 +164,9 @@ public class InjectionHelper implements Opcodes {
 			//			}
 			//		}
 
-			if (instruction.getOpcode() == INVOKESTATIC) {
-				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER.matches((MethodInsnNode) instruction)) {
-						INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = (MethodInsnNode) instruction;
-						break;
-					}
-				}
+			if (BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER.matches(instruction)) {
+				INVOKESTATIC_Hooks_canRenderBlockInLayer_Node = (MethodInsnNode) instruction;
+				break;
 			}
 		}
 

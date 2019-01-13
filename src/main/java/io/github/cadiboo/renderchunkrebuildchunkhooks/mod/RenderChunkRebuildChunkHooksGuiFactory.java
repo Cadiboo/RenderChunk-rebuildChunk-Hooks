@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +28,7 @@ public final class RenderChunkRebuildChunkHooksGuiFactory implements IModGuiFact
 	}
 
 	@Override
+	@Nonnull
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
 		return new HashSet<RuntimeOptionCategoryElement>();
 	}

@@ -34,7 +34,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.Obfuscati
 
 /**
  * @author Cadiboo
- * @see <a href="http://www.egtry.com/java/bytecode/asm/tree_transform">http://www.egtry.com/java/bytecode/asm/tree_transform</a>
+ * @see "http://www.egtry.com/java/bytecode/asm/tree_transform"
  */
 // useful links:
 // https://text-compare.com
@@ -63,7 +63,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	private static final boolean REMOVE_BetterFoliagesModifications = RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
 	private static final boolean INJECT_RebuildChunkPreEvent = true;
 	private static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
-	private static final boolean INJECT_RebuildChunkBlockRenderInTypeEvent = true;
+	private static final boolean INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent = true;
 	private static final boolean INJECT_RebuildChunkBlockEvent = true;
 	private static final boolean INJECT_RebuildChunkPostEvent = true;
 	private static final Printer PRINTER = new Textifier();
@@ -280,17 +280,17 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (INJECT_RebuildChunkBlockRenderInTypeEvent) {
-			LOGGER.info("injecting RebuildChunkBlockRenderInTypeEvent Hook...");
+		if (INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent) {
+			LOGGER.info("injecting RebuildChunkBlockRenderTypeAllowsRenderEvent Hook...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
 					LOGGER_MINIFED.info(insnToString(instructions.get(i)));
 				}
 			}
 			if (this.injectRebuildChunkBlockRenderInTypeEventHook(instructions)) {
-				LOGGER.info("injected RebuildChunkBlockRenderInTypeEvent Hook");
+				LOGGER.info("injected RebuildChunkBlockRenderTypeAllowsRenderEvent Hook");
 			} else {
-				LOGGER.error("failed to inject RebuildChunkBlockRenderInTypeEvent Hook");
+				LOGGER.error("failed to inject RebuildChunkBlockRenderTypeAllowsRenderEvent Hook");
 			}
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {
@@ -343,7 +343,8 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	public abstract boolean injectRebuildChunkBlockRenderInLayerEventHook(InsnList instructions);
 
-	public boolean removeBetterFoliagesModifications(InsnList instructions) {        //		// where: RenderChunk.rebuildChunk()
+	public boolean removeBetterFoliagesModifications(InsnList instructions) {
+		//		// where: RenderChunk.rebuildChunk()
 		//		// what: replace call to BlockRendererDispatcher.renderBlock()
 		//		// why: allows us to perform additional rendering for each block
 		//		transformMethod(Refs.rebuildChunk) {
@@ -367,13 +368,9 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 		// Find the bytecode instruction for "Hooks.renderWorldBlock" ("INVOKESTATIC mods/betterfoliage/client/Hooks.renderWorldBlock (Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/BlockRenderLayer;)Z")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-			if (instruction.getOpcode() == INVOKESTATIC) {
-				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (BETTER_FOLIAGE_RENDER_WORLD_BLOCK.matches((MethodInsnNode) instruction)) {
-						INVOKESTATIC_Hooks_renderWorldBlock_Node = (MethodInsnNode) instruction;
-						break;
-					}
-				}
+			if (BETTER_FOLIAGE_RENDER_WORLD_BLOCK.matches(instruction)) {
+				INVOKESTATIC_Hooks_renderWorldBlock_Node = (MethodInsnNode) instruction;
+				break;
 			}
 
 		}
@@ -384,7 +381,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		}
 
 		// add back BlockRenderDispatcher.renderBlock ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
-		instructions.insert(INVOKESTATIC_Hooks_renderWorldBlock_Node, new MethodInsnNode(INVOKEVIRTUAL, BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getOwner().getInternalName(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getName(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.getDescriptor(), BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.isInterface()));
+		instructions.insert(INVOKESTATIC_Hooks_renderWorldBlock_Node, BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.visit());
 
 		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node.getPrevious());
 		instructions.remove(INVOKESTATIC_Hooks_renderWorldBlock_Node);

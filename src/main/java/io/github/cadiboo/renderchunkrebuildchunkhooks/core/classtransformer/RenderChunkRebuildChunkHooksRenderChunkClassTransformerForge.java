@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 /**
  * @author Cadiboo
- * @see <a href="http://www.egtry.com/java/bytecode/asm/tree_transform">http://www.egtry.com/java/bytecode/asm/tree_transform</a>
+ * @see "http://www.egtry.com/java/bytecode/asm/tree_transform"
  */
 // useful links:
 // https://text-compare.com
@@ -126,11 +126,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_x)); // x
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_y)); // y
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_z)); // z
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkPreEvent", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Z", false));
+//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunkPreHook", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Z", false));
 		tempInstructionList.add(new LabelNode(new Label()));
 		tempInstructionList.add(new JumpInsnNode(IFEQ, preExistingLabelNode));
 		tempInstructionList.add(new InsnNode(RETURN));
@@ -142,9 +142,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 	}
 
 	/**
-	 * get "block.canRenderInLayer(iblockstate, blockrenderlayer);"<br>
-	 * "INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z"<br>
-	 * replace it with our hook and inject before & after (let the existing ALOADs stay because we use the same variables)<br>
+	 * get "block.canRenderInLayer(iblockstate, blockrenderlayer);"
+	 * "INVOKEVIRTUAL net/minecraft/block/Block.canRenderInLayer (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z"
+	 * replace it with our hook and inject before & after (let the existing ALOADs stay because we use the same variables)
 	 *
 	 * @param instructions the instructions for the method
 	 * @return if the injection was successful
@@ -172,7 +172,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 
 		// TODO find ALOAD refrences instead of hardcoding them?
 
-		// Inject a call to RenderChunkRebuildChunkHooksHooks#canBlockRenderInLayer()} AFTER the call to block.canRenderInLayer(iblockstate, blockrenderlayer1)
+		// Inject a call to RenderChunkRebuildChunkHooksHooks#canBlockRenderInLayerHook()} AFTER the call to block.canRenderInLayer(iblockstate, blockrenderlayer1)
 		// add our hook
 
 		/*
@@ -199,7 +199,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockRendererDispatcher
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // visGraph
 		// tempInstructionList.add(new VarInsnNode(ALOAD, 13)); // blockPos
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockPos
@@ -207,7 +207,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		// Inject our instructions right BEFORE the Label for the "ALOAD ?: block" instruction
 		instructions.insertBefore(ALOAD_block_Node, tempInstructionList);
 
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "canBlockRenderInLayer",
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "canBlockRenderInLayerHook",
 				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z",
 				false));
 
@@ -222,11 +222,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 	}
 
 	/**
-	 * find "blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);"<br>
-	 * "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z"<br>
-	 * get return label<br>
-	 * get line number for nice debug<br>
-	 * inject before<br>
+	 * find "blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);"
+	 * "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z"
+	 * get return label
+	 * get line number for nice debug
+	 * inject before
 	 *
 	 * @param instructions the instructions for the method
 	 * @return if the injection was successful
@@ -338,15 +338,15 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockpos$mutableblockpos (currentBlockPos)
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_bufferbuilder)); // bufferbuilder
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_aboolean)); // aboolean
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); // blockrenderlayer1
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_x)); // x
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_y)); // y
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_z)); // z
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkBlockEvent",
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunkBlockHook",
 				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;[ZLnet/minecraft/util/BlockRenderLayer;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Z",
 				false));
 		tempInstructionList.add(new JumpInsnNode(IFNE, returnLabel));
@@ -423,7 +423,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 
 		LabelNode returnLabel = preExistingIF_ACMPEQNode.label;
 
-		//remove all instructions between the line number and the IF_ACMPEQ instruction<br>
+		//remove all instructions between the line number and the IF_ACMPEQ instruction
 		ArrayList<AbstractInsnNode> instructionsToRemove = new ArrayList<>();
 		for (int i = instructions.indexOf(preExistingLineNumberNode) + 1; i < instructions.indexOf(preExistingIF_ACMPEQNode); ++i) {
 			instructionsToRemove.add(instructions.get(i));
@@ -456,7 +456,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockRendererDispatcher
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // visGraph
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockPos
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); // block
@@ -476,8 +476,8 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 	}
 
 	/**
-	 * find last return statement in method<br>
-	 * inject before<br>
+	 * find last return statement in method
+	 * inject before
 	 *
 	 * @param instructions the instructions for the method
 	 * @return if the injection was successful
@@ -521,13 +521,13 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
 		 */
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_x));
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_y));
-		tempInstructionList.add(new VarInsnNode(FLOAD, ALOAD_z));
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x));
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y));
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator));
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_GLOBAL.getName(), "Lnet/minecraft/client/renderer/RenderGlobal;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
@@ -537,7 +537,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_SET_TILE_ENTITIES.getName(), "Ljava/util/Set;"));
 		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // lockCompileTask
 		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_LOCK_COMPILE_TASK.getName(), "Ljava/util/concurrent/locks/ReentrantLock;"));
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "onRebuildChunkPostEvent",
+		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunkPostHook",
 				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/VisGraph;Ljava/util/Set;Ljava/util/concurrent/locks/ReentrantLock;)V", false));
 
 		// Inject our instructions right BEFORE the RETURN instruction

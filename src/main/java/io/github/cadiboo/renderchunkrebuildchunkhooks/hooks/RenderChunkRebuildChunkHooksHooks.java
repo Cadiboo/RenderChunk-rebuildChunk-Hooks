@@ -3,10 +3,9 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.hooks;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInTypeEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderTypeAllowsRenderEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.optifine.RebuildChunkBlockOptifineEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -24,19 +23,15 @@ import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
-import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 
+import javax.annotation.Nonnull;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.EnumEventType.FORGE_OPTIFINE;
 
 /**
  * @author Cadiboo
@@ -50,27 +45,21 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	static {
 		final CrashReport crashReport;
 		try {
-			// newer forge versions
-//			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178486_a", Void.class, BlockRenderLayer.class));
-			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(CompiledChunk.class, "setLayerUsed", "func_178486_a", BlockRenderLayer.class));
+			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178486_a", Void.class, BlockRenderLayer.class));
 		} catch (final IllegalAccessException | UnableToFindMethodException e) {
 			crashReport = new CrashReport("Error getting method handle for CompiledChunk#setLayerUsed!", e);
 			crashReport.makeCategory("Reflectively Accessing CompiledChunk#setLayerUsed");
 			throw new ReportedException(crashReport);
 		}
 		try {
-			// newer forge versions
-//			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", Void.class, BufferBuilder.class, BlockPos.class));
-			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "preRenderBlocks", "func_178573_a", BufferBuilder.class, BlockPos.class));
+			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", Void.class, BufferBuilder.class, BlockPos.class));
 		} catch (IllegalAccessException e) {
 			crashReport = new CrashReport("Error getting method handle for RenderChunk#preRenderBlocks!", e);
 			crashReport.makeCategory("Reflectively Accessing RenderChunk#preRenderBlocks");
 			throw new ReportedException(crashReport);
 		}
 		try {
-			// newer forge versions
-//			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", Void.class, BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
-			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "postRenderBlocks", "func_178584_a", BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
+			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", Void.class, BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
 		} catch (IllegalAccessException e) {
 			crashReport = new CrashReport("Error getting method handle for RenderChunk#postRenderBlocks!", e);
 			crashReport.makeCategory("Reflectively Accessing RenderChunk#postRenderBlocks");
@@ -83,7 +72,9 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 *
 	 * @param compiledChunk    the instance of {@link CompiledChunk}
 	 * @param blockRenderLayer the layer param
+	 * @deprecated You probably don't want this, you probably want something like <code>event.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] = true;</code>
 	 */
+	@Deprecated
 	public static void compiledChunk_setLayerUsed(final CompiledChunk compiledChunk, final BlockRenderLayer blockRenderLayer) {
 		try {
 			compiledChunk_setLayerUsed.invokeExact(compiledChunk, blockRenderLayer);
@@ -172,7 +163,9 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	 * @param compiledChunk    the {@link CompiledChunk}
 	 * @param renderChunkPos   the position of the render chunk
 	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
+	 * @deprecated You probably don't want this, you probably want something like <code>event.getUsedBlockRenderLayers()[blockRenderLayer.ordinal()] = true;</code>
 	 */
+	@Deprecated
 	public BufferBuilder useAndStartOrContinueLayerDirect(final BlockRenderLayer blockRenderLayer, final ChunkCompileTaskGenerator generator, RenderChunk renderChunk, CompiledChunk compiledChunk, MutableBlockPos renderChunkPos) {
 		return useAndStartOrContinueLayer(blockRenderLayer, generator, renderChunk, compiledChunk, renderChunkPos, true);
 	}
@@ -191,46 +184,82 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	}
 
 	/**
-	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
-	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledchunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
-	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
-	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param renderChunk   the instance of {@link RenderChunk}
+	 * @param x             the translation X passed in from RenderChunk#rebuildChunk
+	 * @param y             the translation Y passed in from RenderChunk#rebuildChunk
+	 * @param z             the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param generator     the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param blockpos      the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+	 * @param worldView     the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_9_1_      the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_10_1_     the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal  the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
 	 * @return If vanilla rendering should be stopped
 	 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
-	public static boolean onRebuildChunkPreEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final MutableBlockPos renderChunkPosition, final float x, final float y, final float z) {
-		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, renderChunkPosition, x, y, z);
+	public static boolean rebuildChunkPreHook(
+			@Nonnull final RenderChunk renderChunk,
+			final float x,
+			final float y,
+			final float z,
+			@Nonnull final ChunkCompileTaskGenerator generator,
+			@Nonnull final CompiledChunk compiledchunk,
+			@Nonnull final BlockPos blockpos,
+			@Nonnull final ChunkCache worldView,
+			@Nonnull final VisGraph lvt_9_1_,
+			@Nonnull final HashSet<TileEntity> lvt_10_1_,
+			@Nonnull final RenderGlobal renderGlobal
+	) {
+		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, worldView, lvt_9_1_, lvt_10_1_, renderGlobal);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPreEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
 		return event.isCanceled();
-
 	}
 
 	/**
-	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
-	 * @param block                     the {@link Block block} being assessed
-	 * @param blockState                the {@link IBlockState state} of the block being assessed
-	 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
+	 * @param renderChunk              the instance of {@link RenderChunk}
+	 * @param x                        the translation X passed in from RenderChunk#rebuildChunk
+	 * @param y                        the translation Y passed in from RenderChunk#rebuildChunk
+	 * @param z                        the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param generator                the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk            the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param blockpos                 the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+	 * @param worldView                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_9_1_                 the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_10_1_                the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal             the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+	 * @param aboolean                 the boolean[] of used {@link BlockRenderLayer}s
+	 * @param blockrendererdispatcher  the {@link BlockRendererDispatcher}
+	 * @param blockpos$mutableblockpos the {@link BlockPos} of the block the event is firing for
+	 * @param iblockstate              the {@link IBlockState} of the block the event is firing for
+	 * @param block                    the {@link Block} the event is firing for
+	 * @param blockrenderlayer1        the {@link BlockRenderLayer} the event is firing for
 	 * @return If the block can render in the layer
 	 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
-	public static boolean canBlockRenderInLayer(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState, final BlockRenderLayer blockRenderLayer) {
-		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockRenderLayer);
+	public static boolean canBlockRenderInLayerHook(
+			@Nonnull final RenderChunk renderChunk,
+			final float x,
+			final float y,
+			final float z,
+			@Nonnull final ChunkCompileTaskGenerator generator,
+			@Nonnull final CompiledChunk compiledchunk,
+			@Nonnull final BlockPos blockpos,
+			@Nonnull final ChunkCache worldView,
+			@Nonnull final VisGraph lvt_9_1_,
+			@Nonnull final HashSet<TileEntity> lvt_10_1_,
+			@Nonnull final RenderGlobal renderGlobal,
+			@Nonnull final boolean[] aboolean,
+			@Nonnull final BlockRendererDispatcher blockrendererdispatcher,
+			@Nonnull final BlockPos blockpos$mutableblockpos,
+			@Nonnull final IBlockState iblockstate,
+			@Nonnull final Block block,
+			@Nonnull final BlockRenderLayer blockrenderlayer1) {
+		final RebuildChunkBlockRenderInLayerEvent event = new RebuildChunkBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, worldView, lvt_9_1_, lvt_10_1_, renderGlobal, aboolean, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInLayerEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
@@ -239,29 +268,56 @@ public final class RenderChunkRebuildChunkHooksHooks {
 		if (event.getResult() == Event.Result.ALLOW) {
 			return true;
 		} else if (event.getResult() == Event.Result.DEFAULT) {
-			return block.canRenderInLayer(blockState, blockRenderLayer);
+			//TODO: keep this in sync with non-hooked behaviour
+			return block.canRenderInLayer(iblockstate, blockrenderlayer1);
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
-	 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-	 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition       the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param blockPos                  the {@link MutableBlockPos position} of the block being assessed
-	 * @param block                     the {@link Block block} being assessed
-	 * @param blockState                the {@link IBlockState state} of the block being assessed
+	 * @param renderChunk              the instance of {@link RenderChunk}
+	 * @param x                        the translation X passed in from RenderChunk#rebuildChunk
+	 * @param y                        the translation Y passed in from RenderChunk#rebuildChunk
+	 * @param z                        the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param generator                the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk            the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param blockpos                 the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+	 * @param worldView                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_9_1_                 the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_10_1_                the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal             the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+	 * @param aboolean                 the boolean[] of used {@link BlockRenderLayer}s
+	 * @param blockrendererdispatcher  the {@link BlockRendererDispatcher}
+	 * @param blockpos$mutableblockpos the {@link BlockPos} of the block the event is firing for
+	 * @param iblockstate              the {@link IBlockState} of the block the event is firing for
+	 * @param block                    the {@link Block} the event is firing for
+	 * @param blockrenderlayer1        the {@link BlockRenderLayer} the event is firing for
+	 * @param j                        the ordinal of the {@link BlockRenderLayer} the event is firing for
 	 * @return if the block should be rendered
 	 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
-	public static boolean canBlockRenderInType(final RenderChunk renderChunk, final ChunkCache worldView, final ChunkCompileTaskGenerator chunkCompileTaskGenerator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final MutableBlockPos renderChunkPosition, final VisGraph visGraph, final MutableBlockPos blockPos, final Block block, final IBlockState blockState) {
-		final RebuildChunkBlockRenderInTypeEvent event = new RebuildChunkBlockRenderInTypeEvent(renderChunk, worldView, chunkCompileTaskGenerator, compiledchunk, blockRendererDispatcher, renderChunkPosition, visGraph, blockPos, blockState, blockState.getRenderType());
+	public static boolean doesBlockTypeAllowRenderHook(
+			@Nonnull final RenderChunk renderChunk,
+			final float x,
+			final float y,
+			final float z,
+			@Nonnull final ChunkCompileTaskGenerator generator,
+			@Nonnull final CompiledChunk compiledchunk,
+			@Nonnull final BlockPos blockpos,
+			@Nonnull final ChunkCache worldView,
+			@Nonnull final VisGraph lvt_9_1_,
+			@Nonnull final HashSet<TileEntity> lvt_10_1_,
+			@Nonnull final RenderGlobal renderGlobal,
+			@Nonnull final boolean[] aboolean,
+			@Nonnull final BlockRendererDispatcher blockrendererdispatcher,
+			@Nonnull final BlockPos blockpos$mutableblockpos,
+			@Nonnull final IBlockState iblockstate,
+			@Nonnull final Block block,
+			@Nonnull final BlockRenderLayer blockrenderlayer1,
+			final int j
+	) {
+		final RebuildChunkBlockRenderTypeAllowsRenderEvent event = new RebuildChunkBlockRenderTypeAllowsRenderEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, worldView, lvt_9_1_, lvt_10_1_, renderGlobal, aboolean, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1, j);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockRenderInTypeEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
@@ -271,71 +327,101 @@ public final class RenderChunkRebuildChunkHooksHooks {
 			return true;
 		} else if (event.getResult() == Event.Result.DEFAULT) {
 			if (RenderChunkRebuildChunkHooksConfig.shouldTweakCanBlockRenderInType()) {
-				return blockState.getRenderType() != EnumBlockRenderType.INVISIBLE;
+				return iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE;
 			} else {
+				//TODO: keep this in sync with non-hooked behaviour
 				return block.getDefaultState().getRenderType() != EnumBlockRenderType.INVISIBLE;
 			}
 		} else {
 			return false;
 		}
-
 	}
 
 	/**
-	 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
-	 * @param renderGlobal                    the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-	 * @param worldView                       the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledchunk                   the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-	 * @param blockState                      the {@link IBlockState state} of the block being rendered
-	 * @param blockPos                        the {@link MutableBlockPos position} of the block being rendered
-	 * @param bufferBuilder                   the {@link BufferBuilder} for the BlockRenderLayer
-	 * @param renderChunkPosition             the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param usedBlockRenderLayers           the array of {@link BlockRenderLayer} that are being used
-	 * @param blockRenderLayer                the {@link BlockRenderLayer} of the block being rendered
-	 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
-	 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
-	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
-	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
-	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param renderChunk              the instance of {@link RenderChunk}
+	 * @param x                        the translation X passed in from RenderChunk#rebuildChunk
+	 * @param y                        the translation Y passed in from RenderChunk#rebuildChunk
+	 * @param z                        the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param generator                the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk            the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param blockpos                 the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+	 * @param worldView                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_9_1_                 the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_10_1_                the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal             the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+	 * @param aboolean                 the boolean[] of used {@link BlockRenderLayer}s
+	 * @param blockrendererdispatcher  the {@link BlockRendererDispatcher}
+	 * @param blockpos$mutableblockpos the {@link BlockPos} of the block the event is firing for
+	 * @param iblockstate              the {@link IBlockState} of the block the event is firing for
+	 * @param block                    the {@link Block} the event is firing for
+	 * @param blockrenderlayer1        the {@link BlockRenderLayer} the event is firing for
+	 * @param j                        the ordinal of the {@link BlockRenderLayer} the event is firing for
+	 * @param bufferbuilder            the {@link BufferBuilder} for the {@link BlockRenderLayer} the event is firing for
 	 * @return If the block should NOT be rebuilt to the chunk by vanilla
 	 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
-	public static boolean onRebuildChunkBlockEvent(final RenderChunk renderChunk, final RenderGlobal renderGlobal, final ChunkCache worldView, final ChunkCompileTaskGenerator generator, final CompiledChunk compiledchunk, final BlockRendererDispatcher blockRendererDispatcher, final IBlockState blockState, final MutableBlockPos blockPos, final BufferBuilder bufferBuilder, final MutableBlockPos renderChunkPosition, boolean[] usedBlockRenderLayers, final BlockRenderLayer blockRenderLayer,
-	                                               final float x, final float y, final float z, final HashSet<TileEntity> tileEntitiesWithGlobalRenderers, final VisGraph visGraph) {
-		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, renderGlobal, worldView, generator, compiledchunk, blockRendererDispatcher, blockState, blockPos, bufferBuilder, renderChunkPosition, usedBlockRenderLayers, blockRenderLayer, x, y, z, tileEntitiesWithGlobalRenderers, visGraph);
+	public static boolean rebuildChunkBlockHook(
+			@Nonnull final RenderChunk renderChunk,
+			final float x,
+			final float y,
+			final float z,
+			@Nonnull final ChunkCompileTaskGenerator generator,
+			@Nonnull final CompiledChunk compiledchunk,
+			@Nonnull final BlockPos blockpos,
+			@Nonnull final ChunkCache worldView,
+			@Nonnull final VisGraph lvt_9_1_,
+			@Nonnull final HashSet<TileEntity> lvt_10_1_,
+			@Nonnull final RenderGlobal renderGlobal,
+			@Nonnull final boolean[] aboolean,
+			@Nonnull final BlockRendererDispatcher blockrendererdispatcher,
+			@Nonnull final BlockPos blockpos$mutableblockpos,
+			@Nonnull final IBlockState iblockstate,
+			@Nonnull final Block block,
+			@Nonnull final BlockRenderLayer blockrenderlayer1,
+			final int j,
+			@Nonnull final BufferBuilder bufferbuilder
+	) {
+		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, worldView, lvt_9_1_, lvt_10_1_, renderGlobal, aboolean, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1, j, bufferbuilder);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkBlockEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
 
 		return event.isCanceled();
-
 	}
 
 	/**
-	 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
-	 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
-	 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
-	 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-	 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-	 * @param compiledchunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition the {@link MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-	 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param visGraph            the {@link VisGraph} passed in
-	 * @param setTileEntities     the {@link Set} of {@link TileEntity TileEntities} with global renderers passed in
-	 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
+	 * @param renderChunk   the instance of {@link RenderChunk}
+	 * @param x             the translation X passed in from RenderChunk#rebuildChunk
+	 * @param y             the translation Y passed in from RenderChunk#rebuildChunk
+	 * @param z             the translation Z passed in from RenderChunk#rebuildChunk
+	 * @param generator     the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+	 * @param compiledchunk the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+	 * @param blockpos      the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+	 * @param worldView     the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_9_1_      the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+	 * @param lvt_10_1_     the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+	 * @param renderGlobal  the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
 	 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 	 */
-	public static void onRebuildChunkPostEvent(RenderChunk renderChunk, float x, float y, float z, ChunkCompileTaskGenerator generator, CompiledChunk compiledchunk, MutableBlockPos renderChunkPosition, RenderGlobal renderGlobal, ChunkCache worldView, VisGraph visGraph, Set<TileEntity> setTileEntities, ReentrantLock lockCompileTask) {
-		final RebuildChunkPostEvent event = new RebuildChunkPostEvent(renderChunk, x, y, z, generator, compiledchunk, renderChunkPosition, renderGlobal, worldView, visGraph, setTileEntities, lockCompileTask);
+	public static void rebuildChunkPostHook(
+			@Nonnull final RenderChunk renderChunk,
+			final float x,
+			final float y,
+			final float z,
+			@Nonnull final ChunkCompileTaskGenerator generator,
+			@Nonnull final CompiledChunk compiledchunk,
+			@Nonnull final BlockPos blockpos,
+			@Nonnull final ChunkCache worldView,
+			@Nonnull final VisGraph lvt_9_1_,
+			@Nonnull final HashSet<TileEntity> lvt_10_1_,
+			@Nonnull final RenderGlobal renderGlobal
+	) {
+		final RebuildChunkPostEvent event = new RebuildChunkPostEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, worldView, lvt_9_1_, lvt_10_1_, renderGlobal);
 
 		if (RenderChunkRebuildChunkHooksConfig.shouldPostRebuildChunkPostEvent()) {
 			MinecraftForge.EVENT_BUS.post(event);
 		}
-
 	}
 
 }

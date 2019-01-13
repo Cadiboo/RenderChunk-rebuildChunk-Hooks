@@ -144,7 +144,7 @@
         if (!this.worldView.isEmpty())
         {
             ++renderChunksUpdated;
-            if (RenderChunkRebuildChunkHooksHooks.onRebuildChunkPreEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, this.position, x, y, z)) {
+            if (RenderChunkRebuildChunkHooksHooks.rebuildChunkPreHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method)) {
                 return;
             }
             boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
@@ -181,11 +181,11 @@
                 }
 
                 for(BlockRenderLayer blockrenderlayer1 : BlockRenderLayer.values()) {
-                     if (!RenderChunkRebuildChunkHooksHooks.canBlockRenderInLayer(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate, blockrenderlayer1)) continue;
+                     if (!RenderChunkRebuildChunkHooksHooks.canBlockRenderInLayerHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method)) continue;
                      net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockrenderlayer1);
                 int j = blockrenderlayer1.ordinal();
 
-                if (RenderChunkRebuildChunkHooksHooks.canBlockRenderInType(this, this.worldView, generator, compiledchunk, blockrendererdispatcher, this.position, lvt_9_1_, blockpos$mutableblockpos, block, iblockstate))
+                if (RenderChunkRebuildChunkHooksHooks.doesBlockTypeAllowRenderHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method))
                 {
                     BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getWorldRendererByLayerId(j);
 
@@ -195,7 +195,7 @@
                         this.preRenderBlocks(bufferbuilder, blockpos);
                     }
 
-                    if (!RenderChunkRebuildChunkHooksHooks.onRebuildChunkBlockEvent(this, this.renderGlobal, this.worldView, generator, compiledchunk, blockrendererdispatcher, iblockstate, blockpos$mutableblockpos, bufferbuilder, this.position, aboolean, blockrenderlayer1, x, y, z, lvt_10_1_, lvt_9_1_)) {
+                    if (!RenderChunkRebuildChunkHooksHooks.rebuildChunkBlockHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method)) {
                         aboolean[j] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);
                     }
                 }
@@ -234,5 +234,5 @@
         {
             this.lockCompileTask.unlock();
         }
-        RenderChunkRebuildChunkHooksHooks.onRebuildChunkPostEvent(this, x, y, z, generator, compiledchunk, this.position, this.renderGlobal, this.worldView, lvt_9_1_, this.setTileEntities, this.lockCompileTask);
+        RenderChunkRebuildChunkHooksHooks.rebuildChunkPostHook(params - I can't be bothered to write them down, I keep changing them. Look at the event or method);
     }

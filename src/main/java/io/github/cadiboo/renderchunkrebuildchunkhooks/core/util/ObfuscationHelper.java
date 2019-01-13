@@ -1,8 +1,12 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.core.util;
 
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
+import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,27 +16,31 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkReb
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BETTER_FOLIAGE_HOOKS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK_POS;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK_POS_M;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK_RENDERER_DISPATCHER;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BLOCK_RENDER_LAYER;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.BUFFER_BUILDER;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.CHUNK_CACHE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.CHUNK_CACHE_OF;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.CHUNK_COMPILE_TASK_GENERATOR;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.COMPILED_CHUNK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.ENUM_BLOCK_RENDER_TYPE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.HASH_SET;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_ACCESS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_STATE;
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.MUTABLE_BLOCK_POS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR_METHOD;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RCRCH_HOOKS_OPTIFINE;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_GLOBAL;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.TILE_ENTITY_RENDERER_DISPATCHER;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.VIS_GRAPH;
 import static org.objectweb.asm.Type.BOOLEAN_TYPE;
 import static org.objectweb.asm.Type.FLOAT_TYPE;
 import static org.objectweb.asm.Type.INT_TYPE;
 import static org.objectweb.asm.Type.VOID_TYPE;
 
-public class ObfuscationHelper {
+public class ObfuscationHelper implements Opcodes {
 
 	public enum ObfuscationLevel {
 		DEOBFUSCATED,
@@ -41,7 +49,8 @@ public class ObfuscationHelper {
 
 	}
 
-	public enum ObfuscationClass {        //um, MCPBot says that RenderChunk is bxp (on 1.12 mappings), but when I run Minecraft (on 1.12.2) it says that RenderChunk is bxr. Using Minecraft 1.12.2 obfname
+	public enum ObfuscationClass {
+		//um, MCPBot says that RenderChunk is bxp (on 1.12 mappings), but when I run Minecraft (on 1.12.2) it says that RenderChunk is bxr. Using Minecraft 1.12.2 obfname
 		RENDER_CHUNK("net/minecraft/client/renderer/chunk/RenderChunk", "net/minecraft/client/renderer/chunk/RenderChunk", "bxr"),
 		CHUNK_COMPILE_TASK_GENERATOR("net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "net/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator", "bxl"),
 		VIS_GRAPH("net/minecraft/client/renderer/chunk/VisGraph", "net/minecraft/client/renderer/chunk/VisGraph", "bxs"),
@@ -62,7 +71,12 @@ public class ObfuscationHelper {
 		OPTIFINE_REFLECTOR("net/optifine/reflect/Reflector", "net/optifine/reflect/Reflector", "net/optifine/reflect/Reflector"),
 		ENUM_BLOCK_RENDER_TYPE("net/minecraft/util/EnumBlockRenderType", "net/minecraft/util/EnumBlockRenderType", "ath"),
 
-		;
+		BLOCK_POS_M("net/optifine/BlockPosM", "net/optifine/BlockPosM", "net/optifine/BlockPosM"),
+		CHUNK_CACHE_OF("net/optifine/override/ChunkCacheOF", "net/optifine/override/ChunkCacheOF", "net/optifine/override/ChunkCacheOF"),
+
+		RCRCH_HOOKS_OPTIFINE("io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine"),
+
+		HASH_SET("java/util/HashSet", "java/util/HashSet", "java/util/HashSet");
 
 		private final String deobfuscatedName;
 		private final String srgName;
@@ -72,11 +86,10 @@ public class ObfuscationHelper {
 			this.deobfuscatedName = deobfuscatedName;
 			this.srgName = srgName;
 			this.obfuscatedName = obfuscatedName;
-
 		}
 
 		/**
-		 * gets the internal name for the ObfuscationClass based on the current environment
+		 * gets the internal name for the ObfuscationClass based on the current environment (path/to/class)
 		 *
 		 * @return the correct internal name for the current environment
 		 */
@@ -95,7 +108,7 @@ public class ObfuscationHelper {
 		}
 
 		/**
-		 * gets the name for the ObfuscationClass based on the current environment
+		 * gets the name for the ObfuscationClass based on the current environment (path.to.class)
 		 *
 		 * @return the correct name for the current environment
 		 */
@@ -105,30 +118,33 @@ public class ObfuscationHelper {
 		}
 	}
 
-	public enum ObfuscationField {        // instance fields
-		RENDER_CHUNK_POSITION(RENDER_CHUNK, "position", "field_178586_f", "o", MUTABLE_BLOCK_POS),
-		RENDER_CHUNK_RENDER_GLOBAL(RENDER_CHUNK, "renderGlobal", "field_178589_e", "e", RENDER_GLOBAL),
-		RENDER_CHUNK_WORLD_VIEW(RENDER_CHUNK, "worldView", "field_189564_r", "r", CHUNK_CACHE),
-		RENDER_CHUNK_LOCK_COMPILE_TASK(RENDER_CHUNK, "lockCompileTask", "field_178587_g", "f", Type.getObjectType(Type.getInternalName(ReentrantLock.class))),
-		RENDER_CHUNK_SET_TILE_ENTITIES(RENDER_CHUNK, "setTileEntities", "field_181056_j", "i", Type.getObjectType(Type.getInternalName(HashSet.class))),
+	public enum ObfuscationField {
+		// instance fields
+//		RENDER_CHUNK_POSITION(false, RENDER_CHUNK, "position", "field_178586_f", "o", MUTABLE_BLOCK_POS),
+		RENDER_CHUNK_RENDER_GLOBAL(false, RENDER_CHUNK, "renderGlobal", "field_178589_e", "e", RENDER_GLOBAL),
+		RENDER_CHUNK_WORLD_VIEW(false, RENDER_CHUNK, "worldView", "field_189564_r", "r", CHUNK_CACHE),
+		RENDER_CHUNK_LOCK_COMPILE_TASK(false, RENDER_CHUNK, "lockCompileTask", "field_178587_g", "f", Type.getObjectType(Type.getInternalName(ReentrantLock.class))),
+		RENDER_CHUNK_SET_TILE_ENTITIES(false, RENDER_CHUNK, "setTileEntities", "field_181056_j", "i", Type.getObjectType(Type.getInternalName(HashSet.class))),
 
 		// static fields
-		RENDER_CHUNK_RENDER_CHUNKS_UPDATED(RENDER_CHUNK, "renderChunksUpdated", "field_178592_a", "a", INT_TYPE),
-		TILE_ENTITY_RENDERER_DISPATCHER_INSTANCE(TILE_ENTITY_RENDERER_DISPATCHER, "instance", "field_147556_a", "a", TILE_ENTITY_RENDERER_DISPATCHER),
+		RENDER_CHUNK_RENDER_CHUNKS_UPDATED(true, RENDER_CHUNK, "renderChunksUpdated", "field_178592_a", "a", INT_TYPE),
+		TILE_ENTITY_RENDERER_DISPATCHER_INSTANCE(true, TILE_ENTITY_RENDERER_DISPATCHER, "instance", "field_147556_a", "a", TILE_ENTITY_RENDERER_DISPATCHER),
 
-		OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER(OPTIFINE_REFLECTOR, "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", OPTIFINE_REFLECTOR_METHOD),
+		OPTIFINE_FORGE_BLOCK_CAN_RENDER_IN_LAYER(true, OPTIFINE_REFLECTOR, "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", "ForgeBlock_canRenderInLayer", OPTIFINE_REFLECTOR_METHOD),
 
-		ENUM_BLOCK_RENDER_TYPE_INVISIBLE(ENUM_BLOCK_RENDER_TYPE, "INVISIBLE", "INVISIBLE", "INVISIBLE", ENUM_BLOCK_RENDER_TYPE),
+		ENUM_BLOCK_RENDER_TYPE_INVISIBLE(true, ENUM_BLOCK_RENDER_TYPE, "INVISIBLE", "INVISIBLE", "INVISIBLE", ENUM_BLOCK_RENDER_TYPE),
 
 		;
 
+		private final boolean isStatic;
 		private final ObfuscationClass owner;
 		private final String deobfuscatedName;
 		private final String srgName;
 		private final String obfuscatedName;
 		private final Object type;
 
-		ObfuscationField(ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object type) {
+		ObfuscationField(final boolean isStatic, ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object type) {
+			this.isStatic = isStatic;
 			this.owner = owner;
 			this.deobfuscatedName = deobfuscatedName;
 			this.srgName = srgName;
@@ -139,7 +155,6 @@ public class ObfuscationHelper {
 
 		public ObfuscationClass getOwner() {
 			return owner;
-
 		}
 
 		/**
@@ -175,7 +190,18 @@ public class ObfuscationHelper {
 
 		}
 
-		public boolean matches(FieldInsnNode field) {
+		public boolean matches(AbstractInsnNode node) {
+
+			if (!(node instanceof FieldInsnNode)) {
+				return false;
+			}
+
+			FieldInsnNode field = (FieldInsnNode) node;
+
+			if (field.getOpcode() != getGetOpcode() && field.getOpcode() != getPutOpcode()) {
+				return false;
+			}
+
 			if (!field.owner.equals(this.getOwner().getInternalName())) {
 				return false;
 			}
@@ -192,35 +218,84 @@ public class ObfuscationHelper {
 
 		}
 
+		private int getPutOpcode() {
+			return isStatic ? PUTSTATIC : PUTFIELD;
+		}
+
+		private int getGetOpcode() {
+			return isStatic ? GETSTATIC : GETFIELD;
+		}
+
+		public void get(final InsnList insnList) {
+			if (!isStatic) {
+				insnList.add(new VarInsnNode(ALOAD, 0)); // load `this`
+			}
+			insnList.add(new FieldInsnNode(getGetOpcode(), getOwner().getInternalName(), getName(), getDescriptor()));
+		}
+
+		public void put(final InsnList insnList) {
+			if (!isStatic) {
+				insnList.add(new VarInsnNode(ALOAD, 0)); // load `this`
+			}
+			insnList.add(new FieldInsnNode(getPutOpcode(), getOwner().getInternalName(), getName(), getDescriptor()));
+		}
+
 	}
 
 	public enum ObfuscationMethod {
-		RENDER_CHUNK_REBUILD_CHUNK(RENDER_CHUNK, "rebuildChunk", "func_178581_b", "b", VOID_TYPE, new Object[]{
+		RENDER_CHUNK_REBUILD_CHUNK(INVOKEVIRTUAL, RENDER_CHUNK, "rebuildChunk", "func_178581_b", "b", VOID_TYPE, new Object[]{
 				FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR
 		}, false),
-		RENDER_CHUNK_PRE_RENDER_BLOCKS(RENDER_CHUNK, "preRenderBlocks", "func_178573_a", "a", VOID_TYPE, new Object[]{
+		RENDER_CHUNK_PRE_RENDER_BLOCKS(INVOKESPECIAL, RENDER_CHUNK, "preRenderBlocks", "func_178573_a", "a", VOID_TYPE, new Object[]{
 				BUFFER_BUILDER, BLOCK_POS
 		}, false),
-		RENDER_CHUNK_POST_RENDER_BLOCKS(RENDER_CHUNK, "postRenderBlocks", "func_178584_a", "a", VOID_TYPE, new Object[]{
+		RENDER_CHUNK_POST_RENDER_BLOCKS(INVOKESPECIAL, RENDER_CHUNK, "postRenderBlocks", "func_178584_a", "a", VOID_TYPE, new Object[]{
 				BLOCK_RENDER_LAYER, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, BUFFER_BUILDER, COMPILED_CHUNK
 		}, false),
-		BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK(BLOCK_RENDERER_DISPATCHER, "renderBlock", "func_175018_a", "a", BOOLEAN_TYPE, new Object[]{
+		BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK(INVOKEVIRTUAL, BLOCK_RENDERER_DISPATCHER, "renderBlock", "func_175018_a", "a", BOOLEAN_TYPE, new Object[]{
 				I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER
 		}, false),
 		// forge added method
-		BLOCK_CAN_RENDER_IN_LAYER(BLOCK, "canRenderInLayer", "canRenderInLayer", "canRenderInLayer", BOOLEAN_TYPE, new Object[]{
+		BLOCK_CAN_RENDER_IN_LAYER(INVOKEVIRTUAL, BLOCK, "canRenderInLayer", "canRenderInLayer", "canRenderInLayer", BOOLEAN_TYPE, new Object[]{
 				I_BLOCK_STATE, BLOCK_RENDER_LAYER
 		}, false),
-		BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER(BETTER_FOLIAGE_HOOKS, "canRenderBlockInLayer", "canRenderBlockInLayer", "canRenderBlockInLayer", BOOLEAN_TYPE, new Object[]{
+		OPTIFINE_REFLECTOR_METHOD_EXISTS(INVOKEVIRTUAL, OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[]{}, false),
+		BETTER_FOLIAGE_CAN_BLOCK_RENDER_IN_LAYER(INVOKESTATIC, BETTER_FOLIAGE_HOOKS, "canRenderBlockInLayer", "canRenderBlockInLayer", "canRenderBlockInLayer", BOOLEAN_TYPE, new Object[]{
 				BLOCK, I_BLOCK_STATE, BLOCK_RENDER_LAYER
 		}, false),
-		OPTIFINE_REFLECTOR_METHOD_EXISTS(OPTIFINE_REFLECTOR_METHOD, "exists", "exists", "exists", BOOLEAN_TYPE, new Object[]{}, false),
-		BETTER_FOLIAGE_RENDER_WORLD_BLOCK(BETTER_FOLIAGE_HOOKS, "renderWorldBlock", "renderWorldBlock", "renderWorldBlock", BOOLEAN_TYPE, new Object[]{
+		BETTER_FOLIAGE_RENDER_WORLD_BLOCK(INVOKESTATIC, BETTER_FOLIAGE_HOOKS, "renderWorldBlock", "renderWorldBlock", "renderWorldBlock", BOOLEAN_TYPE, new Object[]{
 				BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
 		}, false),
 
+		ON_REBUILD_CHUNK_PRE_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "rebuildChunkPreHook", "rebuildChunkPreHook", "rebuildChunkPreHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE_OF, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
+		}, false),
+
+		CAN_BLOCK_RENDER_IN_LAYER_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "canBlockRenderInLayerHook", "canBlockRenderInLayerHook", "canBlockRenderInLayerHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE_OF, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, BLOCK_POS_M, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER
+		}, false),
+
+		DOES_BLOCK_TYPE_ALLOW_RENDER_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "doesBlockTypeAllowRenderHook", "doesBlockTypeAllowRenderHook", "doesBlockTypeAllowRenderHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE_OF, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, BLOCK_POS_M, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE
+		}, false),
+
+		REBUILD_CHUNK_BLOCK_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "rebuildChunkBlockHook", "rebuildChunkBlockHook", "rebuildChunkBlockHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE_OF, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, BLOCK_POS_M, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE, BUFFER_BUILDER
+		}, false),
+
+		RENDER_CHUNK_MAKE_CHUNK_CACHE_OF(INVOKESPECIAL, RENDER_CHUNK, "makeChunkCacheOF", "makeChunkCacheOF", "makeChunkCacheOF", CHUNK_CACHE_OF, new Object[]{
+				BLOCK_POS
+		}, false),
+
+		REBUILD_CHUNK_POST_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "rebuildChunkPostHook", "rebuildChunkPostHook", "rebuildChunkPostHook", VOID_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE_OF, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
+		}, false),
 		;
 
+		private final int opcode;
 		private final ObfuscationClass owner;
 		private final String deobfuscatedName;
 		private final String srgName;
@@ -229,7 +304,8 @@ public class ObfuscationHelper {
 		private final Object[] params;
 		private final boolean isInterface;
 
-		ObfuscationMethod(ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object returnType, Object[] params, boolean isInterface) {
+		ObfuscationMethod(final int opcode, ObfuscationClass owner, String deobfuscatedName, String srgName, String obfuscatedName, Object returnType, Object[] params, boolean isInterface) {
+			this.opcode = opcode;
 			this.owner = owner;
 			this.deobfuscatedName = deobfuscatedName;
 			this.srgName = srgName;
@@ -237,7 +313,6 @@ public class ObfuscationHelper {
 			this.returnType = returnType;
 			this.params = params;
 			this.isInterface = isInterface;
-
 		}
 
 		public ObfuscationClass getOwner() {
@@ -304,7 +379,18 @@ public class ObfuscationHelper {
 
 		}
 
-		public boolean matches(MethodInsnNode method) {
+		public boolean matches(AbstractInsnNode node) {
+
+			if (!(node instanceof MethodInsnNode)) {
+				return false;
+			}
+
+			MethodInsnNode method = (MethodInsnNode) node;
+
+			if (method.getOpcode() != getOpcode()) {
+				return false;
+			}
+
 			if (!method.owner.equals(this.getOwner().getInternalName())) {
 				return false;
 			}
@@ -325,6 +411,17 @@ public class ObfuscationHelper {
 
 		}
 
+		public int getOpcode() {
+			return this.opcode;
+		}
+
+		public void visit(final InsnList insnList) {
+			insnList.add(this.visit());
+		}
+
+		public MethodInsnNode visit() {
+			return new MethodInsnNode(getOpcode(), getOwner().getInternalName(), getName(), getDescriptor(), isInterface());
+		}
 	}
 
 }
