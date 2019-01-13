@@ -15,9 +15,11 @@ import net.minecraft.client.renderer.chunk.ChunkCompileTaskGenerator;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.VisGraph;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,20 +48,10 @@ public final class RenderChunkRebuildChunkHooksHooksOptifine {
 	public static ChunkCache getChunkCacheFromChunkCacheOF(ChunkCacheOF chunkCacheOF) {
 		try {
 			return (ChunkCache) CHUNK_CACHE_OF_CHUNK_CACHE.get(chunkCacheOF);
-		} catch (IllegalAccessException illegalAccessException) {
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			//TODO: crash report
-			throw new RuntimeException(illegalAccessException);
+		} catch (IllegalAccessException e) {
+			final CrashReport crashReport = new CrashReport("Unable get ChunkCacheOF#chunkCache", e);
+			crashReport.makeCategory("Reflectively accessing ChunkCacheOF#chunkCache");
+			throw new ReportedException(crashReport);
 		}
 	}
 
