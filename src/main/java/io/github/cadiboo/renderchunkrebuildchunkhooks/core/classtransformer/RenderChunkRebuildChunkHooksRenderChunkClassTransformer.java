@@ -3,7 +3,9 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 import com.google.common.base.Preconditions;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.IStacks;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.util.ReportedException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -62,10 +64,10 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 	private static final boolean REMOVE_BetterFoliagesModifications = RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
 	private static final boolean INJECT_RebuildChunkPreEvent = true;
-	private static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
-	private static final boolean INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent = true;
-	private static final boolean INJECT_RebuildChunkBlockEvent = true;
-	private static final boolean INJECT_RebuildChunkPostEvent = true;
+	private static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = false;
+	private static final boolean INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent = false;
+	private static final boolean INJECT_RebuildChunkBlockEvent = false;
+	private static final boolean INJECT_RebuildChunkPostEvent = false;
 	private static final Printer PRINTER = new Textifier();
 	private static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 	static {
@@ -215,9 +217,9 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 
 			return out.toByteArray();
 		} catch (final Exception e) {
-			LOGGER_MINIFED.error("FAILED to inject hooks!!! Discarding changes.", e);
-			LOGGER.warn("Any mods that depend on the hooks provided by this mod will not work");
-			return basicClass;
+			final CrashReport crashReport = new CrashReport("Error injecting hooks!", e);
+			crashReport.makeCategory("Injecting hooks into RenderChunk#rebuildChunk");
+			throw new ReportedException(crashReport);
 		}
 
 	}

@@ -1,7 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.InjectionHelper;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -15,6 +14,15 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ArrayList;
 
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.ENUM_BLOCK_RENDER_TYPE_INVISIBLE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_CHUNKS_UPDATED;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_GLOBAL;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_WORLD_VIEW;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.CAN_BLOCK_RENDER_IN_LAYER_HOOK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.ON_REBUILD_CHUNK_PRE_HOOK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.REBUILD_CHUNK_BLOCK_HOOK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.REBUILD_CHUNK_POST_HOOK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer.MOD_LOGGER;
 
 /**
@@ -29,13 +37,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 		return super.transform(unTransformedName, transformedName, basicClass);
-
 	}
 
 	@Override
 	public void injectHooks(InsnList instructions) {
 		super.injectHooks(instructions);
-
 	}
 
 	/**
@@ -52,13 +58,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 
 		// Find the bytecode instruction for "++renderChunksUpdated" ("PUTSTATIC net/minecraft/client/renderer/chunk/RenderChunk.renderChunksUpdated : I")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-			if (instruction.getOpcode() == PUTSTATIC) {
-				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
-					if (ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_CHUNKS_UPDATED.matches((FieldInsnNode) instruction)) {
-						PUTSTATIC_renderChunksUpdated_Node = (FieldInsnNode) instruction;
-						break;
-					}
-				}
+			if (RENDER_CHUNK_RENDER_CHUNKS_UPDATED.matches(instruction)) {
+				PUTSTATIC_renderChunksUpdated_Node = (FieldInsnNode) instruction;
+				break;
 			}
 		}
 
@@ -106,33 +108,32 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new LineNumberNode(preExistingLineNumberNode.line, ourLabel));
 
 		/*
-		 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
-		 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-		 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-		 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-		 * @param compiledChunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-		 * @param renderChunkPosition the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-		 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
-		 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
-		 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-		 *
+		 * @param renderChunk   the instance of {@link RenderChunk}
+		 * @param x             the translation X passed in from RenderChunk#rebuildChunk
+		 * @param y             the translation Y passed in from RenderChunk#rebuildChunk
+		 * @param z             the translation Z passed in from RenderChunk#rebuildChunk
+		 * @param generator     the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+		 * @param compiledchunk the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+		 * @param blockpos      the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+		 * @param worldView     the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_9_1_      the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_10_1_     the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+		 * @param renderGlobal  the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
 		 * @return If vanilla rendering should be stopped
-		 *
-		 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
+		 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 		 */
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_GLOBAL.getName(), "Lnet/minecraft/client/renderer/RenderGlobal;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_this)); // this
 		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
 		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
 		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunkPreHook", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;FFF)Z", false));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos)); // blockpos | position
+		RENDER_CHUNK_WORLD_VIEW.get(tempInstructionList); // worldView
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
+		RENDER_CHUNK_RENDER_GLOBAL.get(tempInstructionList);
+		ON_REBUILD_CHUNK_PRE_HOOK.visit(tempInstructionList);
 		tempInstructionList.add(new LabelNode(new Label()));
 		tempInstructionList.add(new JumpInsnNode(IFEQ, preExistingLabelNode));
 		tempInstructionList.add(new InsnNode(RETURN));
@@ -140,7 +141,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		instructions.insertBefore(preExistingLabelNode, tempInstructionList);
 
 		return true;
-
 	}
 
 	/**
@@ -172,192 +172,63 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 
 		final InsnList tempInstructionList = new InsnList();
 
-		// TODO find ALOAD refrences instead of hardcoding them?
+		// TODO dynamically find ALOAD references instead of hardcoding them?
+		// build a map of localVariableName->VarInsnNode.var
 
 		// Inject a call to RenderChunkRebuildChunkHooksHooks#canBlockRenderInLayerHook()} AFTER the call to block.canRenderInLayer(iblockstate, blockrenderlayer1)
 		// add our hook
 
 		/*
-		 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-		 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-		 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-		 * @param compiledChunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-		 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-		 * @param renderChunkPosition       the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-		 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-		 * @param blockPos                  the {@link BlockPos.MutableBlockPos position} of the block being assessed
-		 * @param block                     the {@link Block block} being assessed
-		 * @param blockState                the {@link IBlockState state} of the block being assessed
-		 * @param blockRenderLayer          the {@link BlockRenderLayer} of the block being assessed
-		 *
+		 * @param renderChunk              the instance of {@link RenderChunk}
+		 * @param x                        the translation X passed in from RenderChunk#rebuildChunk
+		 * @param y                        the translation Y passed in from RenderChunk#rebuildChunk
+		 * @param z                        the translation Z passed in from RenderChunk#rebuildChunk
+		 * @param generator                the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+		 * @param compiledchunk            the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+		 * @param blockpos                 the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+		 * @param worldView                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_9_1_                 the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_10_1_                the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+		 * @param renderGlobal             the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+		 * @param aboolean                 the boolean[] of used {@link BlockRenderLayer}s
+		 * @param blockrendererdispatcher  the {@link BlockRendererDispatcher}
+		 * @param blockpos$mutableblockpos the {@link BlockPos} of the block the event is firing for
+		 * @param iblockstate              the {@link IBlockState} of the block the event is firing for
+		 * @param block                    the {@link Block} the event is firing for
+		 * @param blockrenderlayer1        the {@link BlockRenderLayer} the event is firing for
 		 * @return If the block can render in the layer
-		 *
-		 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
+		 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 		 */
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderChunk - renderChunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // ChunkCache - worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_this)); // this
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockRendererDispatcher
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
-//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // visGraph
-		// tempInstructionList.add(new VarInsnNode(ALOAD, 13)); // blockPos
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockPos
-
-		// Inject our instructions right BEFORE the Label for the "ALOAD ?: block" instruction
-		instructions.insertBefore(ALOAD_block_Node, tempInstructionList);
-
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "canBlockRenderInLayerHook",
-				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/BlockRenderLayer;)Z",
-				false));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos)); // blockpos | position
+		RENDER_CHUNK_WORLD_VIEW.get(tempInstructionList); // worldView
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
+		RENDER_CHUNK_RENDER_GLOBAL.get(tempInstructionList);
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_aboolean));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); //iblockstate
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); //block
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); //blockrenderlayer1
+		CAN_BLOCK_RENDER_IN_LAYER_HOOK.visit(tempInstructionList);
 
 		// Inject our instructions right AFTER the Label for the "ALOAD ?: blockrenderlayer1" instruction
 		instructions.insert(ALOAD_blockrenderlayer1_Node, tempInstructionList);
 
 		// Remove the call to block.canRenderInLayer()
 		instructions.remove(INVOKEVIRTUAL_Block_canRenderInLayer_Node);
+		// Remove the calls to loading the variables
+		instructions.remove(ALOAD_blockrenderlayer1_Node);
+		instructions.remove(ALOAD_iblockstate_Node);
+		instructions.remove(ALOAD_block_Node);
 
 		return true;
-
-	}
-
-	/**
-	 * find "blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);"
-	 * "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z"
-	 * get return label
-	 * get line number for nice debug
-	 * inject before
-	 *
-	 * @param instructions the instructions for the method
-	 * @return if the injection was successful
-	 */
-	@Override
-	public boolean injectRebuildChunkBlockEventHook(InsnList instructions) {
-		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
-
-		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
-		for (AbstractInsnNode instruction : instructions.toArray()) {
-			if (instruction.getOpcode() == INVOKEVIRTUAL) {
-				if (instruction.getType() == AbstractInsnNode.METHOD_INSN) {
-					if (ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.matches((MethodInsnNode) instruction)) {
-						INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = (MethodInsnNode) instruction;
-						break;
-					}
-				}
-			}
-
-		}
-
-		if (INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return false;
-		}
-
-		LabelNode preExistingLabelNode = null;
-
-		// go back up the instructions until we find the Label for the "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z" instruction
-		for (int i = instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node) - 1; i >= 0; i--) {
-			if (instructions.get(i).getType() != AbstractInsnNode.LABEL) {
-				continue;
-			}
-			preExistingLabelNode = (LabelNode) instructions.get(i);
-			break;
-		}
-
-		if (preExistingLabelNode == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return false;
-		}
-
-		VarInsnNode preExistingVarInsNode = null;
-
-		// go back down the instructions until we find the first VarInsnNode instruction
-		for (int i = instructions.indexOf(preExistingLabelNode); i < instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node); i++) {
-			if (instructions.get(i).getType() != AbstractInsnNode.VAR_INSN) {
-				continue;
-			}
-			preExistingVarInsNode = (VarInsnNode) instructions.get(i);
-			break;
-		}
-
-		if (preExistingVarInsNode == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return false;
-		}
-
-		LabelNode returnLabel = null;
-
-		// go back down the instructions until we find the LabelNode for all the following instructions
-		for (int i = instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node); i < (instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node) + 25); i++) {
-			if (instructions.get(i).getType() != AbstractInsnNode.LABEL) {
-				continue;
-			}
-			returnLabel = (LabelNode) instructions.get(i);
-			break;
-		}
-
-		if (returnLabel == null) {
-			new RuntimeException("Couldn't find injection point!").printStackTrace();
-			return false;
-		}
-
-		final InsnList tempInstructionList = new InsnList();
-
-		/*
-		 * @param renderChunk                     the instance of {@link RenderChunk} the event is being fired for
-		 * @param renderGlobal                    the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-		 * @param worldView                       the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-		 * @param generator                       the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-		 * @param compiledChunk                   the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-		 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-		 * @param blockState                      the {@link IBlockState state} of the block being rendered
-		 * @param blockPos                        the {@link BlockPos.MutableBlockPos position} of the block being rendered
-		 * @param bufferBuilder                   the {@link BufferBuilder} for the BlockRenderLayer
-		 * @param renderChunkPosition             the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-		 * @param usedBlockRenderLayers           the array of {@link BlockRenderLayer} that are being used
-		 * @param blockRenderLayer                the {@link BlockRenderLayer} of the block being rendered
-		 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
-		 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
-		 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
-		 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
-		 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-		 *
-		 * @return If the block should NOT be rebuilt to the chunk by vanilla
-		 *
-		 * @see cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
-		 */
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_GLOBAL.getName(), "Lnet/minecraft/client/renderer/RenderGlobal;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockrendererdispatcher
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); // iblockstate
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockpos$mutableblockpos (currentBlockPos)
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_bufferbuilder)); // bufferbuilder
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_aboolean)); // aboolean
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); // blockrenderlayer1
-		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
-		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
-		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunkBlockHook",
-				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/BufferBuilder;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;[ZLnet/minecraft/util/BlockRenderLayer;FFFLjava/util/HashSet;Lnet/minecraft/client/renderer/chunk/VisGraph;)Z",
-				false));
-		tempInstructionList.add(new JumpInsnNode(IFNE, returnLabel));
-
-		// Inject our instructions right BEFORE first VarsInsNode
-		instructions.insertBefore(preExistingVarInsNode, tempInstructionList);
-
-		return true;
-
 	}
 
 	/**
@@ -375,13 +246,9 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 
 		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
 		for (AbstractInsnNode instruction : instructions.toArray()) {
-			if (instruction.getOpcode() == GETSTATIC) {
-				if (instruction.getType() == AbstractInsnNode.FIELD_INSN) {
-					if (ObfuscationHelper.ObfuscationField.ENUM_BLOCK_RENDER_TYPE_INVISIBLE.matches((FieldInsnNode) instruction)) {
-						GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = (FieldInsnNode) instruction;
-						break;
-					}
-				}
+			if (ENUM_BLOCK_RENDER_TYPE_INVISIBLE.matches(instruction)) {
+				GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = (FieldInsnNode) instruction;
+				break;
 			}
 
 		}
@@ -440,34 +307,46 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		final InsnList tempInstructionList = new InsnList();
 
 		/*
-		 * @param renderChunk               the instance of {@link RenderChunk} the event is being fired for
-		 * @param worldView                 the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-		 * @param chunkCompileTaskGenerator the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-		 * @param compiledchunk             the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-		 * @param blockRendererDispatcher   the {@link BlockRendererDispatcher} passed in from RenderChunk#rebuildChunk
-		 * @param renderChunkPosition       the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-		 * @param visGraph                  the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-		 * @param blockPos                  the {@link BlockPos.MutableBlockPos position} of the block being assessed
-		 * @param block                     the {@link Block block} being assessed
-		 * @param blockState                the {@link IBlockState state} of the block being assessed
-		 *
+		 * @param renderChunk              the instance of {@link RenderChunk}
+		 * @param x                        the translation X passed in from RenderChunk#rebuildChunk
+		 * @param y                        the translation Y passed in from RenderChunk#rebuildChunk
+		 * @param z                        the translation Z passed in from RenderChunk#rebuildChunk
+		 * @param generator                the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+		 * @param compiledchunk            the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+		 * @param blockpos                 the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+		 * @param worldView                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_9_1_                 the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_10_1_                the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+		 * @param renderGlobal             the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+		 * @param aboolean                 the boolean[] of used {@link BlockRenderLayer}s
+		 * @param blockrendererdispatcher  the {@link BlockRendererDispatcher}
+		 * @param blockpos$mutableblockpos the {@link BlockPos} of the block the event is firing for
+		 * @param iblockstate              the {@link IBlockState} of the block the event is firing for
+		 * @param block                    the {@link Block} the event is firing for
+		 * @param blockrenderlayer1        the {@link BlockRenderLayer} the event is firing for
+		 * @param j                        the ordinal of the {@link BlockRenderLayer} the event is firing for
 		 * @return if the block should be rendered
+		 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 		 */
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // RenderChunk - renderChunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // ChunkCache - worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_this)); // this
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); // blockRendererDispatcher
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // MutableBlockPos - position
-//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // visGraph
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos)); // blockPos
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); // block
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); // iblockstate
-
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "canBlockRenderInType",
-				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/client/renderer/BlockRendererDispatcher;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/chunk/VisGraph;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/block/Block;Lnet/minecraft/block/state/IBlockState;)Z", false));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos)); // blockpos | position
+		RENDER_CHUNK_WORLD_VIEW.get(tempInstructionList); // worldView
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
+		RENDER_CHUNK_RENDER_GLOBAL.get(tempInstructionList);
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_aboolean));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); //iblockstate
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); //block
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); //blockrenderlayer1
+		tempInstructionList.add(new VarInsnNode(ILOAD, ILOAD_j)); //j
+		CAN_BLOCK_RENDER_IN_LAYER_HOOK.visit(tempInstructionList);
 		tempInstructionList.add(new JumpInsnNode(IFEQ, returnLabel));
 
 		// Inject our instructions right BEFORE IF_ACMPEQ
@@ -476,7 +355,134 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		instructions.remove(preExistingIF_ACMPEQNode);
 
 		return true;
+	}
 
+	/**
+	 * find "blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, this.worldView, bufferbuilder);"
+	 * "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z"
+	 * get return label
+	 * get line number for nice debug
+	 * inject before
+	 *
+	 * @param instructions the instructions for the method
+	 * @return if the injection was successful
+	 */
+	@Override
+	public boolean injectRebuildChunkBlockEventHook(InsnList instructions) {
+		MethodInsnNode INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = null;
+
+		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
+		for (AbstractInsnNode instruction : instructions.toArray()) {
+			if (BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK.matches(instruction)) {
+				INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node = (MethodInsnNode) instruction;
+				break;
+			}
+		}
+
+		if (INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return false;
+		}
+
+		LabelNode preExistingLabelNode = null;
+
+		// go back up the instructions until we find the Label for the "INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z" instruction
+		for (int i = instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node) - 1; i >= 0; i--) {
+			if (instructions.get(i).getType() != AbstractInsnNode.LABEL) {
+				continue;
+			}
+			preExistingLabelNode = (LabelNode) instructions.get(i);
+			break;
+		}
+
+		if (preExistingLabelNode == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return false;
+		}
+
+		VarInsnNode preExistingVarInsNode = null;
+
+		// go back down the instructions until we find the first VarInsnNode instruction
+		for (int i = instructions.indexOf(preExistingLabelNode); i < instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node); i++) {
+			if (instructions.get(i).getType() != AbstractInsnNode.VAR_INSN) {
+				continue;
+			}
+			preExistingVarInsNode = (VarInsnNode) instructions.get(i);
+			break;
+		}
+
+		if (preExistingVarInsNode == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return false;
+		}
+
+		LabelNode returnLabel = null;
+
+		// go back down the instructions until we find the LabelNode for all the following instructions
+		for (int i = instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node); i < (instructions.indexOf(INVOKEVIRTUAL_BlockRendererDispatcher_renderBlock_Node) + 25); i++) {
+			if (instructions.get(i).getType() != AbstractInsnNode.LABEL) {
+				continue;
+			}
+			returnLabel = (LabelNode) instructions.get(i);
+			break;
+		}
+
+		if (returnLabel == null) {
+			new RuntimeException("Couldn't find injection point!").printStackTrace();
+			return false;
+		}
+
+		final InsnList tempInstructionList = new InsnList();
+
+		/*
+		 * @param renderChunk              the instance of {@link RenderChunk}
+		 * @param x                        the translation X passed in from RenderChunk#rebuildChunk
+		 * @param y                        the translation Y passed in from RenderChunk#rebuildChunk
+		 * @param z                        the translation Z passed in from RenderChunk#rebuildChunk
+		 * @param generator                the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+		 * @param compiledchunk            the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+		 * @param blockpos                 the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+		 * @param worldView                the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_9_1_                 the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_10_1_                the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+		 * @param renderGlobal             the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+		 * @param aboolean                 the boolean[] of used {@link BlockRenderLayer}s
+		 * @param blockrendererdispatcher  the {@link BlockRendererDispatcher}
+		 * @param blockpos$mutableblockpos the {@link BlockPos} of the block the event is firing for
+		 * @param iblockstate              the {@link IBlockState} of the block the event is firing for
+		 * @param block                    the {@link Block} the event is firing for
+		 * @param blockrenderlayer1        the {@link BlockRenderLayer} the event is firing for
+		 * @param j                        the ordinal of the {@link BlockRenderLayer} the event is firing for
+		 * @param bufferbuilder            the {@link BufferBuilder} for the {@link BlockRenderLayer} the event is firing for
+		 * @return If the block should NOT be rebuilt to the chunk by vanilla
+		 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
+		 */
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_this)); // this
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos)); // blockpos | position
+		RENDER_CHUNK_WORLD_VIEW.get(tempInstructionList); // worldView
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
+		RENDER_CHUNK_RENDER_GLOBAL.get(tempInstructionList);
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_aboolean));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos$mutableblockpos));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_iblockstate)); //iblockstate
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); //block
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); //blockrenderlayer1
+		tempInstructionList.add(new VarInsnNode(ILOAD, ILOAD_j)); //j
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); //blockrendererdispatcher
+		REBUILD_CHUNK_BLOCK_HOOK.visit(tempInstructionList);
+		tempInstructionList.add(new JumpInsnNode(IFNE, returnLabel));
+
+		// Inject our instructions right BEFORE first VarsInsNode
+		instructions.insertBefore(preExistingVarInsNode, tempInstructionList);
+
+		return true;
 	}
 
 	/**
@@ -511,44 +517,36 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		final InsnList tempInstructionList = new InsnList();
 
 		/*
-		 * @param renderChunk         the instance of {@link RenderChunk} the event is being fired for
-		 * @param x                   the translation X passed in from RenderChunk#rebuildChunk
-		 * @param y                   the translation Y passed in from RenderChunk#rebuildChunk
-		 * @param z                   the translation Z passed in from RenderChunk#rebuildChunk
-		 * @param generator           the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
-		 * @param compiledchunk       the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-		 * @param renderChunkPosition the {@link BlockPos.MutableBlockPos position} passed in from RenderChunk#rebuildChunk
-		 * @param renderGlobal        the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-		 * @param worldView           the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
-		 * @param visGraph            the {@link VisGraph} passed in
-		 * @param setTileEntities     the {@link Set} of {@link TileEntity TileEntities} with global renderers passed in
-		 * @param lockCompileTask     the {@link ReentrantLock} for the compile task passed in
+		 * @param renderChunk   the instance of {@link RenderChunk}
+		 * @param x             the translation X passed in from RenderChunk#rebuildChunk
+		 * @param y             the translation Y passed in from RenderChunk#rebuildChunk
+		 * @param z             the translation Z passed in from RenderChunk#rebuildChunk
+		 * @param generator     the {@link ChunkCompileTaskGenerator} passed in from RenderChunk#rebuildChunk
+		 * @param compiledchunk the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
+		 * @param blockpos      the {@link BlockPos position} stored in a local variable and passed in from RenderChunk#rebuildChunk
+		 * @param worldView     the {@link ChunkCache} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_9_1_      the {@link VisGraph} passed in from RenderChunk#rebuildChunk
+		 * @param lvt_10_1_     the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
+		 * @param renderGlobal  the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
+		 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 		 */
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // this
-		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x));
-		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y));
-		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // position
-//		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_POSITION.getName(), "Lnet/minecraft/util/math/BlockPos$MutableBlockPos;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // renderGlobal
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_RENDER_GLOBAL.getName(), "Lnet/minecraft/client/renderer/RenderGlobal;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // worldView
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_WORLD_VIEW.getName(), "Lnet/minecraft/world/ChunkCache;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // setTileEntities
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_SET_TILE_ENTITIES.getName(), "Ljava/util/Set;"));
-		tempInstructionList.add(new VarInsnNode(ALOAD, 0)); // lockCompileTask
-		tempInstructionList.add(new FieldInsnNode(GETFIELD, "net/minecraft/client/renderer/chunk/RenderChunk", ObfuscationHelper.ObfuscationField.RENDER_CHUNK_LOCK_COMPILE_TASK.getName(), "Ljava/util/concurrent/locks/ReentrantLock;"));
-		tempInstructionList.add(new MethodInsnNode(INVOKESTATIC, "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "rebuildChunkPostHook",
-				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkCompileTaskGenerator;Lnet/minecraft/client/renderer/chunk/CompiledChunk;Lnet/minecraft/util/math/BlockPos$MutableBlockPos;Lnet/minecraft/client/renderer/RenderGlobal;Lnet/minecraft/world/ChunkCache;Lnet/minecraft/client/renderer/chunk/VisGraph;Ljava/util/Set;Ljava/util/concurrent/locks/ReentrantLock;)V", false));
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_this)); // this
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
+		tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_compiledchunk)); // compiledchunk
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockpos)); // blockpos | position
+		RENDER_CHUNK_WORLD_VIEW.get(tempInstructionList); // worldView
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_9_1_visGraph)); // lvt_9_1_ (visGraph)
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_lvt_10_1_tileEntitiesWithGlobalRenderers)); // lvt_10_1_ (tileEntitiesWithGlobalRenderers)
+		RENDER_CHUNK_RENDER_GLOBAL.get(tempInstructionList);
+		REBUILD_CHUNK_POST_HOOK.visit(tempInstructionList);
 
 		// Inject our instructions right BEFORE the RETURN instruction
 		instructions.insertBefore(RETURN_Node, tempInstructionList);
 
 		return true;
-
 	}
 
 }

@@ -28,8 +28,10 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.Obfuscati
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.HASH_SET;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_ACCESS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_STATE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.MUTABLE_BLOCK_POS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR_METHOD;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RCRCH_HOOKS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RCRCH_HOOKS_OPTIFINE;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_CHUNK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RENDER_GLOBAL;
@@ -74,6 +76,7 @@ public class ObfuscationHelper implements Opcodes {
 		BLOCK_POS_M("net/optifine/BlockPosM", "net/optifine/BlockPosM", "net/optifine/BlockPosM"),
 		CHUNK_CACHE_OF("net/optifine/override/ChunkCacheOF", "net/optifine/override/ChunkCacheOF", "net/optifine/override/ChunkCacheOF"),
 
+		RCRCH_HOOKS("io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks", "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooks"),
 		RCRCH_HOOKS_OPTIFINE("io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine", "io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/RenderChunkRebuildChunkHooksHooksOptifine"),
 
 		HASH_SET("java/util/HashSet", "java/util/HashSet", "java/util/HashSet");
@@ -265,6 +268,30 @@ public class ObfuscationHelper implements Opcodes {
 		}, false),
 		BETTER_FOLIAGE_RENDER_WORLD_BLOCK(INVOKESTATIC, BETTER_FOLIAGE_HOOKS, "renderWorldBlock", "renderWorldBlock", "renderWorldBlock", BOOLEAN_TYPE, new Object[]{
 				BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
+		}, false),
+
+
+		ON_REBUILD_CHUNK_PRE_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkPreHook", "rebuildChunkPreHook", "rebuildChunkPreHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
+		}, false),
+
+		CAN_BLOCK_RENDER_IN_LAYER_HOOK(INVOKESTATIC, RCRCH_HOOKS, "canBlockRenderInLayerHook", "canBlockRenderInLayerHook", "canBlockRenderInLayerHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, MUTABLE_BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER
+		}, false),
+
+		DOES_BLOCK_TYPE_ALLOW_RENDER_HOOK(INVOKESTATIC, RCRCH_HOOKS, "doesBlockTypeAllowRenderHook", "doesBlockTypeAllowRenderHook", "doesBlockTypeAllowRenderHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, MUTABLE_BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE
+		}, false),
+
+		REBUILD_CHUNK_BLOCK_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkBlockHook", "rebuildChunkBlockHook", "rebuildChunkBlockHook", BOOLEAN_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, MUTABLE_BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE, BUFFER_BUILDER
+		}, false),
+
+		REBUILD_CHUNK_POST_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkPostHook", "rebuildChunkPostHook", "rebuildChunkPostHook", VOID_TYPE, new Object[]{
+				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
 		}, false),
 
 		ON_REBUILD_CHUNK_PRE_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "rebuildChunkPreHook", "rebuildChunkPreHook", "rebuildChunkPreHook", BOOLEAN_TYPE, new Object[]{

@@ -28,7 +28,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebu
 
 /**
  * @author Cadiboo
- * @see <a href="http://www.egtry.com/java/bytecode/asm/tree_transform">http://www.egtry.com/java/bytecode/asm/tree_transform</a>
+ * @see "http://www.egtry.com/java/bytecode/asm/tree_transform"
  */
 // useful links:
 // https://text-compare.com
@@ -47,13 +47,11 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 		return super.transform(unTransformedName, transformedName, basicClass);
-
 	}
 
 	@Override
 	public void injectHooks(InsnList instructions) {
 		super.injectHooks(instructions);
-
 	}
 
 	/**
@@ -169,7 +167,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 		instructions.insertBefore(preExistingLabelNode, tempInstructionList);
 
 		return true;
-
 	}
 
 	/**
@@ -291,7 +288,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 		instructions.insertBefore(preExistingISTOREInstructionNode, tempInstructionList);
 
 		return true;
-
 	}
 
 	/**
@@ -418,7 +414,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 		instructions.remove(preExistingIF_ACMPEQNode);
 
 		return true;
-
 	}
 
 	/**
@@ -547,7 +542,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 		instructions.insertBefore(preExistingVarInsNode, tempInstructionList);
 
 		return true;
-
 	}
 
 	/**
@@ -621,7 +615,6 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifin
 		instructions.insertBefore(RETURN_Node, tempInstructionList);
 
 		return true;
-
 	}
 
 }
