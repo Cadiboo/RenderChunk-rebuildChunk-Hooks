@@ -40,6 +40,34 @@ minecraft {
 	replace '@FINGERPRINT@', project.findProperty('signSHA1')
 	replaceIn modReferenceClass
 
+	useDepAts = true;
+
+	if (project.hasProperty('core_plugin')) {
+		clientJvmArgs += "-Dfml.coreMods.load=${project.core_plugin}"
+		serverJvmArgs += "-Dfml.coreMods.load=${project.core_plugin}"
+	}
+
+	if (project.hasProperty('mc_username')) {
+		clientRunArgs += ['--username', project.mc_username]
+		if (project.hasProperty('mc_password')) {
+			clientRunArgs += ['--password', project.mc_password]
+		}
+	}
+
+	if (project.hasProperty('client_jvm_args')) {
+		clientJvmArgs += project.client_jvm_args
+	}
+	if (project.hasProperty('server_jvm_args')) {
+		serverJvmArgs += project.server_jvm_args
+	}
+
+	if (project.hasProperty('client_game_args')) {
+		clientRunArgs += project.client_game_args
+	}
+	if (project.hasProperty('server_game_args')) {
+		serverRunArgs += project.server_game_args
+	}
+
 }
 
 dependencies {
@@ -68,20 +96,14 @@ dependencies {
 }
 
 jar {
-
-	// Until I figure out how to use gradle tests in IntelliJ
-	sourceSets {
-		main {
-			java {
-				exclude '**/debug/**'
-			}
-		}
-	}
-
 	manifest {
-		attributes 'FMLAT': 'renderchunkrebuildchunkhooks_at.cfg'
-		attributes 'FMLCorePlugin': 'io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin'
-		attributes 'FMLCorePluginContainsMod': 'true'
+		if (project.hasProperty('coreplugin')) {
+			attributes 'FMLCorePluginContainsFMLMod': 'true'
+			attributes 'FMLCorePlugin': project.core_plugin
+		}
+		if (project.hasProperty('at_file')) {
+			attributes 'FMLAT' : project.at_file
+		}
 	}
 }
 
