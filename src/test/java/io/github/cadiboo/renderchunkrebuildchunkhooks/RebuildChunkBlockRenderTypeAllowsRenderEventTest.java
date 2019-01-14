@@ -1,6 +1,6 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
+package io.github.cadiboo.renderchunkrebuildchunkhooks;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderTypeAllowsRenderEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -8,13 +8,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.Objects;
 import java.util.Random;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.debug.RebuildChunkBlockRenderInLayerEventTest.Config.ENABLED;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RebuildChunkBlockRenderTypeAllowsRenderEventTest.Config.ENABLED;
 
-@Mod(modid = RebuildChunkBlockRenderInLayerEventTest.MODID, name = "RebuildChunkBlockRenderInLayerEventTest", version = "1.0", acceptableRemoteVersions = "*")
+@Mod(modid = RebuildChunkBlockRenderTypeAllowsRenderEventTest.MODID, name = "RebuildChunkBlockRenderTypeAllowsRenderEventTest", version = "1.0", acceptableRemoteVersions = "*")
 @Mod.EventBusSubscriber
-public final class RebuildChunkBlockRenderInLayerEventTest {
+public final class RebuildChunkBlockRenderTypeAllowsRenderEventTest {
 
-	public static final String MODID = "rebuild_chunk_block_render_in_layer_event_test";
+	public static final String MODID = "rebuild_chunk_block_render_type_allows_render_event_test";
 
 	@net.minecraftforge.common.config.Config(modid = MODID)
 	public static class Config {
@@ -24,7 +24,7 @@ public final class RebuildChunkBlockRenderInLayerEventTest {
 	}
 
 	@SubscribeEvent
-	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
+	public static void onRebuildChunkBlockRenderTypeAllowsRenderEvent(final RebuildChunkBlockRenderTypeAllowsRenderEvent event) {
 		if (!ENABLED) {
 			return;
 		}

@@ -1,19 +1,20 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
+package io.github.cadiboo.renderchunkrebuildchunkhooks;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderInLayerEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Objects;
 import java.util.Random;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.debug.RebuildChunkBlockEventTest.Config.ENABLED;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RebuildChunkBlockRenderInLayerEventTest.Config.ENABLED;
 
+@Mod(modid = RebuildChunkBlockRenderInLayerEventTest.MODID, name = "RebuildChunkBlockRenderInLayerEventTest", version = "1.0", acceptableRemoteVersions = "*")
 @Mod.EventBusSubscriber
-@Mod(modid = RebuildChunkBlockEventTest.MODID, name = "RebuildChunkBlockEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
-public final class RebuildChunkBlockEventTest {
+public final class RebuildChunkBlockRenderInLayerEventTest {
 
-	public static final String MODID = "rebuild_chunk_block_event_test";
+	public static final String MODID = "rebuild_chunk_block_render_in_layer_event_test";
 
 	@net.minecraftforge.common.config.Config(modid = MODID)
 	public static class Config {
@@ -23,7 +24,7 @@ public final class RebuildChunkBlockEventTest {
 	}
 
 	@SubscribeEvent
-	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
+	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkBlockRenderInLayerEvent event) {
 		if (!ENABLED) {
 			return;
 		}
@@ -47,7 +48,6 @@ public final class RebuildChunkBlockEventTest {
 		 * @param block                           the {@link Block} the event is firing for
 		 * @param blockRenderLayer                the {@link BlockRenderLayer} the event is firing for
 		 * @param blockRenderLayerOrdinal         the ordinal of the {@link BlockRenderLayer} the event is firing for
-		 * @param bufferBuilder                   the {@link BufferBuilder} for the {@link BlockRenderLayer} the event is firing for
 		 */
 		try {
 			Objects.requireNonNull(event.getRenderChunk());
@@ -64,22 +64,13 @@ public final class RebuildChunkBlockEventTest {
 			Objects.requireNonNull(event.getBlockState());
 			Objects.requireNonNull(event.getBlock());
 			Objects.requireNonNull(event.getBlockRenderLayer());
-			Objects.requireNonNull(event.getBufferBuilder());
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 
 		if (new Random().nextBoolean()) {
-			//			event.setCanceled(true);
-			for (int i = 0; i < event.getUsedBlockRenderLayers().length; i++) {
-				event.getUsedBlockRenderLayers()[i] = false;
-			}
+			event.setResult(Event.Result.DENY);
 		}
-
-		//		if (!event.getBlockState().getMaterial().blocksLight()) {
-		//			event.setCanceled(false);
-		//			event.getBlockRendererDispatcher().renderBlock(Blocks.GLASS.getDefaultState(), event.getBlockPos(), event.getWorldView(), event.getBufferBuilder());
-		//		}
 
 	}
 

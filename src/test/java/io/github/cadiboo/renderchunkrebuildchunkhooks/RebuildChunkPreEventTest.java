@@ -1,20 +1,19 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
+package io.github.cadiboo.renderchunkrebuildchunkhooks;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderTypeAllowsRenderEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Objects;
 import java.util.Random;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.debug.RebuildChunkBlockRenderTypeAllowsRenderEventTest.Config.ENABLED;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RebuildChunkPreEventTest.Config.ENABLED;
 
-@Mod(modid = RebuildChunkBlockRenderTypeAllowsRenderEventTest.MODID, name = "RebuildChunkBlockRenderTypeAllowsRenderEventTest", version = "1.0", acceptableRemoteVersions = "*")
 @Mod.EventBusSubscriber
-public final class RebuildChunkBlockRenderTypeAllowsRenderEventTest {
+@Mod(modid = RebuildChunkPreEventTest.MODID, name = "RebuildChunkPreEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
+public final class RebuildChunkPreEventTest {
 
-	public static final String MODID = "rebuild_chunk_block_render_type_allows_render_event_test";
+	public static final String MODID = "rebuild_chunk_pre_event_test";
 
 	@net.minecraftforge.common.config.Config(modid = MODID)
 	public static class Config {
@@ -24,7 +23,7 @@ public final class RebuildChunkBlockRenderTypeAllowsRenderEventTest {
 	}
 
 	@SubscribeEvent
-	public static void onRebuildChunkBlockRenderTypeAllowsRenderEvent(final RebuildChunkBlockRenderTypeAllowsRenderEvent event) {
+	public static void onRebuildChunkPreEvent(final RebuildChunkPreEvent event) {
 		if (!ENABLED) {
 			return;
 		}
@@ -41,13 +40,6 @@ public final class RebuildChunkBlockRenderTypeAllowsRenderEventTest {
 		 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
 		 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
 		 * @param renderGlobal                    the {@link RenderGlobal} passed in from RenderChunk#rebuildChunk
-		 * @param usedBlockRenderLayers           the boolean[] of used {@link BlockRenderLayer}s
-		 * @param blockRendererDispatcher         the {@link BlockRendererDispatcher}
-		 * @param blockPos                        the {@link BlockPos} of the block the event is firing for
-		 * @param blockState                      the {@link IBlockState} of the block the event is firing for
-		 * @param block                           the {@link Block} the event is firing for
-		 * @param blockRenderLayer                the {@link BlockRenderLayer} the event is firing for
-		 * @param blockRenderLayerOrdinal         the ordinal of the {@link BlockRenderLayer} the event is firing for
 		 */
 		try {
 			Objects.requireNonNull(event.getRenderChunk());
@@ -58,18 +50,14 @@ public final class RebuildChunkBlockRenderTypeAllowsRenderEventTest {
 			Objects.requireNonNull(event.getVisGraph());
 			Objects.requireNonNull(event.getTileEntitiesWithGlobalRenderers());
 			Objects.requireNonNull(event.getRenderGlobal());
-			Objects.requireNonNull(event.getUsedBlockRenderLayers());
-			Objects.requireNonNull(event.getBlockRendererDispatcher());
-			Objects.requireNonNull(event.getBlockPos());
-			Objects.requireNonNull(event.getBlockState());
-			Objects.requireNonNull(event.getBlock());
-			Objects.requireNonNull(event.getBlockRenderLayer());
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 
-		if (new Random().nextBoolean()) {
-			event.setResult(Event.Result.DENY);
+
+		if (new Random().nextInt(16) == 0) {
+			event.setCanceled(true);
+
 		}
 
 	}
