@@ -96,6 +96,16 @@ dependencies {
 }
 
 jar {
+
+	// Until I figure out how to use gradle tests in IntelliJ
+	sourceSets {
+		main {
+			java {
+				exclude '**/debug/**'
+			}
+		}
+	}
+
 	manifest {
 		if (project.hasProperty('coreplugin')) {
 			attributes 'FMLCorePluginContainsFMLMod': 'true'
