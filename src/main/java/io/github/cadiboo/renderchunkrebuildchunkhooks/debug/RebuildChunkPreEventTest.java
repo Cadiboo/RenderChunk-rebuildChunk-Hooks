@@ -1,19 +1,19 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks;
+package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
-import net.minecraft.util.BlockRenderLayer;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Objects;
+import java.util.Random;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.RebuildChunkPostEventTest.Config.ENABLED;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.debug.RebuildChunkPreEventTest.Config.ENABLED;
 
 @Mod.EventBusSubscriber
-@Mod(modid = RebuildChunkPostEventTest.MODID, name = "RebuildChunkPostEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
-public final class RebuildChunkPostEventTest {
+@Mod(modid = RebuildChunkPreEventTest.MODID, name = "RebuildChunkPreEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
+public final class RebuildChunkPreEventTest {
 
-	public static final String MODID = "rebuild_chunk_post_event_test";
+	public static final String MODID = "rebuild_chunk_pre_event_test";
 
 	@net.minecraftforge.common.config.Config(modid = MODID)
 	public static class Config {
@@ -23,7 +23,7 @@ public final class RebuildChunkPostEventTest {
 	}
 
 	@SubscribeEvent
-	public static void onRebuildChunkPostEvent(final RebuildChunkPostEvent event) {
+	public static void onRebuildChunkPreEvent(final RebuildChunkPreEvent event) {
 		if (!ENABLED) {
 			return;
 		}
@@ -50,13 +50,15 @@ public final class RebuildChunkPostEventTest {
 			Objects.requireNonNull(event.getVisGraph());
 			Objects.requireNonNull(event.getTileEntitiesWithGlobalRenderers());
 			Objects.requireNonNull(event.getRenderGlobal());
-			Objects.requireNonNull(event.getBufferBuilderByLayer(BlockRenderLayer.SOLID));
-			Objects.requireNonNull(event.getBufferBuilderById(BlockRenderLayer.CUTOUT_MIPPED.ordinal()));
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 
 
+		if (new Random().nextInt(16) == 0) {
+			event.setCanceled(true);
+
+		}
 
 	}
 
