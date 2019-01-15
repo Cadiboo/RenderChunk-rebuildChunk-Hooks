@@ -45,21 +45,21 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	static {
 		final CrashReport crashReport;
 		try {
-			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178486_a", Void.class, BlockRenderLayer.class));
+			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(CompiledChunk.class, "func_178486_a", void.class, BlockRenderLayer.class));
 		} catch (final IllegalAccessException | UnableToFindMethodException e) {
 			crashReport = new CrashReport("Error getting method handle for CompiledChunk#setLayerUsed!", e);
 			crashReport.makeCategory("Reflectively Accessing CompiledChunk#setLayerUsed");
 			throw new ReportedException(crashReport);
 		}
 		try {
-			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", Void.class, BufferBuilder.class, BlockPos.class));
+			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", void.class, BufferBuilder.class, BlockPos.class));
 		} catch (IllegalAccessException e) {
 			crashReport = new CrashReport("Error getting method handle for RenderChunk#preRenderBlocks!", e);
 			crashReport.makeCategory("Reflectively Accessing RenderChunk#preRenderBlocks");
 			throw new ReportedException(crashReport);
 		}
 		try {
-			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", Void.class, BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
+			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", void.class, BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
 		} catch (IllegalAccessException e) {
 			crashReport = new CrashReport("Error getting method handle for RenderChunk#postRenderBlocks!", e);
 			crashReport.makeCategory("Reflectively Accessing RenderChunk#postRenderBlocks");

@@ -33,6 +33,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.Obfuscati
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BETTER_FOLIAGE_RENDER_WORLD_BLOCK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_RESORT_TRANSPARENCY;
 
 /**
  * @author Cadiboo
@@ -62,12 +63,19 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static boolean DEBUG_METHODS = false;
 	public static boolean DEBUG_INSTRUCTIONS = false;
 
-	private static final boolean REMOVE_BetterFoliagesModifications = RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
-	private static final boolean INJECT_RebuildChunkPreEvent = true;
-	private static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = false;
-	private static final boolean INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent = false;
-	private static final boolean INJECT_RebuildChunkBlockEvent = false;
-	private static final boolean INJECT_RebuildChunkPostEvent = false;
+	/* Other Coremods can set these variables and call our hooks with reflection, if they so choose*/
+	//START MODIFIABLE FIELDS
+	/** Required by RebuildChunkBlockEvent if BetterFoliage is present
+	 * Does NOT disable removing BetterFoliage's modifications relayed to BlockRenderInLayer
+	 */
+	public static final boolean REMOVE_BetterFoliagesBlockRenderModifications = RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
+	public static final boolean INJECT_RebuildChunkPreEvent = true;
+	public static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
+	public static final boolean INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent = true;
+	public static final boolean INJECT_RebuildChunkBlockEvent = true;
+	public static final boolean INJECT_RebuildChunkPostEvent = true;
+	//END MODIFIABLE FIELDS
+
 	private static final Printer PRINTER = new Textifier();
 	private static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
 	static {
@@ -169,7 +177,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 
 			// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
-			if (method.name.equals("a") || method.name.equals("func_178570_a") || method.name.equals("resortTransparency")) {
+			if (method.name.equals(RENDER_CHUNK_RESORT_TRANSPARENCY.getName())) {
 				if (DEBUG_METHODS) {
 					LOGGER.info("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" was rejected");
 				}
@@ -263,7 +271,7 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 			}
 		}
 
-		if (RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE && REMOVE_BetterFoliagesModifications) {
+		if (RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE && REMOVE_BetterFoliagesBlockRenderModifications) {
 			LOGGER.info("removing BetterFoliage's modifications...");
 			if (DEBUG_INSTRUCTIONS) {
 				for (int i = 0; i < instructions.size(); i++) {

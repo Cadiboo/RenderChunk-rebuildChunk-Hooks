@@ -84,7 +84,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		final boolean runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
 		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-		final boolean debugEverything = getArgsBoolean("debugEverything");
+		final boolean debugEverything = getArgsBoolean("debugEverything") | developerEnvironment;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_EVERYTHING = debugEverything;
 
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE = getArgsBoolean("dumpBytecode") | debugEverything;

@@ -20,6 +20,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.Obfuscati
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationField.RENDER_CHUNK_WORLD_VIEW;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.CAN_BLOCK_RENDER_IN_LAYER_HOOK;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.DOES_BLOCK_TYPE_ALLOW_RENDER_HOOK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.ON_REBUILD_CHUNK_PRE_HOOK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.REBUILD_CHUNK_BLOCK_HOOK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.REBUILD_CHUNK_POST_HOOK;
@@ -244,7 +245,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 	public boolean injectRebuildChunkBlockRenderInTypeEventHook(InsnList instructions) {
 		FieldInsnNode GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = null;
 
-		// Find the bytecode instruction for "BlockRendererDispatcher.renderBlock" ("INVOKEVIRTUAL net/minecraft/client/renderer/BlockRendererDispatcher.renderBlock (Lnet/minecraft/block/state/IBlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/IBlockAccess;Lnet/minecraft/client/renderer/BufferBuilder;)Z")
+		// Find the bytecode instruction for "EnumBlockRenderType.INVISIBLE"  net/minecraft/util/EnumBlockRenderType.INVISIBLE : Lnet/minecraft/util/EnumBlockRenderType;
 		for (AbstractInsnNode instruction : instructions.toArray()) {
 			if (ENUM_BLOCK_RENDER_TYPE_INVISIBLE.matches(instruction)) {
 				GETSTATIC_EnumBlockRenderType_INVISIBLE_Node = (FieldInsnNode) instruction;
@@ -346,7 +347,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); //block
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); //blockrenderlayer1
 		tempInstructionList.add(new VarInsnNode(ILOAD, ILOAD_j)); //j
-		CAN_BLOCK_RENDER_IN_LAYER_HOOK.visit(tempInstructionList);
+		DOES_BLOCK_TYPE_ALLOW_RENDER_HOOK.visit(tempInstructionList);
 		tempInstructionList.add(new JumpInsnNode(IFEQ, returnLabel));
 
 		// Inject our instructions right BEFORE IF_ACMPEQ
@@ -475,7 +476,7 @@ public class RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge extend
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_block)); //block
 		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrenderlayer1)); //blockrenderlayer1
 		tempInstructionList.add(new VarInsnNode(ILOAD, ILOAD_j)); //j
-		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_blockrendererdispatcher)); //blockrendererdispatcher
+		tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_bufferbuilder)); //bufferbuilder
 		REBUILD_CHUNK_BLOCK_HOOK.visit(tempInstructionList);
 		tempInstructionList.add(new JumpInsnNode(IFNE, returnLabel));
 

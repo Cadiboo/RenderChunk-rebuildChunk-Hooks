@@ -1,11 +1,13 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.core.util;
 
+import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.ArrayList;
@@ -28,7 +30,6 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.Obfuscati
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.HASH_SET;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_ACCESS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.I_BLOCK_STATE;
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.MUTABLE_BLOCK_POS;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.OPTIFINE_REFLECTOR_METHOD;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationClass.RCRCH_HOOKS;
@@ -249,6 +250,9 @@ public class ObfuscationHelper implements Opcodes {
 		RENDER_CHUNK_REBUILD_CHUNK(INVOKEVIRTUAL, RENDER_CHUNK, "rebuildChunk", "func_178581_b", "b", VOID_TYPE, new Object[]{
 				FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR
 		}, false),
+		RENDER_CHUNK_RESORT_TRANSPARENCY(Integer.MIN_VALUE, RENDER_CHUNK, "resortTransparency", "func_178570_a", "a", VOID_TYPE, new Object[]{
+				FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR
+		}, false),
 		RENDER_CHUNK_PRE_RENDER_BLOCKS(INVOKESPECIAL, RENDER_CHUNK, "preRenderBlocks", "func_178573_a", "a", VOID_TYPE, new Object[]{
 				BUFFER_BUILDER, BLOCK_POS
 		}, false),
@@ -270,24 +274,23 @@ public class ObfuscationHelper implements Opcodes {
 				BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
 		}, false),
 
-
 		ON_REBUILD_CHUNK_PRE_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkPreHook", "rebuildChunkPreHook", "rebuildChunkPreHook", BOOLEAN_TYPE, new Object[]{
 				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
 		}, false),
 
 		CAN_BLOCK_RENDER_IN_LAYER_HOOK(INVOKESTATIC, RCRCH_HOOKS, "canBlockRenderInLayerHook", "canBlockRenderInLayerHook", "canBlockRenderInLayerHook", BOOLEAN_TYPE, new Object[]{
 				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
-				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, MUTABLE_BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER
 		}, false),
 
 		DOES_BLOCK_TYPE_ALLOW_RENDER_HOOK(INVOKESTATIC, RCRCH_HOOKS, "doesBlockTypeAllowRenderHook", "doesBlockTypeAllowRenderHook", "doesBlockTypeAllowRenderHook", BOOLEAN_TYPE, new Object[]{
 				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
-				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, MUTABLE_BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE
 		}, false),
 
 		REBUILD_CHUNK_BLOCK_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkBlockHook", "rebuildChunkBlockHook", "rebuildChunkBlockHook", BOOLEAN_TYPE, new Object[]{
 				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL,
-				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, MUTABLE_BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE, BUFFER_BUILDER
+				Type.getType(boolean[].class), BLOCK_RENDERER_DISPATCHER, BLOCK_POS, I_BLOCK_STATE, BLOCK, BLOCK_RENDER_LAYER, INT_TYPE, BUFFER_BUILDER
 		}, false),
 
 		REBUILD_CHUNK_POST_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkPostHook", "rebuildChunkPostHook", "rebuildChunkPostHook", VOID_TYPE, new Object[]{
@@ -435,7 +438,6 @@ public class ObfuscationHelper implements Opcodes {
 			}
 
 			return true;
-
 		}
 
 		public int getOpcode() {
