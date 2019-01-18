@@ -50,7 +50,9 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	public static final String MOD_VERSION = "@VERSION@";
 	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
 	public static final String DEPENDENCIES = "required-after:minecraft;" +
-			"required-after:forge@[14.23.5.2795,);";
+			"required-after:forge@[14.23.5.2768,);"
+//			"required-after:forge@[14.23.5.2795,);"
+			;
 	// Directly reference a log4j logger.
 	public static final Logger MOD_LOGGER = LogManager.getLogger(MOD_NAME);
 	private static final URL UPDATE_JSON_URL;
