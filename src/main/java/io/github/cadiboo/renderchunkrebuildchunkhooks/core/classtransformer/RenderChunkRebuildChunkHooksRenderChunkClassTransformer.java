@@ -57,7 +57,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static String DEBUG_DUMP_BYTECODE_DIR = null;
 
 	public static boolean DEBUG_CLASSES = false;
-	public static boolean DEBUG_FIELDS = false;
 	public static boolean DEBUG_TYPES = false;
 	public static boolean DEBUG_STACKS = false;
 	public static boolean DEBUG_METHODS = false;
@@ -103,15 +102,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		return sw.toString().trim();
 	}
 
-	public static String fieldToString(final FieldNode field) {
-		final StringWriter sw = new StringWriter();
-		final PrintWriter pw = new PrintWriter(sw);
-		field.accept(new TraceClassVisitor(pw));
-		PRINTER.print(pw);
-		PRINTER.getText().clear();
-		return sw.toString().trim();
-	}
-
 	@Override
 	public byte[] transform(final String unTransformedName, final String transformedName, final byte[] basicClass) {
 
@@ -151,12 +141,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 		final ClassNode classNode = new ClassNode();
 		final ClassReader cr = new ClassReader(basicClass);
 		cr.accept(classNode, CLASS_READER_FLAGS);
-
-		if (DEBUG_FIELDS) {
-			for (final FieldNode field : classNode.fields) {
-				LOGGER.info(fieldToString(field));
-			}
-		}
 
 		if (DEBUG_TYPES) {
 			LOGGER.info("RebuildChunk type: " + RENDER_CHUNK_REBUILD_CHUNK.getType());

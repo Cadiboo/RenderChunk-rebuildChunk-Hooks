@@ -24,8 +24,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.ReflectionHelper.UnableToFindMethodException;
 
 import javax.annotation.Nonnull;
@@ -45,21 +45,25 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	static {
 		final CrashReport crashReport;
 		try {
-			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(CompiledChunk.class, "func_178486_a", void.class, BlockRenderLayer.class));
+			//grr, backwards compatibility
+			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(CompiledChunk.class, "setLayerUsed", "func_178486_a", BlockRenderLayer.class));
+//			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(CompiledChunk.class, "func_178486_a", void.class, BlockRenderLayer.class));
 		} catch (final IllegalAccessException | UnableToFindMethodException e) {
 			crashReport = new CrashReport("Error getting method handle for CompiledChunk#setLayerUsed!", e);
 			crashReport.makeCategory("Reflectively Accessing CompiledChunk#setLayerUsed");
 			throw new ReportedException(crashReport);
 		}
 		try {
-			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", void.class, BufferBuilder.class, BlockPos.class));
+			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "preRenderBlocks", "func_178573_a", BufferBuilder.class, BlockPos.class));
+//			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a", void.class, BufferBuilder.class, BlockPos.class));
 		} catch (IllegalAccessException e) {
 			crashReport = new CrashReport("Error getting method handle for RenderChunk#preRenderBlocks!", e);
 			crashReport.makeCategory("Reflectively Accessing RenderChunk#preRenderBlocks");
 			throw new ReportedException(crashReport);
 		}
 		try {
-			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", void.class, BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
+			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ReflectionHelper.findMethod(RenderChunk.class, "postRenderBlocks", "func_178584_a", BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
+//			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a", void.class, BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class));
 		} catch (IllegalAccessException e) {
 			crashReport = new CrashReport("Error getting method handle for RenderChunk#postRenderBlocks!", e);
 			crashReport.makeCategory("Reflectively Accessing RenderChunk#postRenderBlocks");

@@ -1,5 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.core;
 
+import io.github.cadiboo.renderchunkrebuildchunkhooks.compatibility.BetterFoliageCompatibilityEventSubscriber;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformer;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifine;
@@ -9,8 +10,12 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRen
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockRenderTypeAllowsRenderEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooksOptifine;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.ReportedException;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin.MCVersion;
@@ -91,7 +96,6 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE_DIR = data.get("mcLocation") + "/" + MOD_ID + "/dumps/";
 
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_CLASSES = getArgsBoolean("debugClasses") | debugEverything;
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_FIELDS = getArgsBoolean("debugFields") | debugEverything;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_TYPES = getArgsBoolean("debugTypes") | debugEverything;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_STACKS = getArgsBoolean("debugStacks") | debugEverything;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_METHODS = getArgsBoolean("debugMethods") | debugEverything;
@@ -107,22 +111,41 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 			OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.OBFUSCATED;
 		}
 
+		preloadEvents();
+		preloadHooksForge();
+
+	}
+
+	private void preloadEvents() throws ReportedException {
 		LOGGER.info("Pre-loading event classes...");
 		RebuildChunkPreEvent.class.getName();
 		RebuildChunkBlockRenderInLayerEvent.class.getName();
 		RebuildChunkBlockRenderTypeAllowsRenderEvent.class.getName();
 		RebuildChunkBlockEvent.class.getName();
 		RebuildChunkPostEvent.class.getName();
+		LOGGER.info("Loaded event classes, initialising...");
+		try {
+			Class.forName(RebuildChunkPreEvent.class.getName(), true, Loader.instance().getModClassLoader());
+			Class.forName(RebuildChunkBlockRenderInLayerEvent.class.getName(), true, Loader.instance().getModClassLoader());
+			Class.forName(RebuildChunkBlockRenderTypeAllowsRenderEvent.class.getName(), true, Loader.instance().getModClassLoader());
+			Class.forName(RebuildChunkBlockEvent.class.getName(), true, Loader.instance().getModClassLoader());
+			Class.forName(RebuildChunkPostEvent.class.getName(), true, Loader.instance().getModClassLoader());
+		} catch (ClassNotFoundException e) {
+			final CrashReport crashReport = new CrashReport("Error initialising event classes!", e);
+			crashReport.makeCategory("Reflectively accessing event classes");
+			throw new ReportedException(crashReport);
+		}
 		LOGGER.info("Successfully Pre-loaded event classes");
 	}
 
 	private boolean getArgsBoolean(final String arg) {
-		final boolean result = Boolean.valueOf(System.getProperty("D" + arg)) | Boolean.valueOf(System.getProperty(arg));
+		final boolean result = Boolean.valueOf(System.getProperty("Drcrch." + arg)) | Boolean.valueOf(System.getProperty("rcrch." + arg));
 		LOGGER.debug("Argument " + arg + ": " + result);
 		return result;
 	}
 
 	@Override
+	@Nullable
 	public String getAccessTransformerClass() {
 		return null;
 	}
@@ -130,11 +153,12 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 	private void detectOtherCoremods() {
 		if (!OptifineCheckDone) {
 			try {
-				final Class<?> optifineConfig = Class.forName("Config", false, Loader.instance().getModClassLoader());
+				Class.forName("Config", false, Loader.instance().getModClassLoader());
 				OPTIFINE = true;
 				OptifineCheckDone = true;
 				LOGGER.info("detected Optifine, using Optifine compatible ClassTransformer");
-			} catch (final Exception e) {
+				preloadHooksForgeOptifine();
+			} catch (final ClassNotFoundException e) {
 				OPTIFINE = false;
 				OptifineCheckDone = true;
 				LOGGER.info("did not detect Optifine, using normal (Forge) ClassTransformer");
@@ -143,16 +167,68 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 
 		if (!BetterFoliageCheckDone) {
 			try {
-				final Class<?> betterFoliageClient = Class.forName("mods.betterfoliage.client.Hooks", false, Loader.instance().getModClassLoader());
+				Class.forName("mods.betterfoliage.client.Hooks", false, Loader.instance().getModClassLoader());
 				BETTER_FOLIAGE = true;
 				BetterFoliageCheckDone = true;
 				LOGGER.info("detected BetterFoliage, compatibility features will be enabled");
-			} catch (final Exception e) {
+				preloadBFCompatibilityEventSubscriber();
+			} catch (final ClassNotFoundException e) {
 				BETTER_FOLIAGE = false;
 				BetterFoliageCheckDone = true;
 				LOGGER.info("did not detect BetterFoliage, proceeding normally");
 			}
 		}
+	}
+
+	private void preloadBFCompatibilityEventSubscriber() throws ReportedException {
+		LOGGER.info("Preloading BetterFoliageCompatibilityEventSubscriber...");
+		{
+			BetterFoliageCompatibilityEventSubscriber.class.getName();
+			LOGGER.info("Loaded BetterFoliageCompatibilityEventSubscriber, initialising...");
+			try {
+				Class.forName(BetterFoliageCompatibilityEventSubscriber.class.getName(), true, Loader.instance().getModClassLoader());
+			} catch (ClassNotFoundException e) {
+				final CrashReport crashReport = new CrashReport("Error initialising BetterFoliageCompatibilityEventSubscriber!", e);
+				crashReport.makeCategory("Reflectively accessing BetterFoliageCompatibilityEventSubscriber");
+				throw new ReportedException(crashReport);
+			}
+			LOGGER.info("Initialised BetterFoliageCompatibilityEventSubscriber");
+		}
+		LOGGER.info("Successfully preloaded BetterFoliageCompatibilityEventSubscriber!");
+	}
+
+	private void preloadHooksForge() throws ReportedException {
+		LOGGER.info("Preloading RenderChunkRebuildChunkHooksHooks...");
+		{
+			RenderChunkRebuildChunkHooksHooks.class.getName();
+			LOGGER.info("Loaded RenderChunkRebuildChunkHooksHooks, initialising...");
+			try {
+				Class.forName(RenderChunkRebuildChunkHooksHooks.class.getName(), true, Loader.instance().getModClassLoader());
+			} catch (ClassNotFoundException e) {
+				final CrashReport crashReport = new CrashReport("Error initialising RenderChunkRebuildChunkHooksHooks!", e);
+				crashReport.makeCategory("Reflectively accessing RenderChunkRebuildChunkHooksHooks");
+				throw new ReportedException(crashReport);
+			}
+			LOGGER.info("Initialised RenderChunkRebuildChunkHooksHooks");
+		}
+		LOGGER.info("Successfully preloaded RenderChunkRebuildChunkHooksHooks!");
+	}
+
+	private void preloadHooksForgeOptifine() throws ReportedException {
+		LOGGER.info("Preloading RenderChunkRebuildChunkHooksHooksOptifine...");
+		{
+			RenderChunkRebuildChunkHooksHooksOptifine.class.getName();
+			LOGGER.info("Loaded RenderChunkRebuildChunkHooksHooksOptifine, initialising...");
+			try {
+				Class.forName(RenderChunkRebuildChunkHooksHooksOptifine.class.getName(), true, Loader.instance().getModClassLoader());
+			} catch (ClassNotFoundException e) {
+				final CrashReport crashReport = new CrashReport("Error initialising RenderChunkRebuildChunkHooksHooksOptifine!", e);
+				crashReport.makeCategory("Reflectively accessing RenderChunkRebuildChunkHooksHooksOptifine");
+				throw new ReportedException(crashReport);
+			}
+			LOGGER.info("Initialised RenderChunkRebuildChunkHooksHooksOptifine");
+		}
+		LOGGER.info("Successfully preloaded RenderChunkRebuildChunkHooksHooksOptifine!");
 	}
 
 }

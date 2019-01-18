@@ -23,8 +23,8 @@ import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkCache;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.optifine.BlockPosM;
 import net.optifine.override.ChunkCacheOF;
 
@@ -37,17 +37,22 @@ import java.util.HashSet;
  */
 public final class RenderChunkRebuildChunkHooksHooksOptifine {
 
-	public static final Field CHUNK_CACHE_OF_CHUNK_CACHE = getFieldAndMakeItAccessable();
-
-	private static Field getFieldAndMakeItAccessable() {
-		final Field field = ObfuscationReflectionHelper.findField(ChunkCacheOF.class, "chunkCache");
-		field.setAccessible(true);
-		return field;
+	private static final Field chunkCacheOF_chunkCache;
+	static {
+		try {
+			//grr, backwards compatibility
+			chunkCacheOF_chunkCache = ReflectionHelper.findField(ChunkCacheOF.class, "chunkCache");
+//			chunkCacheOF_chunkCache = ObfuscationReflectionHelper.findField(ChunkCacheOF.class, "chunkCache");
+		} catch (final ReflectionHelper.UnableToFindMethodException e) {
+			final CrashReport crashReport = new CrashReport("Error getting Field for ChunkCacheOF#chunkCache!", e);
+			crashReport.makeCategory("Reflectively Accessing ChunkCacheOF#chunkCache");
+			throw new ReportedException(crashReport);
+		}
 	}
 
 	public static ChunkCache getChunkCacheFromChunkCacheOF(ChunkCacheOF chunkCacheOF) {
 		try {
-			return (ChunkCache) CHUNK_CACHE_OF_CHUNK_CACHE.get(chunkCacheOF);
+			return (ChunkCache) chunkCacheOF_chunkCache.get(chunkCacheOF);
 		} catch (IllegalAccessException e) {
 			final CrashReport crashReport = new CrashReport("Unable get ChunkCacheOF#chunkCache", e);
 			crashReport.makeCategory("Reflectively accessing ChunkCacheOF#chunkCache");
