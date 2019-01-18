@@ -28,11 +28,6 @@ run
 !README.*
 !.gitignore
 
-# OPTIONAL - release JARs
-!/build/
-/build/*
-!/build/libs/
-
 # OPTIONAL - installed mods
 !/run/
 /run/*
