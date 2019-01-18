@@ -1,5 +1,6 @@
 # eclipse
 bin
+eclipse
 *.launch
 .settings
 .metadata
@@ -19,11 +20,7 @@ build
 .gradle
 
 # other
-eclipse
 run
-*.DS_Store*
-
-# Vital git files
 !LICENSE
 !README.*
 !.gitignore
