@@ -39,7 +39,6 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebu
 //??? needs higher than 1001??? 0xBADC0DE works
 //@SortingIndex(value = 1001)
 @SortingIndex(value = 0xBAD_C0DE)
-//put in _VM_ arguments -Dfml.coreMods.load=io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin
 public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoadingPlugin {
 
 	public static final String CORE_MARKER = MOD_ID;
