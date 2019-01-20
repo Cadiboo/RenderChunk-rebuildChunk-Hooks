@@ -115,7 +115,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 
 	}
 
-	private void preloadEvents() throws ReportedException {
+	private void preloadEvents() {
 		LOGGER.info("Pre-loading event classes...");
 		RebuildChunkPreEvent.class.getName();
 		RebuildChunkBlockRenderInLayerEvent.class.getName();
@@ -179,7 +179,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		}
 	}
 
-	private void preloadBFCompatibilityEventSubscriber() throws ReportedException {
+	private void preloadBFCompatibilityEventSubscriber() {
 		LOGGER.info("Preloading BetterFoliageCompatibilityEventSubscriber...");
 		{
 			BetterFoliageCompatibilityEventSubscriber.class.getName();
@@ -196,7 +196,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		LOGGER.info("Successfully preloaded BetterFoliageCompatibilityEventSubscriber!");
 	}
 
-	private void preloadHooksForge() throws ReportedException {
+	private void preloadHooksForge() {
 		LOGGER.info("Preloading RenderChunkRebuildChunkHooksHooks...");
 		{
 			RenderChunkRebuildChunkHooksHooks.class.getName();
@@ -213,7 +213,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		LOGGER.info("Successfully preloaded RenderChunkRebuildChunkHooksHooks!");
 	}
 
-	private void preloadHooksForgeOptifine() throws ReportedException {
+	private void preloadHooksForgeOptifine() {
 		LOGGER.info("Preloading RenderChunkRebuildChunkHooksHooksOptifine...");
 		{
 			RenderChunkRebuildChunkHooksHooksOptifine.class.getName();
