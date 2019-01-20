@@ -20,9 +20,11 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Map;
 
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.MOD_ID;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.MOD_NAME;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.MOD_VERSION;
 
-@Name(ModReference.MOD_NAME)
+@Name(MOD_NAME)
 @MCVersion("1.12.2")
 @TransformerExclusions({"io.github.cadiboo.renderchunkrebuildchunkhooks.core."})
 /* How early your core mod is called - Use > 1000 to work with srg names */
@@ -31,9 +33,9 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.MO
 @SortingIndex(value = 0xBAD_C0DE)
 public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoadingPlugin {
 
-	public static final String CORE_MARKER = ModReference.MOD_ID;
+	public static final String CORE_MARKER = MOD_ID;
 
-	private static final Logger LOGGER = LogManager.getLogger(ModReference.MOD_NAME + " Core Plugin");
+	private static final Logger LOGGER = LogManager.getLogger(MOD_NAME + " Core Plugin");
 	public static File MOD_LOCATION = null;
 
 	public static ObfuscationHelper.ObfuscationLevel OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.OBFUSCATED;
@@ -82,7 +84,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_EVERYTHING = debugEverything;
 
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE = getArgsBoolean("dumpBytecode") | debugEverything;
-		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE_DIR = data.get("mcLocation") + "/" + ModReference.MOD_ID + "/dumps/";
+		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE_DIR = data.get("mcLocation") + "/" + MOD_ID + "/dumps/";
 
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_CLASSES = getArgsBoolean("debugClasses") | debugEverything;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_TYPES = getArgsBoolean("debugTypes") | debugEverything;

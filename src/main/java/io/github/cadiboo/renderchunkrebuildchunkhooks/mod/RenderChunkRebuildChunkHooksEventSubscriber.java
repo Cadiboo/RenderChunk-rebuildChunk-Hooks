@@ -7,6 +7,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.*;
+
 @SideOnly(Side.CLIENT)
 public final class RenderChunkRebuildChunkHooksEventSubscriber {
 
@@ -17,7 +19,7 @@ public final class RenderChunkRebuildChunkHooksEventSubscriber {
 	 */
 	@SubscribeEvent
 	public void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (event.getModID().equals(ModReference.MOD_ID)) {
+		if (event.getModID().equals(MOD_ID)) {
 			RenderChunkRebuildChunkHooksConfig.sync();
 			if (RenderChunkRebuildChunkHooksConfig.shouldReloadChunksOnConfigChange()) {
 				if (Minecraft.getMinecraft().renderGlobal != null) {
