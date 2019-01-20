@@ -1,6 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.config;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference;
 import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 public final class RenderChunkRebuildChunkHooksConfig {
 
 	public static final String CONFIG_VERSION = "1.0.0";
-	public static final String LANG_PREFIX = RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID + ".config.";
+	public static final String LANG_PREFIX = ModReference.MOD_ID + ".config.";
 
 	public static final String POST_EVENTS_CATEGORY = "hooks";
 	public static final String TWEAK_CATEGORY = "tweaks";

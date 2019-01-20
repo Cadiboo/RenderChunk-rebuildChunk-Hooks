@@ -5,14 +5,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.compatibility.BetterFoliageCompatibilityEventSubscriber;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.config.RenderChunkRebuildChunkHooksConfig;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import joptsimple.internal.Strings;
-import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.util.ReportedException;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLFileResourcePack;
 import net.minecraftforge.fml.client.FMLFolderResourcePack;
@@ -33,7 +29,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
@@ -42,37 +37,13 @@ import java.util.List;
 import java.util.Set;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.OPTIFINE;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.*;
 
 public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModContainer {
 
-	public static final String MOD_ID = "render_chunk_rebuild_chunk_hooks";
-	public static final String MOD_NAME = "RenderChunk rebuildChunk Hooks";
-	public static final String MOD_VERSION = "@VERSION@";
-	public static final String CERTIFICATE_FINGERPRINT = "@FINGERPRINT@";
-	public static final String DEPENDENCIES = "required-after:minecraft;" +
-			"required-after:forge@[14.23.5.2768,);"
-//			"required-after:forge@[14.23.5.2795,);"
-			;
 	// Directly reference a log4j logger.
 	public static final Logger MOD_LOGGER = LogManager.getLogger(MOD_NAME);
-	private static final URL UPDATE_JSON_URL;
-	static {
-		URL url = null;
-		try {
-			url = new URL("https://raw.githubusercontent.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/master/update.json");
-		} catch (MalformedURLException e) {
-			MOD_LOGGER.error("Error setting update.json url", e);
-		}
-		UPDATE_JSON_URL = url;
-	}
-
-	static {
-		if (MOD_ID.length() > 64) {
-			final IllegalStateException exception = new IllegalStateException("Mod Id is too long!");
-			CrashReport crashReport = new CrashReport("Mod Id must be 64 characters or shorter!", exception);
-			crashReport.makeCategory("Constructing Mod");
-		}
-	}
 	private final List<ArtifactVersion> dependencies;
 	private final Set<ArtifactVersion> requiredMods;
 	private final List<ArtifactVersion> dependants;
@@ -163,34 +134,16 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 
 		MinecraftForge.EVENT_BUS.register(new RenderChunkRebuildChunkHooksEventSubscriber());
 
-		tryPreloadRenderChunk();
-
-		tryRegisterBetterFoliageCompatibleEventSubscriber();
-	}
-
-	private void tryPreloadRenderChunk() {
-		MOD_LOGGER.info("Preloading RenderChunk...");
-		{
-			RenderChunk.class.getName();
-			MOD_LOGGER.info("Loaded RenderChunk, initialising...");
-			final int unused_renderChunksUpdated = RenderChunk.renderChunksUpdated;
-			MOD_LOGGER.info("Initialised RenderChunk");
+		ModUtil.preloadEvents();
+		ModUtil.preloadHooksForge();
+		if(OPTIFINE) {
+			ModUtil.preloadHooksForgeOptifine();
 		}
-		MOD_LOGGER.info("Successfully preloaded RenderChunk!");
-	}
 
-	private void tryRegisterBetterFoliageCompatibleEventSubscriber() {
+		ModUtil.preloadRenderChunk();
+
 		if (BETTER_FOLIAGE) {
-			MOD_LOGGER.info("Registering BetterFoliage compatibility EventSubscriber...");
-			final Class<?> betterFoliageCompatibilityEventSubscriberClass;
-			try {
-				MinecraftForge.EVENT_BUS.register(new BetterFoliageCompatibilityEventSubscriber());
-			} catch (Exception exception) {
-				CrashReport crashReport = new CrashReport("Error Registering BetterFoliage compatibility EventSubscriber", exception);
-				crashReport.makeCategory("Registering BetterFoliage compatibility EventSubscriber");
-				throw new ReportedException(crashReport);
-			}
-			MOD_LOGGER.info("Registered BetterFoliage compatibility EventSubscriber");
+			ModUtil.registerBetterFoliageCompatibleEventSubscriber();
 		}
 	}
 

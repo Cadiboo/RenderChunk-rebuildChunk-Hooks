@@ -34,6 +34,12 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.Obfuscati
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.BLOCK_RENDERER_DISPATCHER_RENDER_BLOCK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_REBUILD_CHUNK;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper.ObfuscationMethod.RENDER_CHUNK_RESORT_TRANSPARENCY;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.INJECT_RebuildChunkBlockEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.INJECT_RebuildChunkBlockRenderInLayerEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.INJECT_RebuildChunkPostEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.INJECT_RebuildChunkPreEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.REMOVE_BetterFoliagesBlockRenderModifications;
 
 /**
  * @author Cadiboo
@@ -61,19 +67,6 @@ public abstract class RenderChunkRebuildChunkHooksRenderChunkClassTransformer im
 	public static boolean DEBUG_STACKS = false;
 	public static boolean DEBUG_METHODS = false;
 	public static boolean DEBUG_INSTRUCTIONS = false;
-
-	/* Other Coremods can set these variables and call our hooks with reflection, if they so choose*/
-	//START MODIFIABLE FIELDS
-	/** Required by RebuildChunkBlockEvent if BetterFoliage is present
-	 * Does NOT disable removing BetterFoliage's modifications relayed to BlockRenderInLayer
-	 */
-	public static final boolean REMOVE_BetterFoliagesBlockRenderModifications = RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
-	public static final boolean INJECT_RebuildChunkPreEvent = true;
-	public static final boolean INJECT_RebuildChunkBlockRenderInLayerEvent = true;
-	public static final boolean INJECT_RebuildChunkBlockRenderTypeAllowsRenderEvent = true;
-	public static final boolean INJECT_RebuildChunkBlockEvent = true;
-	public static final boolean INJECT_RebuildChunkPostEvent = true;
-	//END MODIFIABLE FIELDS
 
 	private static final Printer PRINTER = new Textifier();
 	private static final TraceMethodVisitor TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);

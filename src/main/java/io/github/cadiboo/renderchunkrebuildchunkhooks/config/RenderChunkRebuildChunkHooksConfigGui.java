@@ -1,6 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.config;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigElement;
@@ -16,7 +16,7 @@ import static net.minecraftforge.common.config.Configuration.CATEGORY_GENERAL;
 public final class RenderChunkRebuildChunkHooksConfigGui extends GuiConfig {
 
 	public RenderChunkRebuildChunkHooksConfigGui(final GuiScreen parentScreen) {
-		super(parentScreen, getConfigElements(), RenderChunkRebuildChunkHooksDummyModContainer.MOD_ID, false, false, I18n.format(LANG_PREFIX + "title"));
+		super(parentScreen, getConfigElements(), ModReference.MOD_ID, false, false, I18n.format(LANG_PREFIX + "title"));
 	}
 
 	private static List<IConfigElement> getConfigElements() {
