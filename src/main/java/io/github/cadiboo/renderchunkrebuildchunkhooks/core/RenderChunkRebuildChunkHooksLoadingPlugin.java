@@ -4,7 +4,6 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.Rend
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerForge;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.classtransformer.RenderChunkRebuildChunkHooksRenderChunkClassTransformerForgeOptifine;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.mod.RenderChunkRebuildChunkHooksDummyModContainer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Loader;
@@ -80,7 +79,10 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		final boolean runtimeDeobfuscationEnabled = (boolean) data.get("runtimeDeobfuscationEnabled");
 		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
-		final boolean debugEverything = getArgsBoolean("debugEverything") | developerEnvironment;
+		MOD_LOCATION = (File) data.get("coremodLocation");
+		final boolean amIBeingDeveloped = MOD_LOCATION != null && (MOD_LOCATION.isFile() && MOD_LOCATION.getName().endsWith(".jar"));
+
+		final boolean debugEverything = getArgsBoolean("debugEverything") | amIBeingDeveloped;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_EVERYTHING = debugEverything;
 
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_DUMP_BYTECODE = getArgsBoolean("dumpBytecode") | debugEverything;
@@ -91,8 +93,6 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_STACKS = getArgsBoolean("debugStacks") | debugEverything;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_METHODS = getArgsBoolean("debugMethods") | debugEverything;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_INSTRUCTIONS = getArgsBoolean("debugInstructions") | debugEverything;
-
-		MOD_LOCATION = (File) data.get("coremodLocation");
 
 		if (runtimeDeobfuscationEnabled) {
 			OBFUSCATION_LEVEL = ObfuscationHelper.ObfuscationLevel.SRG;
