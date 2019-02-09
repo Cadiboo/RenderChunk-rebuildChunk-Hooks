@@ -80,7 +80,7 @@ public final class RenderChunkRebuildChunkHooksLoadingPlugin implements IFMLLoad
 		final boolean developerEnvironment = (boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
 
 		MOD_LOCATION = (File) data.get("coremodLocation");
-		final boolean amIBeingDeveloped = MOD_LOCATION != null && (MOD_LOCATION.isFile() && MOD_LOCATION.getName().endsWith(".jar"));
+		final boolean amIBeingDeveloped = !(MOD_LOCATION != null && (MOD_LOCATION.isFile() && MOD_LOCATION.getName().endsWith(".jar")));
 
 		final boolean debugEverything = getArgsBoolean("debugEverything") | amIBeingDeveloped;
 		RenderChunkRebuildChunkHooksRenderChunkClassTransformer.DEBUG_EVERYTHING = debugEverything;
