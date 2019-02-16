@@ -19,11 +19,11 @@ function initializeCoreMod() {
 				for (var i = 0; i < arrayLength; i++) {
 					var method = methods[i];
 
-                    if(methodMatches(method))
+                    if(methodMatches(method)) {
                         injectHooks(method.instructions);
+                    }
 
 				}
-
 
 				return classNode;
 			}
