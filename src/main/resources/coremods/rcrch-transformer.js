@@ -1,21 +1,22 @@
+var core2fn = function() {
+    print("Core2 function!");
+}
 function initializeCoreMod() {
-    print("Hello");
+    print("Core2!");
     return {
-        'coremodone': {
+        'coremodtwo': {
             'target': {
                 'type': 'CLASS',
-                'name': 'net.minecraft.client.renderer.chunk.RenderChunk'
+                'names': function(listofclasses) {
+                    return [
+                        'cpw.mods.testtarget.Test2',
+                        'cpw.mods.testtarget.Test3',
+                        'net.minecraft.client.renderer.chunk.RenderChunk'
+                    ]
+                }
             },
             'transformer': function(classNode) {
-                print("Cheese ", classNode.name);
-                var methodnode = Java.type('org.objectweb.asm.tree.MethodNode')
-                var opcodes = Java.type('org.objectweb.asm.Opcodes')
-                var tmp = new methodnode(opcodes.ASM5);
-                tmp.name = 'dummyMethod';
-                tmp.visitVarInsn(opcodes.ALOAD, 0);
-                tmp.visitMethodInsn(opcodes.INVOKESTATIC, "net/minecraftforge/fml/FMLTransformers", "hackName", "()Ljava/lang/String;", false);
-                tmp.visitFieldInsn(opcodes.PUTFIELD, "net/minecraft/client/gui/GuiMainMenu", "field_73975_c", "Ljava/lang/String;");
-                classNode.methods.add(tmp);
+                print("Cheese", classNode);
                 return classNode;
             }
         }

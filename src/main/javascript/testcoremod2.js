@@ -1,3 +1,0 @@
-function moreFunctions() {
-    print("Poopy");
-}
