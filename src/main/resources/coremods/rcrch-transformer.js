@@ -1,5 +1,4 @@
 function initializeCoreMod() {
-    print("Hello from RCRCH!");
     return {
         'coremodone': {
             'target': {
