@@ -10,6 +10,7 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChu
 import io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.ObfuscationHelper;
 import joptsimple.internal.Strings;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.coremod.CoreMod;
 import net.minecraftforge.fml.client.FMLFileResourcePack;
 import net.minecraftforge.fml.client.FMLFolderResourcePack;
 import net.minecraftforge.fml.common.CertificateHelper;
@@ -38,7 +39,12 @@ import java.util.Set;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.BETTER_FOLIAGE;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.core.RenderChunkRebuildChunkHooksLoadingPlugin.OPTIFINE;
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.*;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.CERTIFICATE_FINGERPRINT;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.DEPENDENCIES;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.MOD_ID;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.MOD_NAME;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.MOD_VERSION;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.mod.ModReference.UPDATE_JSON_URL;
 
 public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyModContainer {
 
@@ -48,7 +54,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 	private final Set<ArtifactVersion> requiredMods;
 	private final List<ArtifactVersion> dependants;
 	private Certificate certificate = null;
-
+//CoreMod
 	public RenderChunkRebuildChunkHooksDummyModContainer() {
 		super(new ModMetadata());
 
@@ -136,7 +142,7 @@ public final class RenderChunkRebuildChunkHooksDummyModContainer extends DummyMo
 
 		ModUtil.preloadEvents();
 		ModUtil.preloadHooksForge();
-		if(OPTIFINE) {
+		if (OPTIFINE) {
 			ModUtil.preloadHooksForgeOptifine();
 		}
 

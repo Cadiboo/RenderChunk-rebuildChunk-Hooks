@@ -1,0 +1,16 @@
+[
+{
+  "modid": "render_chunk_rebuild_chunk_hooks",
+  "name": "RenderChunk rebuildChunk Hooks",
+  "description": "A small(ish) coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to allow modders to add their own custom chunk rendering logic and other chunk rendering related modifications.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "_Programatically_generated",
+  "updateJSON": "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/update.json",
+  "authorList": ["Cadiboo"],
+  "credits": "The Forge and FML guys for Forge and FML and Cadiboo for making the mod",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
