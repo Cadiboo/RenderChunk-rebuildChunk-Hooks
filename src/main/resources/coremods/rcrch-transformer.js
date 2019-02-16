@@ -36,7 +36,7 @@ var DEBUG_METHODS = true;
 
 var RENDER_CHUNK_REBUILD_CHUNK = {
 	'getName': function() {
-		"rebuildChunk"; //TODO obf func_178581_b
+		return "rebuildChunk"; //TODO obf func_178581_b
 	},
 	'getDescriptor': function() {
 		return "(FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V";
@@ -45,7 +45,7 @@ var RENDER_CHUNK_REBUILD_CHUNK = {
 
 var RENDER_CHUNK_RESORT_TRANSPARENCY = {
 	'getName': function() {
-		"resortTransparency"; //TODO obf func_178570_a
+		return "resortTransparency"; //TODO obf func_178570_a
 	},
 	'getDescriptor': function() {
 		return "(FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V"
