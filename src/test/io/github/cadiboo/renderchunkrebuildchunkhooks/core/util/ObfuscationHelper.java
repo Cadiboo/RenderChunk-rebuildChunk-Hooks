@@ -274,7 +274,7 @@ public class ObfuscationHelper implements Opcodes {
 				BLOCK_RENDERER_DISPATCHER, I_BLOCK_STATE, BLOCK_POS, I_BLOCK_ACCESS, BUFFER_BUILDER, BLOCK_RENDER_LAYER
 		}, false),
 
-		ON_REBUILD_CHUNK_PRE_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkCanRenderingHappenHook", "rebuildChunkCanRenderingHappenHook", "rebuildChunkCanRenderingHappenHook", BOOLEAN_TYPE, new Object[]{
+		ON_REBUILD_CHUNK_PRE_HOOK(INVOKESTATIC, RCRCH_HOOKS, "rebuildChunkCancelRenderingHook", "rebuildChunkCancelRenderingHook", "rebuildChunkCancelRenderingHook", BOOLEAN_TYPE, new Object[]{
 				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
 		}, false),
 
@@ -297,7 +297,7 @@ public class ObfuscationHelper implements Opcodes {
 				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
 		}, false),
 
-		ON_REBUILD_CHUNK_PRE_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "rebuildChunkCanRenderingHappenHook", "rebuildChunkCanRenderingHappenHook", "rebuildChunkCanRenderingHappenHook", BOOLEAN_TYPE, new Object[]{
+		ON_REBUILD_CHUNK_PRE_OPTIFINE_HOOK(INVOKESTATIC, RCRCH_HOOKS_OPTIFINE, "rebuildChunkCancelRenderingHook", "rebuildChunkCancelRenderingHook", "rebuildChunkCancelRenderingHook", BOOLEAN_TYPE, new Object[]{
 				RENDER_CHUNK, FLOAT_TYPE, FLOAT_TYPE, FLOAT_TYPE, CHUNK_COMPILE_TASK_GENERATOR, COMPILED_CHUNK, BLOCK_POS, CHUNK_CACHE_OF, VIS_GRAPH, HASH_SET, RENDER_GLOBAL
 		}, false),
 

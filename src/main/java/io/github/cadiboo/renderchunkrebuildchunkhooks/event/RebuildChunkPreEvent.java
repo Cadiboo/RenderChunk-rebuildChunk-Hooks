@@ -1,55 +1,28 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.WorldRenderer;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkCacheReference;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
 
 /**
- * Called when a {@link RenderChunk#rebuildChunk} is called.
- * This event is fired on the {@link MinecraftForge#EVENT_BUS} right before the usedBlockRenderLayers boolean[] is generated and before any rebuilding is done.
- * Canceling this event prevents all Blocks and Tile Entities from being rebuilt to the chunk (and therefore rendered)
- * It is possible to do your own rendering in this event, but you will need to manually do large amounts of logic that would otherwise be done for you in other events.
- * If you do your own rendering please not that you must manually
- * - Manage starting & offsetting {@link BufferBuilder}s
- * - Manage used {@link BlockRenderLayer}s
- * {@link RenderChunkRebuildChunkHooksHooks} provides methods for pre-rendering the {@link BufferBuilder}s
- * You can |= your used render layers in a later event such as the {@link RebuildChunkBlockRenderInLayerEvent} or the {@link RebuildChunkBlockEvent}
- *
  * @author Cadiboo
- * @see RenderChunk#rebuildChunk(float, float, float, ChunkRenderTask)
  */
 @Cancelable
 public class RebuildChunkPreEvent extends RebuildChunkEvent {
 
-	@Nonnull
-	private final boolean[] usedBlockRenderLayers;
+	private final RenderChunkCacheReference renderChunkCacheReference;
+	private final VisGraph visGraph;
+	private final HashSet tileEntitiesWithGlobalRenderers;
 
-	/**
-	 * @param renderChunk                     the instance of {@link RenderChunk}
-	 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
-	 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
-	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
-	 * @param generator                       the {@link ChunkRenderTask} passed in from RenderChunk#rebuildChunk
-	 * @param compiledChunk                   the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition             the {@link BlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param chunkCache                      the {@link RenderChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
-	 * @param renderGlobal                    the {@link WorldRenderer} passed in from RenderChunk#rebuildChunk
-	 */
 	public RebuildChunkPreEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
@@ -57,20 +30,35 @@ public class RebuildChunkPreEvent extends RebuildChunkEvent {
 			final float z,
 			@Nonnull final ChunkRenderTask generator,
 			@Nonnull final CompiledChunk compiledChunk,
-			@Nonnull final BlockPos renderChunkPosition,
-			@Nonnull final RenderChunkCache chunkCache,
+			@Nonnull final BlockPos renderChunkStartPosition,
+			@Nonnull final BlockPos renderChunkEndPosition,
+			@Nonnull final World world,
+			@Nonnull final RenderChunkCacheReference renderChunkCacheReference,
 			@Nonnull final VisGraph visGraph,
-			@Nonnull final HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
-			@Nonnull final WorldRenderer renderGlobal,
-			@Nonnull final boolean[] usedBlockRenderLayers
+			@Nonnull final HashSet tileEntitiesWithGlobalRenderers
 	) {
-		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkPosition, chunkCache, visGraph, tileEntitiesWithGlobalRenderers, renderGlobal);
-		this.usedBlockRenderLayers = usedBlockRenderLayers;
+		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkStartPosition, renderChunkEndPosition, world);
+		this.renderChunkCacheReference = renderChunkCacheReference;
+		this.visGraph = visGraph;
+		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
 	}
 
-	@Nonnull
-	public boolean[] getUsedBlockRenderLayers() {
-		return usedBlockRenderLayers;
+	public RenderChunkCache getRenderChunkCache() {
+		return renderChunkCacheReference.getReference();
+	}
+
+	public RenderChunkCache setRenderChunkCache(final RenderChunkCache reference) {
+		final RenderChunkCache oldReference = renderChunkCacheReference.getReference();
+		renderChunkCacheReference.setReference(reference);
+		return oldReference;
+	}
+
+	public VisGraph getVisGraph() {
+		return visGraph;
+	}
+
+	public HashSet getTileEntitiesWithGlobalRenderers() {
+		return tileEntitiesWithGlobalRenderers;
 	}
 
 }

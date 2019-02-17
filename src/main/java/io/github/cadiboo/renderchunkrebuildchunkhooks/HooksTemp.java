@@ -74,8 +74,13 @@ public class HooksTemp {
 			net.minecraftforge.client.MinecraftForgeClient.onRebuildChunk(renderChunk.world, renderChunk.position, lvt_10_1_);
 			VisGraph lvt_11_1_ = new VisGraph();
 			HashSet lvt_12_1_ = Sets.newHashSet();
-//			if (lvt_10_1_ != null) {
-			if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanRenderingHappenHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_)) {
+			//START HOOK
+			final RenderChunkCacheReference lvt_10_1_Reference = new RenderChunkCacheReference(lvt_10_1_);
+			if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCancelRenderingHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_Reference, lvt_11_1_, lvt_12_1_)) {
+				return;
+			}
+			//END HOOK
+			if (lvt_10_1_ != null) {
 				++RenderChunk.renderChunksUpdated;
 				boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
 				BlockModelRenderer.enableCache();
@@ -124,7 +129,7 @@ public class HooksTemp {
 						}
 
 //						if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1)) {
-						if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockRenderInTypeAndLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1)) {
+						if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockRenderWithTypeAndInLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1)) {
 							int k = blockrenderlayer1.ordinal();
 							BufferBuilder bufferbuilder1 = generator.getRegionRenderCacheBuilder().getBuilder(k);
 							if (!compiledchunk.isLayerStarted(blockrenderlayer1)) {

@@ -75,7 +75,7 @@
 //	 * @return If vanilla rendering should be stopped
 //	 * @see io.github.cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunk_diff and cadiboo.renderchunkrebuildchunkhooks.core.util.rebuildChunkOptifine_diff
 //	 */
-//	public static boolean rebuildChunkCanRenderingHappenHook(
+//	public static boolean rebuildChunkCancelRenderingHook(
 //			@Nonnull final RenderChunk renderChunk,
 //			final float x,
 //			final float y,

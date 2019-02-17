@@ -1,19 +1,16 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraft.client.renderer.chunk.RenderChunkCache;
-import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
-import java.util.HashSet;
 
 /**
  * Base class for all events this mod provides
@@ -32,29 +29,12 @@ public class RebuildChunkEvent extends Event {
 	@Nonnull
 	private final CompiledChunk compiledChunk;
 	@Nonnull
-	private final BlockPos renderChunkPosition;
+	private final BlockPos renderChunkStartPosition;
 	@Nonnull
-	private final RenderChunkCache chunkCache;
+	private final BlockPos renderChunkEndPosition;
 	@Nonnull
-	private final VisGraph visGraph;
-	@Nonnull
-	private final HashSet<TileEntity> tileEntitiesWithGlobalRenderers;
-	@Nonnull
-	private final WorldRenderer worldRenderer;
+	private final World world;
 
-	/**
-	 * @param renderChunk                     the instance of {@link RenderChunk}
-	 * @param x                               the translation X passed in from RenderChunk#rebuildChunk
-	 * @param y                               the translation Y passed in from RenderChunk#rebuildChunk
-	 * @param z                               the translation Z passed in from RenderChunk#rebuildChunk
-	 * @param generator                       the {@link ChunkRenderTask} passed in from RenderChunk#rebuildChunk
-	 * @param compiledChunk                   the {@link CompiledChunk} passed in from RenderChunk#rebuildChunk
-	 * @param renderChunkPosition             the {@link BlockPos position} passed in from RenderChunk#rebuildChunk
-	 * @param chunkCache                      the {@link RenderChunkCache} passed in from RenderChunk#rebuildChunk
-	 * @param visGraph                        the {@link VisGraph} passed in from RenderChunk#rebuildChunk
-	 * @param tileEntitiesWithGlobalRenderers the {@link HashSet} of {@link TileEntity TileEntities} with global renderers passed in from RenderChunk#rebuildChunk
-	 * @param renderGlobal                    the {@link WorldRenderer} passed in from RenderChunk#rebuildChunk
-	 */
 	public RebuildChunkEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
@@ -62,40 +42,19 @@ public class RebuildChunkEvent extends Event {
 			final float z,
 			@Nonnull final ChunkRenderTask generator,
 			@Nonnull final CompiledChunk compiledChunk,
-			@Nonnull final BlockPos renderChunkPosition,
-			@Nonnull final RenderChunkCache chunkCache,
-			@Nonnull final VisGraph visGraph,
-			@Nonnull final HashSet<TileEntity> tileEntitiesWithGlobalRenderers,
-			@Nonnull final WorldRenderer renderGlobal
+			@Nonnull final BlockPos renderChunkStartPosition,
+			@Nonnull final BlockPos renderChunkEndPosition,
+			@Nonnull final World world
 	) {
-
 		this.renderChunk = renderChunk;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.generator = generator;
 		this.compiledChunk = compiledChunk;
-		this.renderChunkPosition = renderChunkPosition;
-		this.chunkCache = chunkCache;
-		this.visGraph = visGraph;
-		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
-		this.worldRenderer = renderGlobal;
-	}
-
-	/**
-	 * @return the type of event
-	 */
-	@Nonnull
-	public EnumEventType getType() {
-		return EnumEventType.FORGE;
-	}
-
-	/**
-	 * @return the {@link IWorldReader}
-	 */
-	@Nonnull
-	public IWorldReader getIBlockAccess() {
-		return getRenderChunkCache();
+		this.renderChunkStartPosition = renderChunkStartPosition;
+		this.renderChunkEndPosition = renderChunkEndPosition;
+		this.world = world;
 	}
 
 	@Nonnull
@@ -126,28 +85,28 @@ public class RebuildChunkEvent extends Event {
 	}
 
 	@Nonnull
-	public BlockPos getRenderChunkPosition() {
-		return renderChunkPosition;
+	public BlockPos getRenderChunkStartPosition() {
+		return renderChunkStartPosition;
 	}
 
 	@Nonnull
-	public RenderChunkCache getRenderChunkCache() {
-		return chunkCache;
+	public BlockPos getRenderChunkEndPosition() {
+		return renderChunkEndPosition;
 	}
 
 	@Nonnull
-	public VisGraph getVisGraph() {
-		return visGraph;
+	public World getWorld() {
+		return world;
 	}
 
 	@Nonnull
-	public HashSet<TileEntity> getTileEntitiesWithGlobalRenderers() {
-		return tileEntitiesWithGlobalRenderers;
+	public BufferBuilder getBufferBuilderByLayer(final BlockRenderLayer blockRenderLayer) {
+		return this.getGenerator().getRegionRenderCacheBuilder().getBuilder(blockRenderLayer);
 	}
 
 	@Nonnull
-	public WorldRenderer getWorldRenderer() {
-		return worldRenderer;
+	public BufferBuilder getBufferBuilderById(final int blockRenderLayerOrdinal) {
+		return this.getGenerator().getRegionRenderCacheBuilder().getBuilder(blockRenderLayerOrdinal);
 	}
 
 }
