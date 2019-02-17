@@ -45,7 +45,9 @@ var DEBUG_INSTRUCTIONS = false;
 
 var RENDER_CHUNK_REBUILD_CHUNK = {
 	'getName': function() {
-		return "rebuildChunk"; //TODO obf func_178581_b
+		//TODO (de)obf
+//		return "rebuildChunk";
+		return "func_178581_b";
 	},
 	'getDescriptor': function() {
 		return "(FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V";
@@ -54,7 +56,9 @@ var RENDER_CHUNK_REBUILD_CHUNK = {
 
 var RENDER_CHUNK_RESORT_TRANSPARENCY = {
 	'getName': function() {
-		return "resortTransparency"; //TODO obf func_178570_a
+		//TODO (de)obf
+//		return "resortTransparency";
+		return "func_178570_a";
 	},
 	'getDescriptor': function() {
 		return "(FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V"
@@ -141,13 +145,15 @@ function overwriteMethodTemp(instructions) {
 	var NEW_CompiledChunk;
 
 	var instructionsArray = instructions.toArray();
-
-	var instruction;
-	for (instruction in instructionsArray) {
+    var arrayLength = instructionsArray.length;
+    for (var i = 0; i < arrayLength; i++) {
+    	var instruction = instructionsArray[i];
 
 		print(instruction);
 		if(instruction.getOpcode() == Opcodes.NEW) {
 			NEW_CompiledChunk = instruction;
+			print(instruction);
+			print(NEW_CompiledChunk);
 			break;
 		}
 
@@ -165,6 +171,10 @@ function overwriteMethodTemp(instructions) {
 
 	instructions.insertBefore(NEW_CompiledChunk, tempInstructionList);
 
+	print("INJECTED SUCCESSFULLY!!!");
+	print("INJECTED SUCCESSFULLY!!!");
+	print("INJECTED SUCCESSFULLY!!!");
+	print("INJECTED SUCCESSFULLY!!!");
 
 	// aload0
 	// float1

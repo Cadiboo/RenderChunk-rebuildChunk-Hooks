@@ -1,6 +1,7 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks;
 
 import com.google.common.collect.Sets;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -17,59 +18,39 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
+
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Utils.compiledChunk_setLayerUsed;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Utils.renderChunk_postRenderBlocks;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Utils.renderChunk_preRenderBlocks;
 
 /**
  * @author Cadiboo
  */
 public class HooksTemp {
 
-	@SuppressWarnings("WeakerAccess")
-	public static final MethodHandle renderChunk_preRenderBlocks;
-	@SuppressWarnings("WeakerAccess")
-	public static final MethodHandle compiledchunk_setLayerUsed;
-	@SuppressWarnings("WeakerAccess")
-	public static final MethodHandle renderChunk_postRenderBlocks;
-
-	static {
-		try {
-			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a",
-					BufferBuilder.class, BlockPos.class
-			));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			compiledchunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178486_a",
-					BlockRenderLayer.class
-			));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-		try {
-			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a",
-					BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class
-			));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+// - The RebuildChunkPreEvent is called before any chunk rebuilding is done and allows access to the IWorldReader
+// - The RebuildChunkPreRenderEvent is called before any chunk rendering is done and allows access to the BlockRendererDispatcher and the usedRenderLayer boolean array
+// - The RebuildChunkFluidRenderInLayerEvent allows Modders to modify the BlockRenderLayers that fluids can render in
+// - The RebuildChunkFluidEvent is called for every BlockRenderLayer for every fluid and allows Modders to add their own logic
+// - The RebuildChunkBlockRenderInTypeEvent allows Modders to modify the EnumBlockRenderType that blocks can render in
+// - The RebuildChunkBlockRenderInLayerEvent allows Modders to modify the BlockRenderLayers that blocks can render in
+// - The RebuildChunkBlockEvent is called for every BlockRenderLayer for every block and allows Modders to add their own logic
+// - The RebuildChunkPostRenderEvent is called after all chunk rebuilding logic is done but before Tile Entities are updated
+// - The RebuildChunkPostEvent is called right before the method returns
 
 	public static void rebuildChunk(
 			final RenderChunk renderChunk,
 			float x, float y, float z, ChunkRenderTask generator
 	) {
+
+//		LogManager.getLogger("RCRCH").info("rebuildChunk");
 
 		CompiledChunk compiledchunk = new CompiledChunk();
 		int i = 1;
@@ -93,12 +74,16 @@ public class HooksTemp {
 			net.minecraftforge.client.MinecraftForgeClient.onRebuildChunk(renderChunk.world, renderChunk.position, lvt_10_1_);
 			VisGraph lvt_11_1_ = new VisGraph();
 			HashSet lvt_12_1_ = Sets.newHashSet();
-			if (lvt_10_1_ != null) {
+//			if (lvt_10_1_ != null) {
+			if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanRenderingHappenHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_)) {
 				++RenderChunk.renderChunksUpdated;
 				boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
 				BlockModelRenderer.enableCache();
 				Random random = new Random();
 				BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+				//START HOOK
+				RenderChunkRebuildChunkHooksHooks.rebuildChunkPreRenderHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher);
+				//END HOOK
 
 				for (BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(blockpos, blockpos1)) {
 					IBlockState iblockstate = lvt_10_1_.getBlockState(blockpos$mutableblockpos);
@@ -122,7 +107,8 @@ public class HooksTemp {
 					IFluidState ifluidstate = lvt_10_1_.getFluidState(blockpos$mutableblockpos);
 					for (BlockRenderLayer blockrenderlayer1 : BlockRenderLayer.values()) {
 						net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockrenderlayer1);
-						if (!ifluidstate.isEmpty() && ifluidstate.canRenderInLayer(blockrenderlayer1)) {
+//						if (!ifluidstate.isEmpty() && ifluidstate.canRenderInLayer(blockrenderlayer1)) {
+						if (!ifluidstate.isEmpty() && RenderChunkRebuildChunkHooksHooks.rebuildChunkCanFluidRenderInLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, ifluidstate, blockrenderlayer1)) {
 							int j = blockrenderlayer1.ordinal();
 							BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getBuilder(j);
 							if (!compiledchunk.isLayerStarted(blockrenderlayer1)) {
@@ -131,10 +117,14 @@ public class HooksTemp {
 								renderChunk_preRenderBlocks(renderChunk, bufferbuilder, blockpos);
 							}
 
-							aboolean[j] |= blockrendererdispatcher.renderFluid(blockpos$mutableblockpos, lvt_10_1_, bufferbuilder, ifluidstate);
+//							aboolean[j] |= blockrendererdispatcher.renderFluid(blockpos$mutableblockpos, lvt_10_1_, bufferbuilder, ifluidstate);
+							if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanFluidBeRenderedHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, ifluidstate, blockrenderlayer1, j, bufferbuilder)) {
+								aboolean[j] |= blockrendererdispatcher.renderFluid(blockpos$mutableblockpos, lvt_10_1_, bufferbuilder, ifluidstate);
+							}
 						}
 
-						if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1)) {
+//						if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1)) {
+						if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockRenderInTypeAndLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1)) {
 							int k = blockrenderlayer1.ordinal();
 							BufferBuilder bufferbuilder1 = generator.getRegionRenderCacheBuilder().getBuilder(k);
 							if (!compiledchunk.isLayerStarted(blockrenderlayer1)) {
@@ -143,7 +133,10 @@ public class HooksTemp {
 								renderChunk_preRenderBlocks(renderChunk, bufferbuilder1, blockpos);
 							}
 
-							aboolean[k] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, lvt_10_1_, bufferbuilder1, random);
+//							aboolean[k] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, lvt_10_1_, bufferbuilder1, random);
+							if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockBeRenderedHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1, k, bufferbuilder1)) {
+								aboolean[k] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, lvt_10_1_, bufferbuilder1, random);
+							}
 						}
 					}
 					net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
@@ -152,7 +145,7 @@ public class HooksTemp {
 				for (BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
 					if (aboolean[blockrenderlayer.ordinal()]) {
 //						compiledchunk.setLayerUsed(blockrenderlayer);
-						compiledchunk_setLayerUsed(renderChunk, blockrenderlayer);
+						compiledChunk_setLayerUsed(compiledchunk, blockrenderlayer);
 					}
 
 					if (compiledchunk.isLayerStarted(blockrenderlayer)) {
@@ -162,6 +155,9 @@ public class HooksTemp {
 				}
 
 				BlockModelRenderer.disableCache();
+				//START HOOK
+				RenderChunkRebuildChunkHooksHooks.rebuildChunkPostRenderHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher);
+				//END HOOK
 			}
 
 			compiledchunk.setVisibility(lvt_11_1_.computeVisibility());
@@ -181,33 +177,9 @@ public class HooksTemp {
 
 		}
 
-	}
-
-	@SuppressWarnings("WeakerAccess")
-	public static void renderChunk_preRenderBlocks(final RenderChunk renderChunk, final BufferBuilder bufferbuilder, final BlockPos blockpos) {
-		try {
-			renderChunk_preRenderBlocks.invokeExact(renderChunk, bufferbuilder, blockpos);
-		} catch (Throwable throwable) {
-			throw new RuntimeException(throwable);
-		}
-	}
-
-	@SuppressWarnings("WeakerAccess")
-	public static void compiledchunk_setLayerUsed(final RenderChunk renderChunk, final BlockRenderLayer blockRenderLayer) {
-		try {
-			compiledchunk_setLayerUsed.invokeExact(renderChunk, blockRenderLayer);
-		} catch (Throwable throwable) {
-			throw new RuntimeException(throwable);
-		}
-	}
-
-	@SuppressWarnings("WeakerAccess")
-	public static void renderChunk_postRenderBlocks(final RenderChunk renderChunk, final BlockRenderLayer blockrenderlayer, final float x, final float y, final float z, final BufferBuilder builder, final CompiledChunk compiledchunk) {
-		try {
-			renderChunk_postRenderBlocks.invokeExact(renderChunk, blockrenderlayer, x, y, z, builder, compiledchunk);
-		} catch (Throwable throwable) {
-			throw new RuntimeException(throwable);
-		}
+		//START HOOK
+		RenderChunkRebuildChunkHooksHooks.rebuildChunkPostHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world);
+		//END HOOK
 	}
 
 }
