@@ -1,6 +1,8 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
 
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildCanBlockBeRenderedEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -10,12 +12,9 @@ import java.util.Random;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.debug.RebuildChunkBlockEventTest.Config.ENABLED;
 
 @Mod.EventBusSubscriber
-@Mod(modid = RebuildChunkBlockEventTest.MODID, name = "RebuildChunkBlockEventTest", version = "1.0", acceptableRemoteVersions = "*", clientSideOnly = true)
+@Mod("rebuild_chunk_block_event_test")
 public final class RebuildChunkBlockEventTest {
 
-	public static final String MODID = "rebuild_chunk_block_event_test";
-
-	@net.minecraftforge.common.config.Config(modid = MODID)
 	public static class Config {
 
 		public static boolean ENABLED = true;
@@ -23,7 +22,7 @@ public final class RebuildChunkBlockEventTest {
 	}
 
 	@SubscribeEvent
-	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
+	public static void onRebuildChunkBlock(final RebuildCanBlockBeRenderedEvent event) {
 		if (!ENABLED) {
 			return;
 		}
@@ -53,14 +52,14 @@ public final class RebuildChunkBlockEventTest {
 			Objects.requireNonNull(event.getRenderChunk());
 			Objects.requireNonNull(event.getGenerator());
 			Objects.requireNonNull(event.getCompiledChunk());
-			Objects.requireNonNull(event.getRenderChunkPosition());
-			Objects.requireNonNull(event.getChunkCache());
+			Objects.requireNonNull(event.getRenderChunkStartPosition());
+			Objects.requireNonNull(event.getRenderChunkEndPosition());
+			Objects.requireNonNull(event.getRenderChunkCache());
 			Objects.requireNonNull(event.getVisGraph());
 			Objects.requireNonNull(event.getTileEntitiesWithGlobalRenderers());
-			Objects.requireNonNull(event.getRenderGlobal());
 			Objects.requireNonNull(event.getUsedBlockRenderLayers());
 			Objects.requireNonNull(event.getBlockRendererDispatcher());
-			Objects.requireNonNull(event.getBlockPos());
+			Objects.requireNonNull(event.getPo());
 			Objects.requireNonNull(event.getBlockState());
 			Objects.requireNonNull(event.getBlock());
 			Objects.requireNonNull(event.getBlockRenderLayer());
