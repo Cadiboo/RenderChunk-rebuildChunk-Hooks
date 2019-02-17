@@ -145,9 +145,9 @@ function overwriteMethodTemp(instructions) {
 	var NEW_CompiledChunk;
 
 	var instructionsArray = instructions.toArray();
-    var arrayLength = instructionsArray.length;
-    for (var i = 0; i < arrayLength; i++) {
-    	var instruction = instructionsArray[i];
+	var arrayLength = instructionsArray.length;
+	for (var i = 0; i < arrayLength; i++) {
+		var instruction = instructionsArray[i];
 
 		print(instruction);
 		if(instruction.getOpcode() == Opcodes.NEW) {
