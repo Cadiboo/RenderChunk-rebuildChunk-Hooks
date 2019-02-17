@@ -82,11 +82,33 @@ function methodMatches(method) {
 function injectHooks(instructions) {
 
 	print("Inside injectHooks");
+	print(instructions);
 
-	var arrayLength = instructions.length;
+	var instructionsArray = instructions.toArray();
+	var arrayLength = instructionsArray.length;
 	for (var i = 0; i < arrayLength; i++) {
-		var instruction = instructions[i];
-		print(instruction);
+		var instruction = instructionsArray[i];
+		print(insnToString(instruction));
 	}
 
+}
+
+//imports
+var Printer = Java.type('org.objectweb.asm.util.Printer');
+var Textifier = Java.type('org.objectweb.asm.util.Textifier');
+var TraceClassVisitor = Java.type('org.objectweb.asm.util.TraceClassVisitor');
+var TraceMethodVisitor = Java.type('org.objectweb.asm.util.TraceMethodVisitor');
+var StringWriter = Java.type('java.io.StringWriter');
+var PrintWriter = Java.type('java.io.PrintWriter');
+
+
+var /*private static final Printer*/ PRINTER = new Textifier();
+var /*private static final TraceMethodVisitor*/ TRACE_METHOD_VISITOR = new TraceMethodVisitor(PRINTER);
+
+function insnToString(/*final AbstractInsnNode*/ insn) {
+	insn.accept(TRACE_METHOD_VISITOR);
+	var /*final StringWriter*/ sw = new StringWriter();
+	PRINTER.print(new PrintWriter(sw));
+	PRINTER.getText().clear();
+	return sw.toString().trim();
 }
