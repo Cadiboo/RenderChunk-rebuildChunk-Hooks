@@ -93,13 +93,15 @@ function injectHooks(instructions) {
 
 }
 
+var/*Class*/ MethodNode = Java.type('org.objectweb.asm.tree.MethodNode')
+
 //imports
 var Printer = Java.type('org.objectweb.asm.util.Printer');
 var Textifier = Java.type('org.objectweb.asm.util.Textifier');
 var TraceClassVisitor = Java.type('org.objectweb.asm.util.TraceClassVisitor');
 var TraceMethodVisitor = Java.type('org.objectweb.asm.util.TraceMethodVisitor');
-var StringWriter = Java.type('java.io.StringWriter');
-var PrintWriter = Java.type('java.io.PrintWriter');
+var StringWriter = Java.type('org.objectweb.asm.repackage.'+'java.io.StringWriter');
+var PrintWriter = Java.type('org.objectweb.asm.repackage.'+'java.io.PrintWriter');
 
 
 var /*private static final Printer*/ PRINTER = new Textifier();
