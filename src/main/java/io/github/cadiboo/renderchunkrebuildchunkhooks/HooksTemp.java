@@ -113,7 +113,7 @@ public class HooksTemp {
 					for (BlockRenderLayer blockrenderlayer1 : BlockRenderLayer.values()) {
 						net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockrenderlayer1);
 //						if (!ifluidstate.isEmpty() && ifluidstate.canRenderInLayer(blockrenderlayer1)) {
-						if (!ifluidstate.isEmpty() && RenderChunkRebuildChunkHooksHooks.rebuildChunkCanFluidRenderInLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, ifluidstate, blockrenderlayer1)) {
+						if (!ifluidstate.isEmpty() && RenderChunkRebuildChunkHooksHooks.rebuildChunkCanFluidRenderInLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, ifluidstate, blockrenderlayer1)) {
 							int j = blockrenderlayer1.ordinal();
 							BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getBuilder(j);
 							if (!compiledchunk.isLayerStarted(blockrenderlayer1)) {
@@ -123,13 +123,13 @@ public class HooksTemp {
 							}
 
 //							aboolean[j] |= blockrendererdispatcher.renderFluid(blockpos$mutableblockpos, lvt_10_1_, bufferbuilder, ifluidstate);
-							if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanFluidBeRenderedHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, ifluidstate, blockrenderlayer1, j, bufferbuilder)) {
+							if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanFluidBeRenderedHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, ifluidstate, blockrenderlayer1, j, bufferbuilder)) {
 								aboolean[j] |= blockrendererdispatcher.renderFluid(blockpos$mutableblockpos, lvt_10_1_, bufferbuilder, ifluidstate);
 							}
 						}
 
 //						if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1)) {
-						if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockRenderWithTypeAndInLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1)) {
+						if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockRenderWithTypeAndInLayerHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1)) {
 							int k = blockrenderlayer1.ordinal();
 							BufferBuilder bufferbuilder1 = generator.getRegionRenderCacheBuilder().getBuilder(k);
 							if (!compiledchunk.isLayerStarted(blockrenderlayer1)) {
@@ -139,7 +139,7 @@ public class HooksTemp {
 							}
 
 //							aboolean[k] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, lvt_10_1_, bufferbuilder1, random);
-							if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockBeRenderedHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1, k, bufferbuilder1)) {
+							if (RenderChunkRebuildChunkHooksHooks.rebuildChunkCanBlockBeRenderedHook(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1, k, bufferbuilder1)) {
 								aboolean[k] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, lvt_10_1_, bufferbuilder1, random);
 							}
 						}

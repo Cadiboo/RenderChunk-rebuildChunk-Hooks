@@ -38,6 +38,8 @@ public class RebuildCanFluidBeRenderedEvent extends RebuildChunkEvent {
 	@Nonnull
 	private final BlockRendererDispatcher blockRendererDispatcher;
 	@Nonnull
+	private final BlockPos blockPos;
+	@Nonnull
 	private final IFluidState fluidState;
 	@Nonnull
 	private final BlockRenderLayer blockRenderLayer;
@@ -61,6 +63,7 @@ public class RebuildCanFluidBeRenderedEvent extends RebuildChunkEvent {
 			@Nonnull final boolean[] usedBlockRenderLayers,
 			@Nonnull final Random random,
 			@Nonnull final BlockRendererDispatcher blockRendererDispatcher,
+			@Nonnull final BlockPos blockPos,
 			@Nonnull final IFluidState fluidState,
 			@Nonnull final BlockRenderLayer blockRenderLayer,
 			final int blockRenderLayerOrdinal,
@@ -73,6 +76,7 @@ public class RebuildCanFluidBeRenderedEvent extends RebuildChunkEvent {
 		this.usedBlockRenderLayers = usedBlockRenderLayers;
 		this.random = random;
 		this.blockRendererDispatcher = blockRendererDispatcher;
+		this.blockPos = blockPos;
 		this.fluidState = fluidState;
 		this.blockRenderLayer = blockRenderLayer;
 		this.blockRenderLayerOrdinal = blockRenderLayerOrdinal;
@@ -110,6 +114,11 @@ public class RebuildCanFluidBeRenderedEvent extends RebuildChunkEvent {
 	}
 
 	@Nonnull
+	public BlockPos getBlockPos() {
+		return blockPos;
+	}
+
+	@Nonnull
 	public IFluidState getFluidState() {
 		return fluidState;
 	}
@@ -127,5 +136,6 @@ public class RebuildCanFluidBeRenderedEvent extends RebuildChunkEvent {
 	public BufferBuilder getBufferBuilder() {
 		return bufferBuilder;
 	}
+
 
 }

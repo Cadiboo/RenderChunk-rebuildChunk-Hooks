@@ -47,8 +47,8 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	}
 
 	//return if the fluid _can_ render in the layer
-	public static boolean rebuildChunkCanFluidRenderInLayerHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
-		final RebuildCanFluidRenderInLayerEvent event = new RebuildCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, ifluidstate, blockrenderlayer1);
+	public static boolean rebuildChunkCanFluidRenderInLayerHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockpos$mutableblockpos, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
+		final RebuildCanFluidRenderInLayerEvent event = new RebuildCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, ifluidstate, blockrenderlayer1);
 		MinecraftForge.EVENT_BUS.post(event);
 		switch (event.getResult()) {
 			case DENY:
@@ -63,17 +63,17 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	}
 
 	//return if the fluid _should be rendered by vanilla_
-	public static boolean rebuildChunkCanFluidBeRenderedHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
-		final RebuildCanFluidBeRenderedEvent event = new RebuildCanFluidBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, ifluidstate, blockrenderlayer1, j, bufferbuilder);
+	public static boolean rebuildChunkCanFluidBeRenderedHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockpos$mutableblockpos, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
+		final RebuildCanFluidBeRenderedEvent event = new RebuildCanFluidBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, ifluidstate, blockrenderlayer1, j, bufferbuilder);
 		MinecraftForge.EVENT_BUS.post(event);
 		return !event.isCanceled();
 	}
 
 	//return if the block _can_ render in the type (iblockstate.getRenderType()) and layer
-	public static boolean rebuildChunkCanBlockRenderWithTypeAndInLayerHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final BlockRenderLayer blockrenderlayer1) {
+	public static boolean rebuildChunkCanBlockRenderWithTypeAndInLayerHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockpos$mutableblockpos, final IBlockState iblockstate, final Block block, final BlockRenderLayer blockrenderlayer1) {
 		boolean canRenderInType = false;
 		{
-			final RebuildCanBlockRenderWithTypeEvent event = new RebuildCanBlockRenderWithTypeEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, iblockstate.getRenderType());
+			final RebuildCanBlockRenderWithTypeEvent event = new RebuildCanBlockRenderWithTypeEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, iblockstate.getRenderType());
 			MinecraftForge.EVENT_BUS.post(event);
 			switch (event.getResult()) {
 				case DENY:
@@ -91,7 +91,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 		boolean canRenderInLayer = false;
 		{
-			final RebuildCanBlockRenderInLayerEvent event = new RebuildCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1);
+			final RebuildCanBlockRenderInLayerEvent event = new RebuildCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1);
 			MinecraftForge.EVENT_BUS.post(event);
 			switch (event.getResult()) {
 				case DENY:
@@ -111,8 +111,8 @@ public final class RenderChunkRebuildChunkHooksHooks {
 	}
 
 	//return if the block _should be rendered by vanilla_
-	public static boolean rebuildChunkCanBlockBeRenderedHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final BlockRenderLayer blockrenderlayer1, final int k, final BufferBuilder bufferbuilder1) {
-		final RebuildCanBlockBeRenderedEvent event = new RebuildCanBlockBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, blockrenderlayer1, k, bufferbuilder1);
+	public static boolean rebuildChunkCanBlockBeRenderedHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockpos$mutableblockpos, final IBlockState iblockstate, final Block block, final BlockRenderLayer blockrenderlayer1, final int k, final BufferBuilder bufferbuilder1) {
+		final RebuildCanBlockBeRenderedEvent event = new RebuildCanBlockBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1, k, bufferbuilder1);
 		MinecraftForge.EVENT_BUS.post(event);
 		return !event.isCanceled();
 	}

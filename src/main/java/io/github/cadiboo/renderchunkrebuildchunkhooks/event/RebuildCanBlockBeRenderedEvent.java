@@ -39,6 +39,8 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 	@Nonnull
 	private final BlockRendererDispatcher blockRendererDispatcher;
 	@Nonnull
+	private final BlockPos blockPos;
+	@Nonnull
 	private final IBlockState blockState;
 	@Nonnull
 	private final Block block;
@@ -64,6 +66,7 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 			@Nonnull final boolean[] usedBlockRenderLayers,
 			@Nonnull final Random random,
 			@Nonnull final BlockRendererDispatcher blockRendererDispatcher,
+			@Nonnull final BlockPos blockPos,
 			@Nonnull final IBlockState blockState,
 			@Nonnull final Block block,
 			@Nonnull final BlockRenderLayer blockRenderLayer,
@@ -77,6 +80,7 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 		this.usedBlockRenderLayers = usedBlockRenderLayers;
 		this.random = random;
 		this.blockRendererDispatcher = blockRendererDispatcher;
+		this.blockPos = blockPos;
 		this.blockState = blockState;
 		this.block = block;
 		this.blockRenderLayer = blockRenderLayer;
@@ -112,6 +116,11 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 	@Nonnull
 	public BlockRendererDispatcher getBlockRendererDispatcher() {
 		return blockRendererDispatcher;
+	}
+
+	@Nonnull
+	public BlockPos getBlockPos() {
+		return blockPos;
 	}
 
 	@Nonnull
