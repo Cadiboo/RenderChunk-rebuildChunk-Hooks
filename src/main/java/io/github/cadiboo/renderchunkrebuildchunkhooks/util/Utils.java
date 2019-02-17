@@ -1,5 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.util;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -10,8 +11,10 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import javax.annotation.Nonnull;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
 
 /**
  * @author Cadiboo
@@ -25,26 +28,57 @@ public class Utils {
 
 	static {
 		try {
-			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178573_a",
+			renderChunk_preRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper_findMethod(RenderChunk.class, "func_178573_a",
 					BufferBuilder.class, BlockPos.class
 			));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+		} catch (ReportedException e) {
+			throw e;
+		} catch (Throwable throwable) {
+			CrashReport crashReport = new CrashReport("Error getting method handle for RenderChunk#preRenderBlocks!", throwable);
+			crashReport.makeCategory("Reflectively Accessing RenderChunk#preRenderBlocks");
+			throw new ReportedException(crashReport);
 		}
 		try {
-			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(CompiledChunk.class, "func_178486_a",
+			compiledChunk_setLayerUsed = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper_findMethod(CompiledChunk.class, "func_178486_a",
 					BlockRenderLayer.class
 			));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+		} catch (ReportedException e) {
+			throw e;
+		} catch (Throwable throwable) {
+			CrashReport crashReport = new CrashReport("Error getting method handle for CompiledChunk#setLayerUsed!", throwable);
+			crashReport.makeCategory("Reflectively Accessing CompiledChunk#setLayerUsed");
+			throw new ReportedException(crashReport);
 		}
 		try {
-			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper.findMethod(RenderChunk.class, "func_178584_a",
+			renderChunk_postRenderBlocks = MethodHandles.publicLookup().unreflect(ObfuscationReflectionHelper_findMethod(RenderChunk.class, "func_178584_a",
 					BlockRenderLayer.class, float.class, float.class, float.class, BufferBuilder.class, CompiledChunk.class
 			));
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+		} catch (ReportedException e) {
+			throw e;
+		} catch (Throwable throwable) {
+			CrashReport crashReport = new CrashReport("Error getting method handle for RenderChunk#postRenderBlocks!", throwable);
+			crashReport.makeCategory("Reflectively Accessing RenderChunk#postRenderBlocks");
+			throw new ReportedException(crashReport);
 		}
+	}
+
+	//FFS
+	public static Method ObfuscationReflectionHelper_findMethod(@Nonnull Class<?> clazz, @Nonnull String methodName, Class<?>... parameterTypes) {
+
+		Preconditions.checkNotNull(clazz);
+		Preconditions.checkNotNull(methodName);
+//		Preconditions.checkArgument(methodName.isEmpty(), "Method name cannot be empty");
+		//FIX "methodName cannot be null, but MUST be empty"
+		Preconditions.checkArgument(!methodName.isEmpty(), "Method name cannot be empty");
+
+		try {
+			Method m = clazz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(methodName), parameterTypes);
+			m.setAccessible(true);
+			return m;
+		} catch (Exception e) {
+			throw new ObfuscationReflectionHelper.UnableToFindMethodException(e);
+		}
+
 	}
 
 	/**
