@@ -1,5 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
