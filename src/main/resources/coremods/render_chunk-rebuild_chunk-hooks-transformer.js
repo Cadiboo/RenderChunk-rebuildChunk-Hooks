@@ -70,8 +70,8 @@ var REBUILD_CHUNK_REDIRECT_TEMP =  {
 		// invokestatic io/github/cadiboo/renderchunkrebuildchunkhooks/HooksTemp(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V
 		insnList.add(
 			new MethodInsnNode(INVOKESTATIC,
-				"io/github/cadiboo/renderchunkrebuildchunkhooks",
-				 "HooksTemp",
+				"io/github/cadiboo/renderchunkrebuildchunkhooks/HooksTemp",
+				 "rebuildChunk",
 				 "(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V",
 				 false
 			)
