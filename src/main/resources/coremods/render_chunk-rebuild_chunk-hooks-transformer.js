@@ -100,7 +100,7 @@ function methodMatches(method) {
 	}
 
 	// make sure not to overwrite resortTransparency (it has the same description but it's name is "a" while rebuildChunk's name is "b")
-	if (method.name.equals(RENDER_CHUNK_RESORT_TRANSPARENCY.getName())) {
+	if (!method.name.equals(RENDER_CHUNK_REBUILD_CHUNK.getName())) {
 		if (DEBUG_METHODS) {
 			print("Method with name \"" + method.name + "\" and description \"" + method.desc + "\" was rejected");
 		}
