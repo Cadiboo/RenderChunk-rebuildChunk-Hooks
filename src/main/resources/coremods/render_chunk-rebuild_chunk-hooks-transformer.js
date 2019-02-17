@@ -147,7 +147,7 @@ function overwriteMethodTemp(instructions) {
 	var instructionsArray = instructions.toArray();
 
 	var instruction;
-	for (instruction in instructions) {
+	for (instruction in instructionsArray) {
 
 		print(instruction);
 		if(instruction.getOpcode() == Opcodes.NEW) {
