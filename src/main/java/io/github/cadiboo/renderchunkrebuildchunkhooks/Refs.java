@@ -1,4 +1,4 @@
-package cadiboo;
+package io.github.cadiboo.renderchunkrebuildchunkhooks;
 
 /**
  * @author Cadiboo
