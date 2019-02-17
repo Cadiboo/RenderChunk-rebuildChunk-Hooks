@@ -82,11 +82,13 @@ function injectHooks(instructions) {
 	print("Inside injectHooks");
 	print(instructions);
 
-	var instructionsArray = instructions.toArray();
-	var arrayLength = instructionsArray.length;
-	for (var i = 0; i < arrayLength; i++) {
-		var instruction = instructionsArray[i];
-		print(insnToString(instruction));
+	if(DEBUG_INSTRUCTIONS) {
+		var instructionsArray = instructions.toArray();
+		var arrayLength = instructionsArray.length;
+		for (var i = 0; i < arrayLength; i++) {
+			var instruction = instructionsArray[i];
+			print(insnToString(instruction));
+		}
 	}
 
 }
