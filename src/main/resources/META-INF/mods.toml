@@ -13,7 +13,7 @@ loaderVersion="[0,)" #mandatory
 #updateJSONURL="https://raw.githubusercontent.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/master/update.json" #optional
 
 # A URL to refer people to when problems occur with this mod
-issueTrackerURL="https://github.com/gigaherz/PackingTape/issues" #optional
+issueTrackerURL="https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/issues" #optional
 
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://cadiboo.github.io/projects/render_chunk-rebuild_chunk-hooks" #optional
