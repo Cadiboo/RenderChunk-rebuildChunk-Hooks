@@ -11,8 +11,6 @@ function initializeCoreMod() {
 				var/*Class*/ MethodNode = Java.type('org.objectweb.asm.tree.MethodNode')
 				var/*Class/Interface*/ Opcodes = Java.type('org.objectweb.asm.Opcodes')
 
-//                var DEBUG_METHODS = true;
-
 				var methods = classNode.methods;
 
 				var arrayLength = methods.length;
