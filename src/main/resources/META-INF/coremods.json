@@ -1,3 +1,3 @@
 {
-  "RenderChunk rebuildChunk Patcher": "coremods/rcrch-transformer.js"
+  "RenderChunk rebuildChunk Hooks Patcher": "coremods/render_chunk-rebuild_chunk-hooks-transformer.js"
 }
