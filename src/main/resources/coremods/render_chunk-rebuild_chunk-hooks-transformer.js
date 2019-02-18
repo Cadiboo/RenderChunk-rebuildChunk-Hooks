@@ -39,6 +39,7 @@ function methodNameMatches(methodName) {
 		print(deobfNameEquals ? "We are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "We are in an SRG-NAMED PRODUCTION Environment")
 	}
 
+	return anyEqual;
 }
 
 var RENDER_CHUNK_REBUILD_CHUNK_DESCRIPTOR = "(FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V";
