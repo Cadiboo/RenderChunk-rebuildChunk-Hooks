@@ -1,7 +1,7 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks;
+package io.github.cadiboo.renderchunkrebuildchunkhooks.hooks;
 
 import com.google.common.collect.Sets;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.RenderChunkRebuildChunkHooksHooks;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.util.RenderChunkCacheReference;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -33,7 +33,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Utils.renderCh
 /**
  * @author Cadiboo
  */
-public class HooksTemp {
+public class OverwriteHookTemp {
 
 // - The RebuildChunkPreEvent is called before any chunk rebuilding is done and allows access to the IWorldReader
 // - The RebuildChunkPreRenderEvent is called before any chunk rendering is done and allows access to the BlockRendererDispatcher and the usedRenderLayer boolean array

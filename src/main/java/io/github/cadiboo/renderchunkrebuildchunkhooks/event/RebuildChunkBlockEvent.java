@@ -3,6 +3,7 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
@@ -23,7 +24,7 @@ import java.util.Random;
  */
 @Event.HasResult
 @Cancelable
-public class RebuildCanBlockRenderInLayerEvent extends RebuildChunkEvent {
+public class RebuildChunkBlockEvent extends RebuildChunkEvent {
 
 	@Nonnull
 	private final RenderChunkCache renderChunkCache;
@@ -45,8 +46,11 @@ public class RebuildCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 	private final Block block;
 	@Nonnull
 	private final BlockRenderLayer blockRenderLayer;
+	private final int blockRenderLayerOrdinal;
+	@Nonnull
+	private final BufferBuilder bufferBuilder;
 
-	public RebuildCanBlockRenderInLayerEvent(
+	public RebuildChunkBlockEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
@@ -65,7 +69,9 @@ public class RebuildCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 			@Nonnull final BlockPos blockPos,
 			@Nonnull final IBlockState blockState,
 			@Nonnull final Block block,
-			@Nonnull final BlockRenderLayer blockRenderLayer
+			@Nonnull final BlockRenderLayer blockRenderLayer,
+			final int blockRenderLayerOrdinal,
+			@Nonnull final BufferBuilder bufferBuilder
 	) {
 		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkStartPosition, renderChunkEndPosition, world);
 		this.renderChunkCache = renderChunkCache;
@@ -78,6 +84,8 @@ public class RebuildCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 		this.blockState = blockState;
 		this.block = block;
 		this.blockRenderLayer = blockRenderLayer;
+		this.blockRenderLayerOrdinal = blockRenderLayerOrdinal;
+		this.bufferBuilder = bufferBuilder;
 	}
 
 	@Nonnull
@@ -128,6 +136,15 @@ public class RebuildCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 	@Nonnull
 	public BlockRenderLayer getBlockRenderLayer() {
 		return blockRenderLayer;
+	}
+
+	public int getBlockRenderLayerOrdinal() {
+		return blockRenderLayerOrdinal;
+	}
+
+	@Nonnull
+	public BufferBuilder getBufferBuilder() {
+		return bufferBuilder;
 	}
 
 }

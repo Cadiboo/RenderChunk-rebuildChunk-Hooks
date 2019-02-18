@@ -3,13 +3,12 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -24,7 +23,7 @@ import java.util.Random;
  */
 @Event.HasResult
 @Cancelable
-public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
+public class RebuildChunkCanBlockRenderWithTypeEvent extends RebuildChunkEvent {
 
 	@Nonnull
 	private final RenderChunkCache renderChunkCache;
@@ -45,12 +44,9 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 	@Nonnull
 	private final Block block;
 	@Nonnull
-	private final BlockRenderLayer blockRenderLayer;
-	private final int blockRenderLayerOrdinal;
-	@Nonnull
-	private final BufferBuilder bufferBuilder;
+	private final EnumBlockRenderType blockRenderType;
 
-	public RebuildCanBlockBeRenderedEvent(
+	public RebuildChunkCanBlockRenderWithTypeEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
@@ -69,9 +65,7 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 			@Nonnull final BlockPos blockPos,
 			@Nonnull final IBlockState blockState,
 			@Nonnull final Block block,
-			@Nonnull final BlockRenderLayer blockRenderLayer,
-			final int blockRenderLayerOrdinal,
-			@Nonnull final BufferBuilder bufferBuilder
+			@Nonnull final EnumBlockRenderType blockRenderType
 	) {
 		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkStartPosition, renderChunkEndPosition, world);
 		this.renderChunkCache = renderChunkCache;
@@ -83,9 +77,7 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 		this.blockPos = blockPos;
 		this.blockState = blockState;
 		this.block = block;
-		this.blockRenderLayer = blockRenderLayer;
-		this.blockRenderLayerOrdinal = blockRenderLayerOrdinal;
-		this.bufferBuilder = bufferBuilder;
+		this.blockRenderType = blockRenderType;
 	}
 
 	@Nonnull
@@ -134,17 +126,8 @@ public class RebuildCanBlockBeRenderedEvent extends RebuildChunkEvent {
 	}
 
 	@Nonnull
-	public BlockRenderLayer getBlockRenderLayer() {
-		return blockRenderLayer;
-	}
-
-	public int getBlockRenderLayerOrdinal() {
-		return blockRenderLayerOrdinal;
-	}
-
-	@Nonnull
-	public BufferBuilder getBufferBuilder() {
-		return bufferBuilder;
+	public EnumBlockRenderType getBlockRenderType() {
+		return blockRenderType;
 	}
 
 }

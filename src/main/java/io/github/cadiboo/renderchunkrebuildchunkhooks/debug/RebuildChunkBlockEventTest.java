@@ -1,26 +1,11 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildCanBlockBeRenderedEvent;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.chunk.ChunkRenderTask;
-import net.minecraft.client.renderer.chunk.CompiledChunk;
-import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraft.client.renderer.chunk.RenderChunkCache;
-import net.minecraft.client.renderer.chunk.VisGraph;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkBlockEvent;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import javax.annotation.Nonnull;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Random;
 
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.debug.RebuildChunkBlockEventTest.Config.ENABLED;
 
@@ -35,7 +20,7 @@ public final class RebuildChunkBlockEventTest {
 	}
 
 	@SubscribeEvent
-	public static void onRebuildChunkBlock(final RebuildCanBlockBeRenderedEvent event) {
+	public static void onRebuildChunkBlock(final RebuildChunkBlockEvent event) {
 		if (!ENABLED) {
 			return;
 		}

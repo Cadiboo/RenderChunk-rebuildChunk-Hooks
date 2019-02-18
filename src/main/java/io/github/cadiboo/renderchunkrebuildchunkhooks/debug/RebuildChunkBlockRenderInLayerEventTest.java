@@ -1,6 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildCanBlockRenderInLayerEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkCanBlockRenderInLayerEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -21,7 +21,7 @@ public final class RebuildChunkBlockRenderInLayerEventTest {
 	}
 
 	@SubscribeEvent
-	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildCanBlockRenderInLayerEvent event) {
+	public static void onRebuildChunkBlockRenderInLayerEvent(final RebuildChunkCanBlockRenderInLayerEvent event) {
 		if (!ENABLED) {
 			return;
 		}

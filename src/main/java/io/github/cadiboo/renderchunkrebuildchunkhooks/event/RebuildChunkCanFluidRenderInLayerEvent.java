@@ -22,7 +22,7 @@ import java.util.Random;
  */
 @Event.HasResult
 @Cancelable
-public class RebuildCanFluidRenderInLayerEvent extends RebuildChunkEvent {
+public class RebuildChunkCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 
 	@Nonnull
 	private final RenderChunkCache renderChunkCache;
@@ -43,7 +43,7 @@ public class RebuildCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 	@Nonnull
 	private final BlockRenderLayer blockRenderLayer;
 
-	public RebuildCanFluidRenderInLayerEvent(
+	public RebuildChunkCanFluidRenderInLayerEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,

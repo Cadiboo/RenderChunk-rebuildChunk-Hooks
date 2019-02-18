@@ -31,7 +31,14 @@ function initializeCoreMod() {
 var DEBUG_METHODS = true;
 
 function methodNameMatches(methodName) {
-	return "rebuildChunk".equals(methodName) || "func_178581_b".equals(methodName)
+	var deobfNameEquals = "rebuildChunk".equals(methodName);
+	var mcpNameEquals = "func_178581_b".equals(methodName);
+
+	var anyEqual = deobfNameEquals || mcpNameEquals;
+	if(anyEqual) {
+		print(deobfNameEquals ? "We are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "We are in an SRG-NAMED PRODUCTION Environment")
+	}
+
 }
 
 var RENDER_CHUNK_REBUILD_CHUNK_DESCRIPTOR = "(FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V";
@@ -139,13 +146,13 @@ function overwriteMethodTemp(instructions) {
 
 var REBUILD_CHUNK_REDIRECT_TEMP =  {
 	'visit': function(insnList) {
-		// invokestatic io/github/cadiboo/renderchunkrebuildchunkhooks/HooksTemp(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V
+		// invokestatic io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V
 		insnList.add(
 			new MethodInsnNode(
 				//int opcode
 				INVOKESTATIC,
 				//String owner
-				"io/github/cadiboo/renderchunkrebuildchunkhooks/HooksTemp",
+				"io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp",
 				//String name
 				"rebuildChunk",
 				//String descriptor

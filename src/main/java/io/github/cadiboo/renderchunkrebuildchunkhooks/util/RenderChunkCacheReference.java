@@ -1,4 +1,4 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks;
+package io.github.cadiboo.renderchunkrebuildchunkhooks.util;
 
 import net.minecraft.client.renderer.chunk.RenderChunkCache;
 

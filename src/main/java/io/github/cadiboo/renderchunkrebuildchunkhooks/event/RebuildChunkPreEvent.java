@@ -1,6 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkCacheReference;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.util.RenderChunkCacheReference;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
