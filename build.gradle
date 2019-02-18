@@ -110,7 +110,7 @@ jar {
 		attributes([
 				"Specification-Title"     : modId,
 				"Specification-Vendor"    : modGroup,
-				"Specification-Version"   : "24.0", // We are version 1 of the modlauncher specification
+				"Specification-Version"   : "25.0", // We are version 1 of the modlauncher specification
 				"Implementation-Title"    : project.name,
 				"Implementation-Version"  : "${version}",
 				"Implementation-Vendor"   : modGroup,
