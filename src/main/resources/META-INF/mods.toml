@@ -19,7 +19,7 @@ issueTrackerURL="https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/issue
 displayURL="https://cadiboo.github.io/projects/render_chunk-rebuild_chunk-hooks" #optional
 
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="render_chunk-rebuild_chunk-hooks.png" #optional
+logoFile="render_chunk-rebuild_chunk-hooks_logo.png" #optional
 
 # A text field displayed in the mod UI
 credits="The Forge and FML guys for Forge and FML and Cadiboo for making the mod" #optional
