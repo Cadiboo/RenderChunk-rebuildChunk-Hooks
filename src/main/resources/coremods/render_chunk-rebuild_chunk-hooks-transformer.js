@@ -6,8 +6,7 @@ function initializeCoreMod() {
 				'name': 'net.minecraft.client.renderer.chunk.RenderChunk'
 			},
 			'transformer': function(classNode) {
-				print("krack");
-				print("RenderChunk: ", classNode.name);
+				print("Class RenderChunk: ", classNode.name);
 
 				var methods = classNode.methods;
 
@@ -16,8 +15,10 @@ function initializeCoreMod() {
 					var method = methods[i];
 
 					if(methodMatches(method)) {
-						print("Calling injectHooks");
+						print("Injecting hooks...");
 						injectHooks(method.instructions);
+						print("Successfully injected hooks!");
+						break;
 					}
 
 				}
@@ -36,7 +37,7 @@ function methodNameMatches(methodName) {
 
 	var anyEqual = deobfNameEquals || mcpNameEquals;
 	if(anyEqual) {
-		print(deobfNameEquals ? "We are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "We are in an SRG-NAMED PRODUCTION Environment")
+		print(deobfNameEquals ? "Matched a deobfuscated name - we are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "Matched an SRG name - We are in an SRG-NAMED PRODUCTION Environment")
 	}
 
 	return anyEqual;
@@ -73,9 +74,6 @@ function methodMatches(method) {
 
 function injectHooks(instructions) {
 
-	print("Inside injectHooks");
-	print(instructions);
-
 //	var instructionsArray = instructions.toArray();
 //	var arrayLength = instructionsArray.length;
 //	for (var i = 0; i < arrayLength; i++) {
@@ -83,7 +81,11 @@ function injectHooks(instructions) {
 //		print(insnToString(instruction));
 //	}
 
-	overwriteMethodTemp(instructions);
+	print("Redirecting method... This is incompatible with other mods and will soon be made better.")
+
+	redirectMethodTemp(instructions);
+
+	print("Successfully redirected method!");
 
 }
 
@@ -107,7 +109,7 @@ var ALOAD_generator = 4;
 
 // Finds the first instruction (NEW net/minecraft/client/renderer/chunk/CompiledChunk)
 // and inserts before it. Ugly, effective, incompatible
-function overwriteMethodTemp(instructions) {
+function redirectMethodTemp(instructions) {
 
 	var NEW_CompiledChunk;
 
@@ -116,14 +118,16 @@ function overwriteMethodTemp(instructions) {
 	for (var i = 0; i < arrayLength; i++) {
 		var instruction = instructionsArray[i];
 
-		print(instruction);
 		if(instruction.getOpcode() == Opcodes.NEW) {
 			NEW_CompiledChunk = instruction;
-			print(instruction);
-			print(NEW_CompiledChunk);
+			print("Found injection point " + instruction);
 			break;
 		}
 
+	}
+
+	if (!NEW_CompiledChunk) {
+		print("Error: Couldn't find injection point!");
 	}
 
 	var tempInstructionList = new InsnList();
@@ -138,10 +142,7 @@ function overwriteMethodTemp(instructions) {
 
 	instructions.insertBefore(NEW_CompiledChunk, tempInstructionList);
 
-	print("INJECTED SUCCESSFULLY!!!");
-	print("INJECTED SUCCESSFULLY!!!");
-	print("INJECTED SUCCESSFULLY!!!");
-	print("INJECTED SUCCESSFULLY!!!");
+	print("Successfully inserted instructions!");
 
 }
 

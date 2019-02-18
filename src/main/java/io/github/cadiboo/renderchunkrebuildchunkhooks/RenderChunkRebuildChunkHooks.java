@@ -15,12 +15,12 @@ public class RenderChunkRebuildChunkHooks {
 	private static final Logger LOGGER = LogManager.getLogger(Refs.MOD_ID);
 
 	public RenderChunkRebuildChunkHooks() {
-		LOGGER.info("Pre Loading RenderChunk");
+		LOGGER.info("Pre-loading RenderChunk");
 		RenderChunk.class.getName();
-		LOGGER.info("Pre Loaded RenderChunk");
+		LOGGER.info("Successfully Pre-loaded RenderChunk");
 		LOGGER.info("Initialising RenderChunk");
 		final int unused = RenderChunk.renderChunksUpdated;
-		LOGGER.info("Initialised RenderChunk");
+		LOGGER.info("Successfully initialised RenderChunk");
 	}
 
 }
