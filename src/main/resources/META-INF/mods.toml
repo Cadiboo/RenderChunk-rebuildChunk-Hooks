@@ -43,7 +43,8 @@ displayName="RenderChunk rebuildChunk Hooks" #mandatory
 description='''
 A small(ish) Coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to allow Modders to add their own custom chunk rendering logic and other chunk rendering related modifications.
 This mod provides configurable events that Modders can use for various chunk/world-related rendering logic
- - The RebuildChunkPreEvent is called before any chunk rebuilding is done and allows access to the IWorldReader
+ - The RebuildChunkPre is called before any chunk rebuilding is done or the generator's compiledchunk is set. It allows access to, and setting of, the World
+ - The RebuildChunkPreRenderSetupEvent is called before any chunk rebuilding is done and allows access to, and setting of, the RenderChunkCache
  - The RebuildChunkPreRenderEvent is called before any chunk rendering is done and allows access to the BlockRendererDispatcher and the usedRenderLayer boolean array
  - The RebuildChunkFluidRenderInLayerEvent allows Modders to modify the BlockRenderLayers that fluids can render in
  - The RebuildChunkFluidEvent is called for every BlockRenderLayer for every fluid and allows Modders to add their own logic
@@ -53,6 +54,7 @@ This mod provides configurable events that Modders can use for various chunk/wor
  - The RebuildChunkPostRenderEvent is called after all chunk rebuilding logic is done but before Tile Entities are updated
  - The RebuildChunkPostEvent is called right before the method returns
 Note: OptiFine changes many things about rendering, so sub-events are fired when OptiFine is present. Sub events are the same as the their parents but allows access to OptiFine-related objects.
+Note: These events are only enabled if mods require them, to keep overhead at a minumum. Hooks will still be injected
 '''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
