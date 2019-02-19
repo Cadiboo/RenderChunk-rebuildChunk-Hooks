@@ -3,8 +3,8 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.util;
 /**
  * @author Cadiboo
  */
-public class Refs {
+public final class Refs {
 
-	public static final String MOD_ID = "render_chunk-rebuild_chunk-hooks";
+	public static final String MOD_ID = "renderchunk-rebuildchunk-hooks";
 
 }
