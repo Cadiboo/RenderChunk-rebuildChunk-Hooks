@@ -1,6 +1,5 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
@@ -24,7 +23,7 @@ import java.util.Random;
  */
 @Event.HasResult
 @Cancelable
-public class RebuildChunkFluidBeRenderedEvent extends RebuildChunkEvent {
+public class RebuildChunkFluidEvent extends RebuildChunkEvent {
 
 	@Nonnull
 	private final RenderChunkCache renderChunkCache;
@@ -48,7 +47,7 @@ public class RebuildChunkFluidBeRenderedEvent extends RebuildChunkEvent {
 	@Nonnull
 	private final BufferBuilder bufferBuilder;
 
-	public RebuildChunkFluidBeRenderedEvent(
+	public RebuildChunkFluidEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
@@ -137,6 +136,5 @@ public class RebuildChunkFluidBeRenderedEvent extends RebuildChunkEvent {
 	public BufferBuilder getBufferBuilder() {
 		return bufferBuilder;
 	}
-
 
 }
