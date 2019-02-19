@@ -41,10 +41,6 @@ minecraft {
 
 	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-	// replace "@VERSION@", project.version
-	// replace '@FINGERPRINT@', project.findProperty('signSHA1')
-	// replaceIn modReferenceClass
-
 	// default run configurations.
 	// these can be tweaked, removed, or duplicated as needed.
 	runs {
@@ -114,7 +110,8 @@ jar {
 				"Implementation-Title"    : project.name,
 				"Implementation-Version"  : "${version}",
 				"Implementation-Vendor"   : modGroup,
-				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+				"Signing-Fingerprint"     : project.findProperty('signSHA1')
 		],)
 	}
 }
@@ -146,7 +143,7 @@ processResources {
 	// this will ensure that this task is redone when the versions change.
 	inputs.property 'version', project.version
 
-	// replace stuff in mcmod.info, nothing else
+	// replace stuff in mods.toml, nothing else
 	from(sourceSets.main.resources.srcDirs) {
 		include 'META_INF/mods.toml'
 
@@ -154,7 +151,7 @@ processResources {
 		expand 'version':project.version
 	}
 
-	// copy everything else except the mcmod.info
+	// copy everything else except the mods.toml
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'META_INF/mods.toml'
 	}
