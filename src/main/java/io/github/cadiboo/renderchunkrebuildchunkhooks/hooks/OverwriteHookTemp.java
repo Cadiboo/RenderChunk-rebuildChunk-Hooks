@@ -51,9 +51,6 @@ public class OverwriteHookTemp {
 			final RenderChunk renderChunk,
 			float x, float y, float z, ChunkRenderTask generator
 	) {
-
-//		LogManager.getLogger("RCRCH").info("rebuildChunk");
-
 		CompiledChunk compiledchunk = new CompiledChunk();
 		int i = 1;
 		BlockPos blockpos = renderChunk.position.toImmutable();
