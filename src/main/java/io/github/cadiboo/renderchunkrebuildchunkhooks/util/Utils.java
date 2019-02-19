@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  * @author Cadiboo
  */
 @SuppressWarnings("WeakerAccess")
-public class Utils {
+public final class Utils {
 
 	public static final MethodHandle renderChunk_preRenderBlocks;
 	public static final MethodHandle compiledChunk_setLayerUsed;

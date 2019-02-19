@@ -5,7 +5,7 @@ import net.minecraft.world.World;
 /**
  * @author Cadiboo
  */
-public class WorldReference {
+public final class WorldReference {
 
 	private World reference;
 

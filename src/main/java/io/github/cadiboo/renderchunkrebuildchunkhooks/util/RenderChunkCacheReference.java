@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.chunk.RenderChunkCache;
 /**
  * @author Cadiboo
  */
-public class RenderChunkCacheReference {
+public final class RenderChunkCacheReference {
 
 	private RenderChunkCache reference;
 
