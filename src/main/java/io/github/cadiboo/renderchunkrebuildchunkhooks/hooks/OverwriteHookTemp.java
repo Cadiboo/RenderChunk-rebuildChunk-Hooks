@@ -36,6 +36,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Utils.renderCh
  * @author Cadiboo
  */
 @Beta
+@Deprecated
 public final class OverwriteHookTemp {
 
 // - The RebuildChunkPre is called before any chunk rebuilding is done or the generator's compiledchunk is set. It allows access to, and setting of, the World
