@@ -141,3 +141,21 @@ task signJar(type: SignJar, dependsOn: jar) {
 
 // Runs this task automatically when build is run.
 build.dependsOn signJar
+
+processResources {
+	// this will ensure that this task is redone when the versions change.
+	inputs.property 'version', project.version
+
+	// replace stuff in mcmod.info, nothing else
+	from(sourceSets.main.resources.srcDirs) {
+		include 'META_INF/mods.toml'
+
+		// replace version and mcversion
+		expand 'version':project.version
+	}
+
+	// copy everything else except the mcmod.info
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'META_INF/mods.toml'
+	}
+}
