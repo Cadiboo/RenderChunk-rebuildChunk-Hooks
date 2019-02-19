@@ -1,0 +1,51 @@
+{
+  "renderchunk-rebuildchunk-hooks.config.title": "RenderChunk rebuildChunk Hooks Config",
+  "_comment0": "Config",
+  "_comment1": "Config Categories",
+  "renderchunk-rebuildchunk-hooks.config.general": "ERROR - General Configuration Category",
+  "renderchunk-rebuildchunk-hooks.config.general.tooltip": "ERROR - you shouldn't be able to see the general configuration category!",
+  "renderchunk-rebuildchunk-hooks.config.hooks": "Hooks",
+  "renderchunk-rebuildchunk-hooks.config.hooks.tooltip": "Hooks Configuration Category",
+  "renderchunk-rebuildchunk-hooks.config.tweaks": "Tweaks",
+  "renderchunk-rebuildchunk-hooks.config.tweaks.tooltip": "Tweaks Configuration Category",
+  "_comment2": "Config General Category",
+  "renderchunk-rebuildchunk-hooks.config.enableHooks": "Enable Hooks",
+  "renderchunk-rebuildchunk-hooks.config.enableHooks.tooltip": "If any of the events provided by this mod will be posted to the Forge EventBus (Doesn't affect tweaks)",
+  "renderchunk-rebuildchunk-hooks.config.reloadChunksOnConfigChange": "Reload Chunks on Config change",
+  "renderchunk-rebuildchunk-hooks.config.reloadChunksOnConfigChange.tooltip": "If all chunks should be reloaded when the config is changed (including when this is changed)",
+
+  "_comment3": "Config Hooks Category",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPreEvent": "Enable RebuildChunkPreEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPreEvent.tooltip": "If the RebuildChunkPreEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPreRenderSetupEvent": "Enable RebuildChunkPreRenderSetupEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPreRenderSetupEvent.tooltip": "If the RebuildChunkPreRenderSetupEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPreRenderEvent": "Enable RebuildChunkPreRenderEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPreRenderEvent.tooltip": "If the RebuildChunkPreRenderEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkFluidRenderInLayerEvent": "Enable RebuildChunkFluidRenderInLayerEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkFluidRenderInLayerEvent.tooltip": "If the RebuildChunkFluidRenderInLayerEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkFluidEvent": "Enable RebuildChunkFluidEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkFluidEvent.tooltip": "If the RebuildChunkFluidEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkBlockRenderInTypeEvent": "Enable RebuildChunkBlockRenderInTypeEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkBlockRenderInTypeEvent.tooltip": "If the RebuildChunkBlockRenderInTypeEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkBlockRenderInLayerEvent": "Enable RebuildChunkBlockRenderInLayerEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkBlockRenderInLayerEvent.tooltip": "If the RebuildChunkBlockRenderInLayerEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkBlockEvent": "Enable RebuildChunkBlockEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkBlockEvent.tooltip": "If the RebuildChunkBlockEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPostRenderEvent": "Enable RebuildChunkPostRenderEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPostRenderEvent.tooltip": "If the RebuildChunkPostRenderEvent will be posted to the Mod EventBus",
+
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPostEvent": "Enable RebuildChunkPostEvent Hook",
+  "renderchunk-rebuildchunk-hooks.config.enableRebuildChunkPostEvent.tooltip": "If the RebuildChunkPostEvent will be posted to the Mod EventBus",
+
+  "_comment4": "Config Tweaks Category",
+  "renderchunk-rebuildchunk-hooks.config.tweakRebuildChunkBlockRenderInType": "Tweak RebuildChunk Block#RenderInType",
+  "renderchunk-rebuildchunk-hooks.config.tweakRebuildChunkBlockRenderInType.tooltip=": "RebuildChunk Block#RenderInType should be tweaked to use the current state instead of the default one"
+}
