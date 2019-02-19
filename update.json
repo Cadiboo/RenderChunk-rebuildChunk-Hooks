@@ -1,32 +1,15 @@
 {
-	"homepage": "https://Cadiboo.github.io/projects/render_chunk_rebuild_chunk_hooks/",
+	"homepage": "https://Cadiboo.github.io/projects/renderchunk-rebuildchunk-hooks/",
 	"promos": {
+		"1.13.2-latest": "0.6.1",
+		"1.13.2-recommended": "0.6.1",
 		"1.12.2-latest": "0.2.2",
 		"1.12.2-recommended": "0.2.2"
 	},
+	"1.13.2": {
+		"1.13.2-0.6.1": "Cadiboo: Fix bug with mod logo file"
+	},
 	"1.12.2": {
-		"0.2.2": "Cadiboo: Optimised imports\nCadiboo: Fixed big bug with reflection (Using Float.class instead of float.class)\nCadiboo: Fixed big bug with reflection (Invoking the wrong method handle)",
-		"0.2.1": "Cadiboo: Maven and Gradle don't like spaces in filenames, so now we use - instead",
-		"0.2.0": "Cadiboo: Added Signature replacement to gradle\nCadiboo: Added Jar-signing code\nCadiboo: Fixed update JSON\nCadiboo: Made mod \"disableable\"\nCadiboo: Added Jar-signing gradle stuff\nCadiboo: Added event Types\nCadiboo: Added utility methods to invoke inaccessible methods\nCadiboo: Rename class transformers to better reflect their purpose\nCadiboo: Cleaned up code",
-		"0.1.1": "Cadiboo: Fixed 2 of the events not getting pre-loaded\nCadiboo: Cleaned build",
-		"0.1.0": "Cadiboo: Add semver to build.gradle\nCadiboo: Add debug JVM argument thing (very useful)\nCadiboo: 	Add -DdebugEverything=true to your JVM arguments in your launch profile to activate\nCadiboo: Minify the name of one of the ClassTransformer loggers\nCadiboo: Rename LoadingPlugin\nCadiboo: Automation of version (only need to change it in the build.gradle file now)\nCadiboo: Repackage to reflect web presence (cadiboo -> io.github.cadiboo)\nCadiboo: Added final to some classes that needed it\nCadiboo: Moved the BetterFoliage Compatibility EventSubscriber to its own package (compatibility)\nCadiboo: Remove Stringly typed instantiation of the BetterFoliage Compatibility EventSubscriber (apparently it wasn't necessary)\nCadiboo: Spaces -> Tabulations in build.gradle\nCadiboo: Added classes to .gitignore\nCadiboo: Compatible with Optifine HD_U_E3 on Forge #2795\nCadiboo: Remove decompiled BetterFoliage & Optifine code",
-		"1.0.1.0": "Cadiboo: Refactoring & made Layer and Type events cancellable (causes minor mod version increment)\nCadiboo: Modified LICENSE",
-		"1.0.0.0": "Cadiboo: All bugs fixed (I think), First release",
-		"0.0.0.0-alpha16": "Cadiboo: Fix #2 completely (lang also works now)\nCadiboo: Refactoring & code style",
-		"0.0.0.0-alpha15": "Cadiboo: Config\nCadiboo: Refactoring\nCadiboo: added option to force reload chunks on config change\nCadiboo: added BlockPosM getter in Optifine events",
-		"0.0.0.0-alpha14": "Cadiboo: Fix stupid copy pasta bug",
-		"0.0.0.0-alpha13": "Cadiboo: Added a new hook (RebuildChunkBlockRenderInTypeEvent)",
-		"0.0.0.0-alpha12": "Cadiboo: Everything works perfectly except the config :/ - It works in the dev environment though!",
-		"0.0.0.0-alpha11": "Cadiboo: BetterFoliage stuff",
-		"0.0.0.0-alpha10": "Cadiboo: ASM stuff",
-		"0.0.0.0-alpha9": "Cadiboo: Redid a bunch of the ASM & obfuscation stuff",
-		"0.0.0.0-alpha8": "Cadiboo: Initial BetterFoliage compatibility",
-		"0.0.0.0-alpha7": "Cadiboo: Actually works in non-dev environment\nCadiboo: changed \"deobfuscated\" names\nCadiboo: actually targets the right method\nCadiboo: actually injects properly\nCadiboo: fixed typo where Optifine hook was posting non-Optifine event",
-		"0.0.0.0-alpha6": "Cadiboo: Now doesn't crash outside a dev environment",
-		"0.0.0.0-alpha5": "Cadiboo: Optifine compatibility!",
-		"0.0.0.0-alpha4": "Cadiboo: Added RebuildChunkPostEvent hook and started on Optifine compatibility",
-		"0.0.0.0-alpha3": "Cadiboo: Re-wrote mod to use proper ASM, This version doesn't have any compatibility features.",
-		"0.0.0.0-alpha2": "Cadiboo: Small bug fixes to alpha1",
-		"0.0.0.0-alpha1": "Cadiboo: Initial Release, Replaces RenderChunk#rebuildChunk with code redirecting to our own method. No compatibility with any other core mods who modify RenderChunk#rebuildChunk."
+		"1.12.2-0.2.2": "Cadiboo: Important bug fixes"
 	}
 }
