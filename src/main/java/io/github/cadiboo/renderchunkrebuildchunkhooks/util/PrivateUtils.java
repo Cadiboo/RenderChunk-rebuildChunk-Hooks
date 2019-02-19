@@ -11,8 +11,7 @@ import static net.minecraftforge.fml.VersionChecker.getResult;
  */
 @Deprecated
 @Beta
-public
-class PrivateUtils {
+public final class PrivateUtils {
 
 	/**
 	 * Ew
