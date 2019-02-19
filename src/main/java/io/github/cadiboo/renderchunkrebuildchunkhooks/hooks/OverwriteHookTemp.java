@@ -1,5 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.hooks;
 
+import com.google.common.annotations.Beta;
 import com.google.common.collect.Sets;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.util.RenderChunkCacheReference;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference;
@@ -34,7 +35,8 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Utils.renderCh
 /**
  * @author Cadiboo
  */
-public class OverwriteHookTemp {
+@Beta
+public final class OverwriteHookTemp {
 
 // - The RebuildChunkPre is called before any chunk rebuilding is done or the generator's compiledchunk is set. It allows access to, and setting of, the World
 // - The RebuildChunkPreRenderSetupEvent is called before any chunk rebuilding is done and allows access to, and setting of, the RenderChunkCache
