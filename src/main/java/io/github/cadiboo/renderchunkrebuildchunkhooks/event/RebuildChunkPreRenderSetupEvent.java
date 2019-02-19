@@ -17,13 +17,13 @@ import java.util.HashSet;
  * @author Cadiboo
  */
 @Cancelable
-public class RebuildChunkPreRenderingSetupEvent extends RebuildChunkEvent {
+public class RebuildChunkPreRenderSetupEvent extends RebuildChunkEvent {
 
 	private final RenderChunkCacheReference renderChunkCacheReference;
 	private final VisGraph visGraph;
 	private final HashSet tileEntitiesWithGlobalRenderers;
 
-	public RebuildChunkPreRenderingSetupEvent(
+	public RebuildChunkPreRenderSetupEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
