@@ -16,10 +16,10 @@ updateJSONURL="https://raw.githubusercontent.com/Cadiboo/RenderChunk-rebuildChun
 issueTrackerURL="https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/issues" #optional
 
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://cadiboo.github.io/projects/render_chunk-rebuild_chunk-hooks" #optional
+displayURL="https://cadiboo.github.io/projects/renderchunk-rebuildchunk-hooks" #optional
 
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="render_chunk-rebuild_chunk-hooks_logo.png" #optional
+logoFile="renderchunk-rebuildchunk-hooks-logo.png" #optional
 
 # A text field displayed in the mod UI
 credits="The Forge and FML guys for Forge and FML and Cadiboo for making the mod" #optional
@@ -31,7 +31,7 @@ authors="Cadiboo, CosmicDan" #optional
 [[mods]] #mandatory
 
 # The modid of the mod
-modId="render_chunk-rebuild_chunk-hooks" #mandatory
+modId="renderchunk-rebuildchunk-hooks" #mandatory
 
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 version="${version}" #mandatory
