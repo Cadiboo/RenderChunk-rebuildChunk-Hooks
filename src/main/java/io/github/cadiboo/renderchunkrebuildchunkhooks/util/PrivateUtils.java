@@ -1,6 +1,7 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.util;
 
 import com.google.common.annotations.Beta;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.VersionChecker;
 
@@ -16,7 +17,7 @@ public final class PrivateUtils {
 	/**
 	 * Ew
 	 *
-	 * @param modContainer the {@link ModContainer} for {@link NoCubes}
+	 * @param modContainer the {@link ModContainer} for {@link RenderChunkRebuildChunkHooks}
 	 */
 	@Deprecated
 	@Beta
