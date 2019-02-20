@@ -143,10 +143,15 @@ function redirectMethodTemp(instructions) {
 //	instructions.insertBefore(NEW_CompiledChunk, tempInstructionList);
 
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(ALOAD, ALOAD_this)); // this
+	print("Injected instruction ALOAD this);
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_x)); // x
+	print("Injected instruction FLOAD x);
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_y)); // y
+	print("Injected instruction FLOAD y);
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_z)); // z
+	print("Injected instruction FLOAD z);
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(ALOAD, ALOAD_generator)); // generator
+	print("Injected instruction ALOAD generator);
 	instructions.insertBefore(NEW_CompiledChunk,
 		new MethodInsnNode(
 			//int opcode
@@ -161,7 +166,9 @@ function redirectMethodTemp(instructions) {
 			false
 		)
 	);
+	print("Injected instruction INVOKESTATIC io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp rebuildChunk (Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V false");
 	instructions.insertBefore(NEW_CompiledChunk, new InsnNode(RETURN));
+	print("Injected instruction RETURN);
 
 	print("Successfully inserted instructions!");
 
