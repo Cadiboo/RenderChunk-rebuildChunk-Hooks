@@ -147,7 +147,7 @@ processResources {
 	from(sourceSets.main.resources.srcDirs) {
 		include 'META-INF/mods.toml'
 
-		// replace version and mcversion
+		// replace version
 		expand 'version': project.version
 	}
 
@@ -155,4 +155,22 @@ processResources {
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'META-INF/mods.toml'
 	}
+}
+
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+build.dependsOn sourcesJar
+
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//	classifier = 'javadoc'
+//	from javadoc.destinationDir
+//}
+//build.dependsOn javadocJar
+
+artifacts {
+	archives sourcesJar
+//	archives javadocJar
 }
