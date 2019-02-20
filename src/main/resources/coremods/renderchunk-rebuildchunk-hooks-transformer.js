@@ -94,7 +94,7 @@ var/*Class*/ MethodNode = Java.type('org.objectweb.asm.tree.MethodNode');
 var/*Class*/ MethodInsnNode = Java.type('org.objectweb.asm.tree.MethodInsnNode');
 var/*Class*/ InsnNode = Java.type('org.objectweb.asm.tree.InsnNode');
 var/*Class*/ VarInsnNode = Java.type('org.objectweb.asm.tree.VarInsnNode');
-var/*Class*/ InsnList = Java.type('org.objectweb.asm.tree.InsnList');
+//var/*Class*/ InsnList = Java.type('org.objectweb.asm.tree.InsnList');
 
 var ALOAD = Opcodes.ALOAD;
 var FLOAD = Opcodes.FLOAD;
@@ -130,26 +130,54 @@ function redirectMethodTemp(instructions) {
 		print("Error: Couldn't find injection point!");
 	}
 
-	var tempInstructionList = new InsnList();
+//	var tempInstructionList = new InsnList();
+//
+//	tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_this)); // this
+//	tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
+//	tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
+//	tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
+//	tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
+//	REBUILD_CHUNK_REDIRECT_TEMP.visit(tempInstructionList);
+//	tempInstructionList.add(new InsnNode(RETURN));
+//
+//	instructions.insertBefore(NEW_CompiledChunk, tempInstructionList);
 
-	tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_this)); // this
-	tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_x)); // x
-	tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_y)); // y
-	tempInstructionList.add(new VarInsnNode(FLOAD, FLOAD_z)); // z
-	tempInstructionList.add(new VarInsnNode(ALOAD, ALOAD_generator)); // generator
-	REBUILD_CHUNK_REDIRECT_TEMP.visit(tempInstructionList);
-	tempInstructionList.add(new InsnNode(RETURN));
-
-	instructions.insertBefore(NEW_CompiledChunk, tempInstructionList);
+	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(ALOAD, ALOAD_this)); // this
+	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_x)); // x
+	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_y)); // y
+	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_z)); // z
+	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(ALOAD, ALOAD_generator)); // generator
+	instructions.insertBefore(NEW_CompiledChunk, REBUILD_CHUNK_REDIRECT_TEMP.visit());
+	instructions.insertBefore(NEW_CompiledChunk, new InsnNode(RETURN));
 
 	print("Successfully inserted instructions!");
 
 }
 
+//var REBUILD_CHUNK_REDIRECT_TEMP =  {
+//	'visit': function(insnList) {
+//		// invokestatic io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V
+//		insnList.add(
+//			new MethodInsnNode(
+//				//int opcode
+//				INVOKESTATIC,
+//				//String owner
+//				"io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp",
+//				//String name
+//				"rebuildChunk",
+//				//String descriptor
+//				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V",
+//				//boolean isInterface
+//				false
+//			)
+//		);
+//	}
+//}
+
 var REBUILD_CHUNK_REDIRECT_TEMP =  {
-	'visit': function(insnList) {
+	'visit': function() {
 		// invokestatic io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V
-		insnList.add(
+		return
 			new MethodInsnNode(
 				//int opcode
 				INVOKESTATIC,
@@ -162,6 +190,6 @@ var REBUILD_CHUNK_REDIRECT_TEMP =  {
 				//boolean isInterface
 				false
 			)
-		);
+		;
 	}
 }
