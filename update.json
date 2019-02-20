@@ -1,12 +1,13 @@
 {
 	"homepage": "https://Cadiboo.github.io/projects/renderchunk-rebuildchunk-hooks/",
 	"promos": {
-		"1.13.2-latest": "0.6.1",
-		"1.13.2-recommended": "0.6.1",
-		"1.12.2-latest": "0.2.2",
-		"1.12.2-recommended": "0.2.2"
+		"1.13.2-latest": "1.13.2-0.6.2",
+		"1.13.2-recommended": "1.13.2-0.6.2",
+		"1.12.2-latest": "1.12.2-0.2.2",
+		"1.12.2-recommended": "1.12.2-0.2.2"
 	},
 	"1.13.2": {
+		"1.13.2-0.6.2": "Cadiboo: Compatible with latest forge",
 		"1.13.2-0.6.1": "Cadiboo: Fix bug with mod logo file"
 	},
 	"1.12.2": {
