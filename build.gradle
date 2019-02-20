@@ -148,7 +148,7 @@ processResources {
 		include 'META-INF/mods.toml'
 
 		// replace version and mcversion
-		expand 'version':project.version
+		expand 'version': project.version
 	}
 
 	// copy everything else except the mods.toml
