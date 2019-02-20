@@ -147,49 +147,22 @@ function redirectMethodTemp(instructions) {
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_y)); // y
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(FLOAD, FLOAD_z)); // z
 	instructions.insertBefore(NEW_CompiledChunk, new VarInsnNode(ALOAD, ALOAD_generator)); // generator
-	instructions.insertBefore(NEW_CompiledChunk, REBUILD_CHUNK_REDIRECT_TEMP.visit());
+	instructions.insertBefore(NEW_CompiledChunk,
+		new MethodInsnNode(
+			//int opcode
+			INVOKESTATIC,
+			//String owner
+			"io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp",
+			//String name
+			"rebuildChunk",
+			//String descriptor
+			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V",
+			//boolean isInterface
+			false
+		)
+	);
 	instructions.insertBefore(NEW_CompiledChunk, new InsnNode(RETURN));
 
 	print("Successfully inserted instructions!");
 
-}
-
-//var REBUILD_CHUNK_REDIRECT_TEMP =  {
-//	'visit': function(insnList) {
-//		// invokestatic io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V
-//		insnList.add(
-//			new MethodInsnNode(
-//				//int opcode
-//				INVOKESTATIC,
-//				//String owner
-//				"io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp",
-//				//String name
-//				"rebuildChunk",
-//				//String descriptor
-//				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V",
-//				//boolean isInterface
-//				false
-//			)
-//		);
-//	}
-//}
-
-var REBUILD_CHUNK_REDIRECT_TEMP =  {
-	'visit': function() {
-		// invokestatic io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V
-		return
-			new MethodInsnNode(
-				//int opcode
-				INVOKESTATIC,
-				//String owner
-				"io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp",
-				//String name
-				"rebuildChunk",
-				//String descriptor
-				"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V",
-				//boolean isInterface
-				false
-			)
-		;
-	}
 }
