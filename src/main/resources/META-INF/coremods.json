@@ -1,3 +1,13 @@
 {
-  "RenderChunk rebuildChunk Hooks Patcher": "coremods/renderchunk-rebuildchunk-hooks-transformer.js"
+	"RenderChunk rebuildChunk Hooks 'pre' Transformer": "coremods/pre.js",
+	"RenderChunk rebuildChunk Hooks 'checkWorld' Transformer": "coremods/check-world.js",
+	"RenderChunk rebuildChunk Hooks 'checkCache' Transformer": "coremods/check-cache.js",
+	"RenderChunk rebuildChunk Hooks 'preIteration' Transformer": "coremods/pre-iteration.js",
+	"RenderChunk rebuildChunk Hooks 'canFluidRender' Transformer": "coremods/can-fluid-render.js",
+	"RenderChunk rebuildChunk Hooks 'preRenderFluid' Transformer": "coremods/pre-render-fluid.js",
+	"RenderChunk rebuildChunk Hooks 'canBlockRender' Transformer": "coremods/can-block-render.js",
+	"RenderChunk rebuildChunk Hooks 'preRenderBlock' Transformer": "coremods/pre-render-block.js",
+	"RenderChunk rebuildChunk Hooks 'postIteration' Transformer": "coremods/post-iteration.js",
+	"RenderChunk rebuildChunk Hooks 'postRender' Transformer": "coremods/post-render.js",
+	"RenderChunk rebuildChunk Hooks 'post' Transformer": "coremods/post.js"
 }
