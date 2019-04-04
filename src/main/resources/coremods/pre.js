@@ -141,6 +141,9 @@ function injectHooks(instructions) {
 	);
 	print("Injected instruction INVOKESTATIC io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp rebuildChunk (Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V false");
 
+	instructions.insert(NEW_CompiledChunk_Label, new LabelNode());
+	print("Injected instruction new LabelNode()");
+
 	instructions.insert(NEW_CompiledChunk_Label, new JumpInsnNode(IFEQ, originalInstructionsLabel));
 	print("Injected instruction IFEQ originalInstructionsLabel");
 
