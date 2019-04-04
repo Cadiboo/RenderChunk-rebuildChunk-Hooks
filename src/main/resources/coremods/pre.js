@@ -134,12 +134,12 @@ function injectHooks(instructions) {
 			//String name
 			"pre",
 			//String descriptor
-			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V",
+			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)Z",
 			//boolean isInterface
 			false
 		)
 	);
-	print("Injected instruction INVOKESTATIC io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/OverwriteHookTemp rebuildChunk (Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)V false");
+	print("Injected instruction INVOKESTATIC io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/Hooks pre (Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)Z false");
 
 	instructions.insert(NEW_CompiledChunk_Label, new LabelNode());
 	print("Injected instruction new LabelNode()");
