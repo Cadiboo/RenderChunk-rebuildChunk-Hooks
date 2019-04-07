@@ -1,6 +1,6 @@
 function initializeCoreMod() {
 	return {
-		'pre': {
+		'checkWorld': {
 			'target': {
 				'type': 'CLASS',
 				'name': 'net.minecraft.client.renderer.chunk.RenderChunk'

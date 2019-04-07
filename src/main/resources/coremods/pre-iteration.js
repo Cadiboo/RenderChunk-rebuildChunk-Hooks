@@ -1,6 +1,6 @@
 function initializeCoreMod() {
 	return {
-		'pre': {
+		'preIteration': {
 			'target': {
 				'type': 'CLASS',
 				'name': 'net.minecraft.client.renderer.chunk.RenderChunk'
