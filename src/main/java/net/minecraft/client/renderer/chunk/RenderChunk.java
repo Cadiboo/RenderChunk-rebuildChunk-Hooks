@@ -123,13 +123,13 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
 		BlockPos blockpos = this.position.toImmutable();
 		BlockPos blockpos1 = blockpos.add(15, 15, 15);
 		World world = this.world;
-		// START HOOK
-		final io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference worldRef = new io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference(world);
-		if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.checkWorld(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, worldRef)) {
-			return;
-		}
-		world = worldRef.get();
-		// END HOOK
+//		// START HOOK
+//		final io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference worldRef = new io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference(world);
+//		if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.checkWorld(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, worldRef)) {
+//			return;
+//		}
+//		world = worldRef.get();
+//		// END HOOK
 		if (world != null) {
 			generator.getLock().lock();
 
