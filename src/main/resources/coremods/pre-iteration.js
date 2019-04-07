@@ -174,7 +174,7 @@ function injectHooks(instructions) {
 	}
 
 	var firstLabelBefore_first_INVOKESTATIC_getAllInBoxMutable;
-	for (i = instructions.indexOf(first_INVOKESTATIC_getAllInBoxMutable); i =< 0 --i) {
+	for (i = instructions.indexOf(first_INVOKESTATIC_getAllInBoxMutable); i <= 0 --i) {
 		var instruction = instructions.get(i);
 		if (instruction.getType() == AbstractInsnNode.LABEL) {
 			firstLabelBefore_first_INVOKESTATIC_getAllInBoxMutable = instruction;
