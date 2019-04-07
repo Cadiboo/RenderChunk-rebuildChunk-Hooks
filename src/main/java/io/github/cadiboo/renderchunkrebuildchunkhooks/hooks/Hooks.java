@@ -1,6 +1,5 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.hooks;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.util.RenderChunkCacheReference;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -28,27 +27,19 @@ import java.util.Random;
 @SuppressWarnings({"WeakerAccess", "unused"})
 public final class Hooks {
 
-	//return if rendering should be cancelled
+	//return if rebuildChunk should return early
 	public static boolean pre(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator) {
 //		System.out.println("pre");
 		return false;
 	}
 
-	//return if rendering should be cancelled
+	//return if rebuildChunk should return early
 	public static boolean checkWorld(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final WorldReference worldRef) {
 		System.out.println("checkWorld");
 		return false;
 	}
 
-	//TODO: remove
-	@Deprecated
-	//return if rendering should be cancelled
-	public static boolean checkCache(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final RenderChunkCacheReference cacheRef) {
-		System.out.println("checkCache");
-		return false;
-	}
-
-	//return if rendering should be cancelled
+	//return if rebuildChunk should return early
 	public static boolean preIteration(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher) {
 		System.out.println("preIteration");
 		return false;
