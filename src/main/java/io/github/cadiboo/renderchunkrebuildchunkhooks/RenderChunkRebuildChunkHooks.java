@@ -1,7 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks;
 
 import io.github.cadiboo.renderchunkrebuildchunkhooks.util.PrivateUtils;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.util.Refs;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -21,15 +20,19 @@ public final class RenderChunkRebuildChunkHooks {
 	private static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	public RenderChunkRebuildChunkHooks() {
+		preLoadRenderChunk();
+
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+
+	}
+
+	private void preLoadRenderChunk() {
 		LOGGER.info("Pre-loading RenderChunk");
 		RenderChunk.class.getName();
 		LOGGER.info("Successfully Pre-loaded RenderChunk");
 		LOGGER.info("Initialising RenderChunk");
 		final int unused = RenderChunk.renderChunksUpdated;
 		LOGGER.info("Successfully initialised RenderChunk");
-
-		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-
 	}
 
 	public void setup(final FMLCommonSetupEvent event) {
