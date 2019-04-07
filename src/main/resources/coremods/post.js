@@ -77,7 +77,7 @@ var ASTACK_blockpos_startPos = 7;
 var ASTACK_blockpos1_endPos = 8;
 var ASTACK_world = 9;
 var ASTACK_lvt_10_1__ChunkCache = 10;
-var ASTACK_lvt_11_1_VisGraph = 11;
+var ASTACK_lvt_11_1__VisGraph = 11;
 var ASTACK_lvt_12_1__HashSetTileEntities = 12;
 
 // Finds the last instruction RETURN

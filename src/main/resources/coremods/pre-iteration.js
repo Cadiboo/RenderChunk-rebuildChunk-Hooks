@@ -77,7 +77,7 @@ var ASTACK_blockpos_startPos = 7;
 var ASTACK_blockpos1_endPos = 8;
 var ASTACK_world = 9;
 var ASTACK_lvt_10_1__ChunkCache = 10;
-var ASTACK_lvt_11_1_VisGraph = 11;
+var ASTACK_lvt_11_1__VisGraph = 11;
 var ASTACK_lvt_12_1__HashSetTileEntities = 12;
 var ASTACK_aboolean_usedRenderLayers = 13;
 var ASTACK_ = 12;
@@ -203,7 +203,7 @@ function injectHooks(instructions) {
 	toInject.add(new VarInsnNode(ALOAD, ASTACK_blockpos1_endPos));
 	toInject.add(new VarInsnNode(ALOAD, ASTACK_world));
 	toInject.add(new VarInsnNode(ALOAD, ASTACK_lvt_10_1__ChunkCache));
-	toInject.add(new VarInsnNode(ALOAD, ASTACK_lvt_11_1_VisGraph));
+	toInject.add(new VarInsnNode(ALOAD, ASTACK_lvt_11_1__VisGraph));
 	toInject.add(new VarInsnNode(ALOAD, ASTACK_lvt_12_1__HashSetTileEntities));
 	toInject.add(new VarInsnNode(ALOAD, ASTACK_aboolean_usedRenderLayers));
 	toInject.add(new VarInsnNode(ALOAD, ASTACK_random));
