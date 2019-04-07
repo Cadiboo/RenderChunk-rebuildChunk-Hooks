@@ -84,13 +84,13 @@ var ASTACK_lvt_12_1__HashSetTileEntities = 12;
 // then inserts before it
 function injectHooks(instructions) {
 
-//		}
+//			}
 //
+//		}
 //		// START HOOK
 //		io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.post(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_);
 //		// END HOOK
 //	}
-//}
 
 //	L16
 //	LINENUMBER 216 L16
