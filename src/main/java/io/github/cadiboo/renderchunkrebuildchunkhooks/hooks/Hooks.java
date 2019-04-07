@@ -35,7 +35,7 @@ public final class Hooks {
 
 	//return if rebuildChunk should return early
 	public static boolean checkWorld(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final WorldReference worldRef) {
-		System.out.println("checkWorld");
+//		System.out.println("checkWorld");
 		return false;
 	}
 
