@@ -13,16 +13,17 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Random;
 
+import static net.minecraftforge.eventbus.api.Event.HasResult;
+
 /**
  * @author Cadiboo
  */
-@Event.HasResult
+@HasResult
 @Cancelable
 public class RebuildChunkBlockEvent extends RebuildChunkEvent {
 

@@ -99,7 +99,7 @@ public final class RenderChunkRebuildChunkHooks {
 			postRebuildChunkFluidEvent = true;
 		}
 
-		public static boolean shouldPostRebuildChunkFluidEvent() {
+		public static boolean shouldPostRebuildChunkRenderFluidEvent() {
 			return postRebuildChunkFluidEvent;
 		}
 
@@ -123,7 +123,7 @@ public final class RenderChunkRebuildChunkHooks {
 			postRebuildChunkBlockEvent = true;
 		}
 
-		public static boolean shouldPostRebuildChunkBlockEvent() {
+		public static boolean shouldPostRebuildChunkRenderBlockEvent() {
 			return postRebuildChunkBlockEvent;
 		}
 

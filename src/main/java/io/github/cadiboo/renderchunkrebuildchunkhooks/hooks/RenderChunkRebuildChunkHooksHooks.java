@@ -29,11 +29,11 @@ import net.minecraftforge.common.MinecraftForge;
 import java.util.HashSet;
 import java.util.Random;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkBlockEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkRenderBlockEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkCanBlockRenderInLayerEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkCanBlockRenderWithTypeEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkCanFluidRenderInLayerEvent;
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkFluidEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkRenderFluidEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPostEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPostRenderEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPreEvent;
@@ -84,7 +84,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	//return if the fluid _should be rendered by vanilla_
 	public static boolean rebuildChunkCanFluidBeRenderedHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockpos$mutableblockpos, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
-		if (!shouldPostRebuildChunkFluidEvent()) {
+		if (!shouldPostRebuildChunkRenderFluidEvent()) {
 			return true;
 		}
 		final RebuildChunkFluidEvent event = new RebuildChunkFluidEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, ifluidstate, blockrenderlayer1, j, bufferbuilder);
@@ -142,7 +142,7 @@ public final class RenderChunkRebuildChunkHooksHooks {
 
 	//return if the block _should be rendered by vanilla_
 	public static boolean rebuildChunkCanBlockBeRenderedHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockpos$mutableblockpos, final IBlockState iblockstate, final Block block, final BlockRenderLayer blockrenderlayer1, final int k, final BufferBuilder bufferbuilder1) {
-		if (!shouldPostRebuildChunkBlockEvent()) {
+		if (!shouldPostRebuildChunkRenderBlockEvent()) {
 			return true;
 		}
 		final RebuildChunkBlockEvent event = new RebuildChunkBlockEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockpos$mutableblockpos, iblockstate, block, blockrenderlayer1, k, bufferbuilder1);

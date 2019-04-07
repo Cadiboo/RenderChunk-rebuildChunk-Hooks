@@ -19,6 +19,13 @@ import net.minecraft.world.World;
 import java.util.HashSet;
 import java.util.Random;
 
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPostEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPostRenderEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkRenderBlockEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkCanFluidRenderInLayerEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkRenderFluidEvent;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPreEvent;
+
 /**
  * @author Cadiboo
  * @deprecated Modders should not touch this, the only thing that should touch this is the injected hooks
@@ -29,56 +36,99 @@ public final class Hooks {
 
 	//return if rebuildChunk should return early
 	public static boolean pre(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator) {
-//		System.out.println("pre");
-		return false;
+		if (shouldPostRebuildChunkPreEvent()) {
+			return event;
+		} else {
+			return false;
+		}
 	}
 
 	//return if rebuildChunk should return early
 	public static boolean checkWorld(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final WorldReference worldRef) {
-//		System.out.println("checkWorld");
-		return false;
+		if (shouldPostRebuildChunkCheckWorldEvent()) {
+			return event;
+		} else {
+			return false;
+		}
 	}
 
 	//return if rebuildChunk should return early
 	public static boolean preIteration(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher) {
-//		System.out.println("preIteration");
-		return false;
+		if (shouldPostRebuildChunkPreIterationEvent()) {
+			return event;
+		} else {
+			return false;
+		}
 	}
 
 	//return if fluid can render
 	public static boolean canFluidRender(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
-//		System.out.println("canFluidRender");
-		return true;
+		if (shouldPostRebuildChunkCanFluidRenderInLayerEvent()) {
+			if (shouldPostRebuildChunkIsFluidEmptyEvent()) {
+				return fluidstateisemptyevent && fluidcanRenderInLayerevent;
+			} else {
+				return !ifluidstate.isEmpty() && fluidcanRenderInLayerevent;
+			}
+		} else {
+			if (shouldPostRebuildChunkIsFluidEmptyEvent()) {
+				return fluidstateisemptyevent && ifluidstate.canRenderInLayer(blockrenderlayer1);
+			} else {
+				return !ifluidstate.isEmpty() && ifluidstate.canRenderInLayer(blockrenderlayer1);
+			}
+		}
 	}
 
 	//return if fluid rendering should be cancelled
 	public static boolean preRenderFluid(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
-//		System.out.println("preRenderFluid");
-		return false;
+		if (shouldPostRebuildChunkRenderFluidEvent()) {
+			return event;
+		} else {
+			return false;
+		}
 	}
 
 	//return if block can render
 	public static boolean canBlockRender(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
-//		System.out.println("canBlockRender");
-		return (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1));
+		if (shouldPostRebuildChunkCanFluidRenderInLayerEvent()) {
+			if (shouldPostRebuildChunkCanBlockRenderTypeBeRenderedEvent()) {
+				return blockstaterendertypeevent && fluidcanRenderInLayerevent;
+			} else {
+				return iblockstate.getRenderType()!= EnumBlockRenderType.INVISIBLE && fluidcanRenderInLayerevent;
+			}
+		} else {
+			if (shouldPostRebuildChunkCanBlockRenderTypeBeRenderedEvent()) {
+				return blockstaterendertypeevent && iblockstate.canRenderInLayer(blockrenderlayer1);
+			} else {
+				return iblockstate.getRenderType()!= EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1);
+			}
+		}
 	}
 
 	//return if block rendering should be cancelled
 	public static boolean preRenderBlock(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
-//		System.out.println("preRenderBlock");
-		return false;
+		if (shouldPostRebuildChunkRenderBlockEvent()) {
+			return event;
+		} else {
+			return false;
+		}
 	}
 
 	public static void postIteration(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher) {
-//		System.out.println("postIteration");
+		if (shouldPostRebuildChunkPostIterationEvent()) {
+			event;
+		}
 	}
 
 	public static void postRender(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_) {
-//		System.out.println("postRender");
+		if (shouldPostRebuildChunkPostRenderEvent()) {
+			event;
+		}
 	}
 
 	public static void post(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world) {
-//		System.out.println("post");
+		if (shouldPostRebuildChunkPostEvent()) {
+			event;
+		}
 	}
 
 }
