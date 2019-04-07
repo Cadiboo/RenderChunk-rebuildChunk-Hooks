@@ -41,7 +41,7 @@ public final class Hooks {
 
 	//return if rebuildChunk should return early
 	public static boolean preIteration(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher) {
-		System.out.println("preIteration");
+//		System.out.println("preIteration");
 		return false;
 	}
 
