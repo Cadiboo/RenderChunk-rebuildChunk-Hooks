@@ -6,7 +6,7 @@ function initializeCoreMod() {
 				'name': 'net.minecraft.client.renderer.chunk.RenderChunk'
 			},
 			'transformer': function(classNode) {
-				print("Class RenderChunk: ", classNode.name);
+				log("Class RenderChunk: ", classNode.name);
 
 				var methods = classNode.methods;
 
@@ -18,17 +18,17 @@ function initializeCoreMod() {
 					var mcpNameEquals = "func_178581_b".equals(methodName);
 
 					if (!deobfNameEquals && !mcpNameEquals) {
-						print("Did not match method " + methodName);
+						log("Did not match method " + methodName);
 						continue;
 					}
 
-					print("Matched method " + methodName);
+					log("Matched method " + methodName);
 
-					print(deobfNameEquals ? "Matched a deobfuscated name - we are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "Matched an SRG name - We are in an SRG-NAMED PRODUCTION Environment")
+					log(deobfNameEquals ? "Matched a deobfuscated name - we are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "Matched an SRG name - We are in an SRG-NAMED PRODUCTION Environment")
 
-					print("Injecting hook...");
+					log("Injecting hook...");
 					injectHooks(method.instructions);
-					print("Successfully injected hook!");
+					log("Successfully injected hook!");
 					break;
 
 				}
@@ -161,7 +161,7 @@ function injectHooks(instructions) {
 					if (instruction.desc == "(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Ljava/lang/Iterable;") {
 						if (instruction.itf == false) {
 							first_INVOKESTATIC_getAllInBoxMutable = instruction;
-							print("Found injection point " + instruction);
+							log("Found injection point " + instruction);
 							break;
 						}
 					}
@@ -178,7 +178,7 @@ function injectHooks(instructions) {
 		var instruction = instructions.get(i);
 		if (instruction.getType() == AbstractInsnNode.LABEL) {
 			firstLabelBefore_first_INVOKESTATIC_getAllInBoxMutable = instruction;
-			print("Found label " + instruction);
+			log("Found label " + instruction);
 			break;
 		}
 	}
@@ -230,7 +230,7 @@ function injectHooks(instructions) {
 	// Inject instructions
 	instructions.insert(firstLabelBefore_first_INVOKESTATIC_getAllInBoxMutable, toInject);
 
-	print("Successfully inserted instructions!");
+	log("Successfully inserted instructions!");
 
 }
 
@@ -248,4 +248,8 @@ function getMaxStack(instructions) {
 
 function max(a, b) {
 	return a > b ? a : b;
+}
+
+function log(msg) {
+	print("[preIteration Transformer] " + msg);
 }

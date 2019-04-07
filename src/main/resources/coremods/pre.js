@@ -6,7 +6,7 @@ function initializeCoreMod() {
 				'name': 'net.minecraft.client.renderer.chunk.RenderChunk'
 			},
 			'transformer': function(classNode) {
-				print("Class RenderChunk: ", classNode.name);
+				log("Class RenderChunk: ", classNode.name);
 
 				var methods = classNode.methods;
 
@@ -18,17 +18,17 @@ function initializeCoreMod() {
 					var mcpNameEquals = "func_178581_b".equals(methodName);
 
 					if (!deobfNameEquals && !mcpNameEquals) {
-						print("Did not match method " + methodName);
+						log("Did not match method " + methodName);
 						continue;
 					}
 
-					print("Matched method " + methodName);
+					log("Matched method " + methodName);
 
-					print(deobfNameEquals ? "Matched a deobfuscated name - we are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "Matched an SRG name - We are in an SRG-NAMED PRODUCTION Environment")
+					log(deobfNameEquals ? "Matched a deobfuscated name - we are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "Matched an SRG name - We are in an SRG-NAMED PRODUCTION Environment")
 
-					print("Injecting hook...");
+					log("Injecting hook...");
 					injectHooks(method.instructions);
-					print("Successfully injected hook!");
+					log("Successfully injected hook!");
 					break;
 
 				}
@@ -111,7 +111,7 @@ function injectHooks(instructions) {
 		var instruction = instructions.get(i);
 		if (instruction.getOpcode() == NEW) {
 			NEW_CompiledChunk = instruction;
-			print("Found injection point " + instruction);
+			log("Found injection point " + instruction);
 			break;
 		}
 	}
@@ -124,7 +124,7 @@ function injectHooks(instructions) {
 		var instruction = instructions.get(i);
 		if (instruction.getType() == AbstractInsnNode.LABEL) {
 			NEW_CompiledChunk_Label = instruction;
-			print("Found label " + instruction);
+			log("Found label " + instruction);
 			break;
 		}
 	}
@@ -166,6 +166,11 @@ function injectHooks(instructions) {
 	// Inject instructions
 	instructions.insert(NEW_CompiledChunk_Label, toInject);
 
-	print("Successfully inserted instructions!");
+	log("Successfully inserted instructions!");
 
+}
+
+
+function log(msg) {
+	print("[pre Transformer] " + msg);
 }
