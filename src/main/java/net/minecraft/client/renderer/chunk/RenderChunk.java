@@ -260,10 +260,10 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
 				this.lockCompileTask.unlock();
 			}
 
-			// START HOOK
-			io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.post(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_);
-			// END HOOK
 		}
+		// START HOOK
+		io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.post(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world);
+		// END HOOK
 	}
 
 	public void rebuildChunkOF(float x, float y, float z, ChunkRenderTask generator) {
