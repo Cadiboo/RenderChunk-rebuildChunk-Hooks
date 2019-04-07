@@ -1,7 +1,6 @@
 {
 	"RenderChunk rebuildChunk Hooks 'pre' Transformer": "coremods/pre.js",
 	"RenderChunk rebuildChunk Hooks 'checkWorld' Transformer": "coremods/check-world.js",
-	"RenderChunk rebuildChunk Hooks 'checkCache' Transformer": "coremods/check-cache.js",
 	"RenderChunk rebuildChunk Hooks 'preIteration' Transformer": "coremods/pre-iteration.js",
 	"RenderChunk rebuildChunk Hooks 'canFluidRender' Transformer": "coremods/can-fluid-render.js",
 	"RenderChunk rebuildChunk Hooks 'preRenderFluid' Transformer": "coremods/pre-render-fluid.js",

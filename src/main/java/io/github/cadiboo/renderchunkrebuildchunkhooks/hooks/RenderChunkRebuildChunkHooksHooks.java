@@ -9,8 +9,6 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostEven
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPostRenderEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreRenderEvent;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreRenderSetupEvent;
-import io.github.cadiboo.renderchunkrebuildchunkhooks.util.RenderChunkCacheReference;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -40,7 +38,6 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildC
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPostRenderEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPreEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPreRenderEvent;
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHooks.HookConfig.shouldPostRebuildChunkPreRenderSetupEvent;
 
 /**
  * @author Cadiboo
@@ -53,16 +50,6 @@ public final class RenderChunkRebuildChunkHooksHooks {
 			return false;
 		}
 		final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, worldReference);
-		MinecraftForge.EVENT_BUS.post(event);
-		return event.isCanceled();
-	}
-
-	//return if rendering should _not_ happen
-	public static boolean rebuildChunkCancelRenderingPreRenderSetupHook(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCacheReference lvt_10_1_Reference, final VisGraph lvt_11_1_, final HashSet lvt_12_1_) {
-		if (!shouldPostRebuildChunkPreRenderSetupEvent()) {
-			return false;
-		}
-		final RebuildChunkPreRenderSetupEvent event = new RebuildChunkPreRenderSetupEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_Reference, lvt_11_1_, lvt_12_1_);
 		MinecraftForge.EVENT_BUS.post(event);
 		return event.isCanceled();
 	}

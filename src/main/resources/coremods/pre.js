@@ -26,9 +26,9 @@ function initializeCoreMod() {
 
 					print(deobfNameEquals ? "Matched a deobfuscated name - we are in a DEOBFUSCATED/MCP-NAMED DEVELOPER Environment" : "Matched an SRG name - We are in an SRG-NAMED PRODUCTION Environment")
 
-					print("Injecting hooks...");
+					print("Injecting hook...");
 					injectHooks(method.instructions);
-					print("Successfully injected hooks!");
+					print("Successfully injected hook!");
 					break;
 
 				}
@@ -49,22 +49,36 @@ var/*Class*/ JumpInsnNode = Java.type('org.objectweb.asm.tree.JumpInsnNode');
 var/*Class*/ LabelNode = Java.type('org.objectweb.asm.tree.LabelNode');
 //var/*Class*/ InsnList = Java.type('org.objectweb.asm.tree.InsnList');
 
+var/*Class*/ ASMAPI = Java.type('net.minecraftforge.coremod.api.ASMAPI');
+
+//opcodes
 var ALOAD = Opcodes.ALOAD;
 var FLOAD = Opcodes.FLOAD;
 var RETURN = Opcodes.RETURN;
 var INVOKESTATIC = Opcodes.INVOKESTATIC;
 var IFNE = Opcodes.IFNE;
 var IFEQ = Opcodes.IFEQ;
+var NEW = Opcodes.NEW;
 
-var ALOAD_this = 0;
-var FLOAD_x = 1;
-var FLOAD_y = 2;
-var FLOAD_z = 3;
-var ALOAD_generator = 4;
+//stack var indices
+var ASTACK_this = 0;
+var FSTACK_x = 1;
+var FSTACK_y = 2;
+var FSTACK_z = 3;
+var ASTACK_generator = 4;
 
 // Finds the first instruction (NEW net/minecraft/client/renderer/chunk/CompiledChunk)
-// and inserts before it.
+// then finds the previous label
+// and inserts after the label and before the label's instructions.
 function injectHooks(instructions) {
+
+//public void rebuildChunk(float x, float y, float z, ChunkRenderTask generator) {
+//	// START HOOK
+//	if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.pre(this, x, y, z, generator)) {
+//		return;
+//	}
+//	// END HOOK
+//	CompiledChunk compiledchunk = new CompiledChunk();
 
 //	L10
 //	LINENUMBER 110 L10
@@ -74,23 +88,28 @@ function injectHooks(instructions) {
 //	ASTORE 5
 
 //	L10
+//	LINENUMBER 114 L10
 //	ALOAD 0
-//	ALOAD 1
+//	FLOAD 1
 //	FLOAD 2
 //	FLOAD 3
-//	FLOAD 4
+//	ALOAD 4
 //	INVOKESTATIC io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/Hooks.pre (Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)Z
 //	IFEQ L11
 //	L12
+//	LINENUMBER 115 L12
 //	RETURN
 //	L11
+//	LINENUMBER 118 L11
+//	FRAME SAME
+//	NEW net/minecraft/client/renderer/chunk/CompiledChunk
 //	Original code
 
 	var NEW_CompiledChunk;
 	var arrayLength = instructions.size();
 	for (var i = 0; i < arrayLength; ++i) {
 		var instruction = instructions.get(i);
-		if (instruction.getOpcode() == Opcodes.NEW) {
+		if (instruction.getOpcode() == NEW) {
 			NEW_CompiledChunk = instruction;
 			print("Found injection point " + instruction);
 			break;
@@ -113,20 +132,19 @@ function injectHooks(instructions) {
 		throw "Error: Couldn't find label!";
 	}
 
+	//FFS why
+	var toInject = ASMAPI.getMethodNode().instructions;
+
+	// Labels n stuff
 	var originalInstructionsLabel = new LabelNode();
 
-	instructions.insert(NEW_CompiledChunk_Label, new VarInsnNode(ALOAD, ALOAD_this)); // this
-	print("Injected instruction ALOAD this");
-	instructions.insert(NEW_CompiledChunk_Label, new VarInsnNode(FLOAD, FLOAD_x)); // x
-	print("Injected instruction FLOAD x");
-	instructions.insert(NEW_CompiledChunk_Label, new VarInsnNode(FLOAD, FLOAD_y)); // y
-	print("Injected instruction FLOAD y");
-	instructions.insert(NEW_CompiledChunk_Label, new VarInsnNode(FLOAD, FLOAD_z)); // z
-	print("Injected instruction FLOAD z");
-	instructions.insert(NEW_CompiledChunk_Label, new VarInsnNode(ALOAD, ALOAD_generator)); // generator
-	print("Injected instruction ALOAD generator");
-	instructions.insert(NEW_CompiledChunk_Label,
-		new MethodInsnNode(
+	// Make list of instructions to inject
+	toInject.add(new VarInsnNode(ALOAD, ASTACK_this));
+	toInject.add(new VarInsnNode(FLOAD, FSTACK_x));
+	toInject.add(new VarInsnNode(FLOAD, FSTACK_y));
+	toInject.add(new VarInsnNode(FLOAD, FSTACK_z));
+	toInject.add(new VarInsnNode(ALOAD, ASTACK_generator));
+	toInject.add(new MethodInsnNode(
 			//int opcode
 			INVOKESTATIC,
 			//String owner
@@ -137,21 +155,16 @@ function injectHooks(instructions) {
 			"(Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)Z",
 			//boolean isInterface
 			false
-		)
-	);
-	print("Injected instruction INVOKESTATIC io/github/cadiboo/renderchunkrebuildchunkhooks/hooks/Hooks pre (Lnet/minecraft/client/renderer/chunk/RenderChunk;FFFLnet/minecraft/client/renderer/chunk/ChunkRenderTask;)Z false");
+	));
+	toInject.add(new JumpInsnNode(IFEQ, originalInstructionsLabel));
 
-	instructions.insert(NEW_CompiledChunk_Label, new LabelNode());
-	print("Injected instruction new LabelNode()");
+	toInject.add(new LabelNode());
+	toInject.add(new InsnNode(RETURN));
 
-	instructions.insert(NEW_CompiledChunk_Label, new JumpInsnNode(IFEQ, originalInstructionsLabel));
-	print("Injected instruction IFEQ originalInstructionsLabel");
+	toInject.add(originalInstructionsLabel);
 
-	instructions.insert(NEW_CompiledChunk_Label, new InsnNode(RETURN));
-	print("Injected instruction RETURN");
-
-	instructions.insert(NEW_CompiledChunk_Label, originalInstructionsLabel);
-	print("Injected instruction originalInstructionsLabel");
+	// Inject instructions
+	instructions.insert(NEW_CompiledChunk_Label, toInject);
 
 	print("Successfully inserted instructions!");
 
