@@ -225,10 +225,10 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
 					}
 					net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
 				}
+
 				// START HOOK
 				io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.postIteration(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher);
 				// END HOOK
-
 				for(BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
 					if (aboolean[blockrenderlayer.ordinal()]) {
 						compiledchunk.setLayerUsed(blockrenderlayer);
