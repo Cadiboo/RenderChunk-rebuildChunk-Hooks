@@ -1,15 +1,11 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.chunk.VisGraph;
-import net.minecraft.fluid.IFluidState;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -22,38 +18,30 @@ import java.util.Random;
  * @author Cadiboo
  */
 @Cancelable
-public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
+public class RebuildChunkPreIterationEvent extends RebuildChunkEvent {
 
 	@Nonnull
-	CompiledChunk compiledChunk;
+	private final CompiledChunk compiledChunk;
 	@Nonnull
-	BlockPos startPosition;
+	private final BlockPos startPosition;
 	@Nonnull
-	BlockPos endPosition;
+	private final BlockPos endPosition;
 	@Nonnull
-	World world;
+	private final World world;
 	@Nonnull
-	RenderChunkCache renderChunkCache;
+	private final RenderChunkCache renderChunkCache;
 	@Nonnull
-	VisGraph visGraph;
+	private final VisGraph visGraph;
 	@Nonnull
-	HashSet tileEntitiesWithGlobalRenderers;
+	private final HashSet tileEntitiesWithGlobalRenderers;
 	@Nonnull
-	boolean[] usedBlockRenderLayers;
+	private final boolean[] usedBlockRenderLayers;
 	@Nonnull
-	Random random;
+	private final Random random;
 	@Nonnull
-	BlockRendererDispatcher blockRendererDispatcher;
-	@Nonnull
-	IBlockState iBlockState;
-	@Nonnull
-	Block block;
-	@Nonnull
-	IFluidState iFluidState;
-	@Nonnull
-	BlockRenderLayer blockRenderLayer;
+	private final BlockRendererDispatcher blockRendererDispatcher;
 
-	public RebuildChunkCanBlockRenderInLayerEvent(
+	public RebuildChunkPreIterationEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
@@ -68,11 +56,7 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 			@Nonnull final HashSet lvt_12_1_,
 			@Nonnull final boolean[] aboolean,
 			@Nonnull final Random random,
-			@Nonnull final BlockRendererDispatcher blockrendererdispatcher,
-			@Nonnull final IBlockState iblockstate,
-			@Nonnull final Block block,
-			@Nonnull final IFluidState ifluidstate,
-			@Nonnull final BlockRenderLayer blockrenderlayer1
+			@Nonnull final BlockRendererDispatcher blockrendererdispatcher
 	) {
 		super(renderChunk, x, y, z, generator);
 		this.compiledChunk = compiledchunk;
@@ -85,14 +69,6 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 		this.usedBlockRenderLayers = aboolean;
 		this.random = random;
 		this.blockRendererDispatcher = blockrendererdispatcher;
-		this.iBlockState = iblockstate;
-		this.block = block;
-		this.iFluidState = ifluidstate;
-		this.blockRenderLayer = blockrenderlayer1;
-	}
-
-	RebuildChunkCanBlockRenderInLayerEvent() {
-
 	}
 
 	@Nonnull
@@ -143,26 +119,6 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 	@Nonnull
 	public BlockRendererDispatcher getBlockRendererDispatcher() {
 		return blockRendererDispatcher;
-	}
-
-	@Nonnull
-	public IBlockState getIBlockState() {
-		return iBlockState;
-	}
-
-	@Nonnull
-	public Block getBlock() {
-		return block;
-	}
-
-	@Nonnull
-	public IFluidState getIFluidState() {
-		return iFluidState;
-	}
-
-	@Nonnull
-	public BlockRenderLayer getBlockRenderLayer() {
-		return blockRenderLayer;
 	}
 
 }

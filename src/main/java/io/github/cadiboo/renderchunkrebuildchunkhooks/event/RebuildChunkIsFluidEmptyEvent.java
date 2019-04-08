@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -22,7 +21,7 @@ import java.util.Random;
  * @author Cadiboo
  */
 @Cancelable
-public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
+public class RebuildChunkIsFluidEmptyEvent extends RebuildChunkEvent {
 
 	@Nonnull
 	CompiledChunk compiledChunk;
@@ -50,10 +49,8 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 	Block block;
 	@Nonnull
 	IFluidState iFluidState;
-	@Nonnull
-	BlockRenderLayer blockRenderLayer;
 
-	public RebuildChunkCanBlockRenderInLayerEvent(
+	public RebuildChunkIsFluidEmptyEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
@@ -71,8 +68,7 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 			@Nonnull final BlockRendererDispatcher blockrendererdispatcher,
 			@Nonnull final IBlockState iblockstate,
 			@Nonnull final Block block,
-			@Nonnull final IFluidState ifluidstate,
-			@Nonnull final BlockRenderLayer blockrenderlayer1
+			@Nonnull final IFluidState ifluidstate
 	) {
 		super(renderChunk, x, y, z, generator);
 		this.compiledChunk = compiledchunk;
@@ -88,10 +84,9 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 		this.iBlockState = iblockstate;
 		this.block = block;
 		this.iFluidState = ifluidstate;
-		this.blockRenderLayer = blockrenderlayer1;
 	}
 
-	RebuildChunkCanBlockRenderInLayerEvent() {
+	RebuildChunkIsFluidEmptyEvent() {
 
 	}
 
@@ -158,11 +153,6 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 	@Nonnull
 	public IFluidState getIFluidState() {
 		return iFluidState;
-	}
-
-	@Nonnull
-	public BlockRenderLayer getBlockRenderLayer() {
-		return blockRenderLayer;
 	}
 
 }

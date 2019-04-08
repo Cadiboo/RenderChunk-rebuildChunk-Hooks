@@ -1,6 +1,5 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
@@ -12,7 +11,6 @@ import net.minecraftforge.eventbus.api.Cancelable;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
-import java.util.Random;
 
 /**
  * @author Cadiboo
@@ -21,17 +19,19 @@ import java.util.Random;
 public class RebuildChunkPreRenderEvent extends RebuildChunkEvent {
 
 	@Nonnull
+	private final CompiledChunk compiledChunk;
+	@Nonnull
+	private final BlockPos startPosition;
+	@Nonnull
+	private final BlockPos endPosition;
+	@Nonnull
+	private final World world;
+	@Nonnull
 	private final RenderChunkCache renderChunkCache;
 	@Nonnull
 	private final VisGraph visGraph;
 	@Nonnull
 	private final HashSet tileEntitiesWithGlobalRenderers;
-	@Nonnull
-	private final boolean[] usedBlockRenderLayers;
-	@Nonnull
-	private final Random random;
-	@Nonnull
-	private final BlockRendererDispatcher blockRendererDispatcher;
 
 	public RebuildChunkPreRenderEvent(
 			@Nonnull final RenderChunk renderChunk,
@@ -39,24 +39,42 @@ public class RebuildChunkPreRenderEvent extends RebuildChunkEvent {
 			final float y,
 			final float z,
 			@Nonnull final ChunkRenderTask generator,
-			@Nonnull final CompiledChunk compiledChunk,
-			@Nonnull final BlockPos renderChunkStartPosition,
-			@Nonnull final BlockPos renderChunkEndPosition,
+			@Nonnull final CompiledChunk compiledchunk,
+			@Nonnull final BlockPos blockpos,
+			@Nonnull final BlockPos blockpos1,
 			@Nonnull final World world,
-			@Nonnull final RenderChunkCache renderChunkCache,
-			@Nonnull final VisGraph visGraph,
-			@Nonnull final HashSet tileEntitiesWithGlobalRenderers,
-			@Nonnull final boolean[] usedBlockRenderLayers,
-			@Nonnull final Random random,
-			@Nonnull final BlockRendererDispatcher blockRendererDispatcher
+			@Nonnull final RenderChunkCache lvt_10_1_,
+			@Nonnull final VisGraph lvt_11_1_,
+			@Nonnull final HashSet lvt_12_1_
 	) {
-		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkStartPosition, renderChunkEndPosition, world);
-		this.renderChunkCache = renderChunkCache;
-		this.visGraph = visGraph;
-		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
-		this.usedBlockRenderLayers = usedBlockRenderLayers;
-		this.random = random;
-		this.blockRendererDispatcher = blockRendererDispatcher;
+		super(renderChunk, x, y, z, generator);
+		this.compiledChunk = compiledchunk;
+		this.startPosition = blockpos;
+		this.endPosition = blockpos1;
+		this.world = world;
+		this.renderChunkCache = lvt_10_1_;
+		this.visGraph = lvt_11_1_;
+		this.tileEntitiesWithGlobalRenderers = lvt_12_1_;
+	}
+
+	@Nonnull
+	public CompiledChunk getCompiledChunk() {
+		return compiledChunk;
+	}
+
+	@Nonnull
+	public BlockPos getStartPosition() {
+		return startPosition;
+	}
+
+	@Nonnull
+	public BlockPos getEndPosition() {
+		return endPosition;
+	}
+
+	@Nonnull
+	public World getWorld() {
+		return world;
 	}
 
 	@Nonnull
@@ -72,21 +90,6 @@ public class RebuildChunkPreRenderEvent extends RebuildChunkEvent {
 	@Nonnull
 	public HashSet getTileEntitiesWithGlobalRenderers() {
 		return tileEntitiesWithGlobalRenderers;
-	}
-
-	@Nonnull
-	public boolean[] getUsedBlockRenderLayers() {
-		return usedBlockRenderLayers;
-	}
-
-	@Nonnull
-	public Random getRandom() {
-		return random;
-	}
-
-	@Nonnull
-	public BlockRendererDispatcher getBlockRendererDispatcher() {
-		return blockRendererDispatcher;
 	}
 
 }

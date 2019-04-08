@@ -1,11 +1,7 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
-import io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
-import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 import javax.annotation.Nonnull;
@@ -16,36 +12,14 @@ import javax.annotation.Nonnull;
 @Cancelable
 public class RebuildChunkPreEvent extends RebuildChunkEvent {
 
-	@Nonnull
-	private final WorldReference worldReference;
-
 	public RebuildChunkPreEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
 			final float z,
-			@Nonnull final ChunkRenderTask generator,
-			@Nonnull final CompiledChunk compiledChunk,
-			@Nonnull final BlockPos renderChunkStartPosition,
-			@Nonnull final BlockPos renderChunkEndPosition,
-			@Nonnull final WorldReference worldReference
+			@Nonnull final ChunkRenderTask generator
 	) {
-		//pass null in as the world, and override the getWorld method;
-		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkStartPosition, renderChunkEndPosition, null);
-		this.worldReference = worldReference;
-	}
-
-	@Nonnull
-	@Override
-	public World getWorld() {
-		return worldReference.get();
-	}
-
-	@Nonnull
-	public World setWorld(World world) {
-		final World oldWorld = worldReference.get();
-		worldReference.set(world);
-		return oldWorld;
+		super(renderChunk, x, y, z, generator);
 	}
 
 }

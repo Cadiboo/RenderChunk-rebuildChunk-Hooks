@@ -1,5 +1,7 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
@@ -11,7 +13,6 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -20,28 +21,37 @@ import java.util.Random;
 /**
  * @author Cadiboo
  */
-@Event.HasResult
 @Cancelable
 public class RebuildChunkCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 
 	@Nonnull
-	private final RenderChunkCache renderChunkCache;
+	CompiledChunk compiledChunk;
 	@Nonnull
-	private final VisGraph visGraph;
+	BlockPos startPosition;
 	@Nonnull
-	private final HashSet tileEntitiesWithGlobalRenderers;
+	BlockPos endPosition;
 	@Nonnull
-	private final boolean[] usedBlockRenderLayers;
+	World world;
 	@Nonnull
-	private final Random random;
+	RenderChunkCache renderChunkCache;
 	@Nonnull
-	private final BlockRendererDispatcher blockRendererDispatcher;
+	VisGraph visGraph;
 	@Nonnull
-	private final BlockPos blockPos;
+	HashSet tileEntitiesWithGlobalRenderers;
 	@Nonnull
-	private final IFluidState fluidState;
+	boolean[] usedBlockRenderLayers;
 	@Nonnull
-	private final BlockRenderLayer blockRenderLayer;
+	Random random;
+	@Nonnull
+	BlockRendererDispatcher blockRendererDispatcher;
+	@Nonnull
+	IBlockState iBlockState;
+	@Nonnull
+	Block block;
+	@Nonnull
+	IFluidState iFluidState;
+	@Nonnull
+	BlockRenderLayer blockRenderLayer;
 
 	public RebuildChunkCanFluidRenderInLayerEvent(
 			@Nonnull final RenderChunk renderChunk,
@@ -49,30 +59,59 @@ public class RebuildChunkCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 			final float y,
 			final float z,
 			@Nonnull final ChunkRenderTask generator,
-			@Nonnull final CompiledChunk compiledChunk,
-			@Nonnull final BlockPos renderChunkStartPosition,
-			@Nonnull final BlockPos renderChunkEndPosition,
+			@Nonnull final CompiledChunk compiledchunk,
+			@Nonnull final BlockPos blockpos,
+			@Nonnull final BlockPos blockpos1,
 			@Nonnull final World world,
-			@Nonnull final RenderChunkCache renderChunkCache,
-			@Nonnull final VisGraph visGraph,
-			@Nonnull final HashSet tileEntitiesWithGlobalRenderers,
-			@Nonnull final boolean[] usedBlockRenderLayers,
+			@Nonnull final RenderChunkCache lvt_10_1_,
+			@Nonnull final VisGraph lvt_11_1_,
+			@Nonnull final HashSet lvt_12_1_,
+			@Nonnull final boolean[] aboolean,
 			@Nonnull final Random random,
-			@Nonnull final BlockRendererDispatcher blockRendererDispatcher,
-			@Nonnull final BlockPos blockPos,
-			@Nonnull final IFluidState fluidState,
-			@Nonnull final BlockRenderLayer blockRenderLayer
-	) {
-		super(renderChunk, x, y, z, generator, compiledChunk, renderChunkStartPosition, renderChunkEndPosition, world);
-		this.renderChunkCache = renderChunkCache;
-		this.visGraph = visGraph;
-		this.tileEntitiesWithGlobalRenderers = tileEntitiesWithGlobalRenderers;
-		this.usedBlockRenderLayers = usedBlockRenderLayers;
+			@Nonnull final BlockRendererDispatcher blockrendererdispatcher,
+			@Nonnull final IBlockState iblockstate,
+			@Nonnull final Block block,
+			@Nonnull final IFluidState ifluidstate,
+			@Nonnull final BlockRenderLayer blockrenderlayer1) {
+		super(renderChunk, x, y, z, generator);
+		this.compiledChunk = compiledchunk;
+		this.startPosition = blockpos;
+		this.endPosition = blockpos1;
+		this.world = world;
+		this.renderChunkCache = lvt_10_1_;
+		this.visGraph = lvt_11_1_;
+		this.tileEntitiesWithGlobalRenderers = lvt_12_1_;
+		this.usedBlockRenderLayers = aboolean;
 		this.random = random;
-		this.blockRendererDispatcher = blockRendererDispatcher;
-		this.blockPos = blockPos;
-		this.fluidState = fluidState;
-		this.blockRenderLayer = blockRenderLayer;
+		this.blockRendererDispatcher = blockrendererdispatcher;
+		this.iBlockState = iblockstate;
+		this.block = block;
+		this.iFluidState = ifluidstate;
+		this.blockRenderLayer = blockrenderlayer1;
+	}
+
+	RebuildChunkCanFluidRenderInLayerEvent() {
+
+	}
+
+	@Nonnull
+	public CompiledChunk getCompiledChunk() {
+		return compiledChunk;
+	}
+
+	@Nonnull
+	public BlockPos getStartPosition() {
+		return startPosition;
+	}
+
+	@Nonnull
+	public BlockPos getEndPosition() {
+		return endPosition;
+	}
+
+	@Nonnull
+	public World getWorld() {
+		return world;
 	}
 
 	@Nonnull
@@ -106,13 +145,18 @@ public class RebuildChunkCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 	}
 
 	@Nonnull
-	public BlockPos getBlockPos() {
-		return blockPos;
+	public IBlockState getIBlockState() {
+		return iBlockState;
 	}
 
 	@Nonnull
-	public IFluidState getFluidState() {
-		return fluidState;
+	public Block getBlock() {
+		return block;
+	}
+
+	@Nonnull
+	public IFluidState getIFluidState() {
+		return iFluidState;
 	}
 
 	@Nonnull

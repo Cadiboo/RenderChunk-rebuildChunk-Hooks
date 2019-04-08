@@ -2,11 +2,8 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
-import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -20,41 +17,28 @@ import javax.annotation.Nonnull;
 public class RebuildChunkEvent extends Event {
 
 	@Nonnull
-	private final RenderChunk renderChunk;
-	private final float x;
-	private final float y;
-	private final float z;
+	RenderChunk renderChunk;
+	float x;
+	float y;
+	float z;
 	@Nonnull
-	private final ChunkRenderTask generator;
-	@Nonnull
-	private final CompiledChunk compiledChunk;
-	@Nonnull
-	private final BlockPos renderChunkStartPosition;
-	@Nonnull
-	private final BlockPos renderChunkEndPosition;
-	@Nonnull
-	private final World world;
+	ChunkRenderTask generator;
 
 	public RebuildChunkEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
 			final float z,
-			@Nonnull final ChunkRenderTask generator,
-			@Nonnull final CompiledChunk compiledChunk,
-			@Nonnull final BlockPos renderChunkStartPosition,
-			@Nonnull final BlockPos renderChunkEndPosition,
-			@Nonnull final World world
+			@Nonnull final ChunkRenderTask generator
 	) {
 		this.renderChunk = renderChunk;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.generator = generator;
-		this.compiledChunk = compiledChunk;
-		this.renderChunkStartPosition = renderChunkStartPosition;
-		this.renderChunkEndPosition = renderChunkEndPosition;
-		this.world = world;
+	}
+
+	public RebuildChunkEvent() {
 	}
 
 	@Nonnull
@@ -79,34 +63,36 @@ public class RebuildChunkEvent extends Event {
 		return generator;
 	}
 
-	@Nonnull
-	public CompiledChunk getCompiledChunk() {
-		return compiledChunk;
-	}
-
-	@Nonnull
-	public BlockPos getRenderChunkStartPosition() {
-		return renderChunkStartPosition;
-	}
-
-	@Nonnull
-	public BlockPos getRenderChunkEndPosition() {
-		return renderChunkEndPosition;
-	}
-
-	@Nonnull
-	public World getWorld() {
-		return world;
-	}
-
+	/**
+	 * Nice helper method
+	 *
+	 * @param blockRenderLayer the {@link BlockRenderLayer} layer to get the {@link BufferBuilder} for
+	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer}
+	 */
 	@Nonnull
 	public BufferBuilder getBufferBuilderByLayer(final BlockRenderLayer blockRenderLayer) {
 		return this.getGenerator().getRegionRenderCacheBuilder().getBuilder(blockRenderLayer);
 	}
 
+	/**
+	 * Nice helper method
+	 *
+	 * @param blockRenderLayerOrdinal the ordinal of a {@link BlockRenderLayer} layer to get the {@link BufferBuilder} for
+	 * @return the {@link BufferBuilder} for the {@link BlockRenderLayer} the ordinal corresponds to
+	 */
 	@Nonnull
 	public BufferBuilder getBufferBuilderById(final int blockRenderLayerOrdinal) {
 		return this.getGenerator().getRegionRenderCacheBuilder().getBuilder(blockRenderLayerOrdinal);
+	}
+
+	/**
+	 * Allows checking the type of event without instanceof
+	 *
+	 * @return the {@link EnumEventType}
+	 */
+	@Nonnull
+	public EnumEventType getEventType() {
+		return EnumEventType.NORMAL;
 	}
 
 }

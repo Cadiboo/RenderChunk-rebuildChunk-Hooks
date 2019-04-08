@@ -1,5 +1,6 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 
+import io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
@@ -13,7 +14,7 @@ import javax.annotation.Nonnull;
  * @author Cadiboo
  */
 @Cancelable
-public class RebuildChunkPostEvent extends RebuildChunkEvent {
+public class RebuildChunkCheckWorldEvent extends RebuildChunkEvent {
 
 	@Nonnull
 	private final CompiledChunk compiledChunk;
@@ -22,9 +23,11 @@ public class RebuildChunkPostEvent extends RebuildChunkEvent {
 	@Nonnull
 	private final BlockPos endPosition;
 	@Nonnull
-	private final World world;
+	private final World originalWorld;
+	@Nonnull
+	private final WorldReference worldReference;
 
-	public RebuildChunkPostEvent(
+	public RebuildChunkCheckWorldEvent(
 			@Nonnull final RenderChunk renderChunk,
 			final float x,
 			final float y,
@@ -33,13 +36,15 @@ public class RebuildChunkPostEvent extends RebuildChunkEvent {
 			@Nonnull final CompiledChunk compiledchunk,
 			@Nonnull final BlockPos blockpos,
 			@Nonnull final BlockPos blockpos1,
-			@Nonnull final World world
+			@Nonnull final World world,
+			@Nonnull final WorldReference worldRef
 	) {
 		super(renderChunk, x, y, z, generator);
 		this.compiledChunk = compiledchunk;
 		this.startPosition = blockpos;
 		this.endPosition = blockpos1;
-		this.world = world;
+		this.originalWorld = world;
+		this.worldReference = worldRef;
 	}
 
 	@Nonnull
@@ -58,8 +63,18 @@ public class RebuildChunkPostEvent extends RebuildChunkEvent {
 	}
 
 	@Nonnull
+	public World getOriginalWorld() {
+		return originalWorld;
+	}
+
+	@Nonnull
 	public World getWorld() {
-		return world;
+		return worldReference.get();
+	}
+
+	@Nonnull
+	public World setWorld(@Nonnull final World world) {
+		return worldReference.set(world);
 	}
 
 }
