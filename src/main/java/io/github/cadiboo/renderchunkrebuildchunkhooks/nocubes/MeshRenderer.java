@@ -304,7 +304,7 @@ public class MeshRenderer {
 			GRASS:
 			if (true) {
 
-				if (textureState != Blocks.GRASS.getDefaultState()) {
+				if (textureState != Blocks.GRASS_BLOCK.getDefaultState()) {
 					break GRASS;
 				}
 
