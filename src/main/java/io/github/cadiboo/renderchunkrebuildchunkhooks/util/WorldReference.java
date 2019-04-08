@@ -17,8 +17,10 @@ public final class WorldReference {
 		return reference;
 	}
 
-	public void set(final World reference) {
+	public World set(final World reference) {
+		final World oldReference = this.reference;
 		this.reference = reference;
+		return oldReference;
 	}
 
 }
