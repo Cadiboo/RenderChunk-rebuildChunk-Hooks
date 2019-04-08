@@ -99,7 +99,8 @@ public class RebuildChunkRenderBlockEvent extends RebuildChunkEvent {
 		this.bufferBuilder = bufferbuilder1;
 	}
 
-	RebuildChunkRenderBlockEvent() {
+	// Forge adds their own no-args ctor so we can't have one :(
+	RebuildChunkRenderBlockEvent(final boolean dummy) {
 
 	}
 

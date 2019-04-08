@@ -86,7 +86,8 @@ public class RebuildChunkIsFluidEmptyEvent extends RebuildChunkEvent {
 		this.iFluidState = ifluidstate;
 	}
 
-	RebuildChunkIsFluidEmptyEvent() {
+	// Forge adds their own no-args ctor so we can't have one :(
+	RebuildChunkIsFluidEmptyEvent(final boolean dummy) {
 
 	}
 

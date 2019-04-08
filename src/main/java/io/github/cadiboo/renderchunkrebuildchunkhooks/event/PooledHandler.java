@@ -27,12 +27,12 @@ import java.util.Random;
 @Deprecated
 public final class PooledHandler {
 
-	private static final ThreadLocal<RebuildChunkIsFluidEmptyEvent> threadRebuildChunkIsFluidEmptyEvent = ThreadLocal.withInitial(RebuildChunkIsFluidEmptyEvent::new);
-	private static final ThreadLocal<RebuildChunkCanFluidRenderInLayerEvent> threadRebuildChunkCanFluidRenderInLayerEvent = ThreadLocal.withInitial(RebuildChunkCanFluidRenderInLayerEvent::new);
-	private static final ThreadLocal<RebuildChunkRenderFluidEvent> threadRebuildChunkRenderFluidEvent = ThreadLocal.withInitial(RebuildChunkRenderFluidEvent::new);
-	private static final ThreadLocal<RebuildChunkCanBlockRenderTypeBeRenderedEvent> threadRebuildChunkCanBlockRenderTypeBeRenderedEvent = ThreadLocal.withInitial(RebuildChunkCanBlockRenderTypeBeRenderedEvent::new);
-	private static final ThreadLocal<RebuildChunkCanBlockRenderInLayerEvent> threadRebuildChunkCanBlockRenderInLayerEvent = ThreadLocal.withInitial(RebuildChunkCanBlockRenderInLayerEvent::new);
-	private static final ThreadLocal<RebuildChunkRenderBlockEvent> threadRebuildChunkRenderBlockEvent = ThreadLocal.withInitial(RebuildChunkRenderBlockEvent::new);
+	private static final ThreadLocal<RebuildChunkIsFluidEmptyEvent> threadRebuildChunkIsFluidEmptyEvent = ThreadLocal.withInitial(() -> new RebuildChunkIsFluidEmptyEvent(false));
+	private static final ThreadLocal<RebuildChunkCanFluidRenderInLayerEvent> threadRebuildChunkCanFluidRenderInLayerEvent = ThreadLocal.withInitial(() -> new RebuildChunkCanFluidRenderInLayerEvent(false));
+	private static final ThreadLocal<RebuildChunkRenderFluidEvent> threadRebuildChunkRenderFluidEvent = ThreadLocal.withInitial(() -> new RebuildChunkRenderFluidEvent(false));
+	private static final ThreadLocal<RebuildChunkCanBlockRenderTypeBeRenderedEvent> threadRebuildChunkCanBlockRenderTypeBeRenderedEvent = ThreadLocal.withInitial(() -> new RebuildChunkCanBlockRenderTypeBeRenderedEvent(false));
+	private static final ThreadLocal<RebuildChunkCanBlockRenderInLayerEvent> threadRebuildChunkCanBlockRenderInLayerEvent = ThreadLocal.withInitial(() -> new RebuildChunkCanBlockRenderInLayerEvent(false));
+	private static final ThreadLocal<RebuildChunkRenderBlockEvent> threadRebuildChunkRenderBlockEvent = ThreadLocal.withInitial(() -> new RebuildChunkRenderBlockEvent(false));
 
 	public static RebuildChunkIsFluidEmptyEvent setupRebuildChunkIsFluidEmptyEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate) {
 		final RebuildChunkIsFluidEmptyEvent event = threadRebuildChunkIsFluidEmptyEvent.get();

@@ -91,7 +91,8 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 		this.blockRenderLayer = blockrenderlayer1;
 	}
 
-	RebuildChunkCanBlockRenderInLayerEvent() {
+	// Forge adds their own no-args ctor so we can't have one :(
+	RebuildChunkCanBlockRenderInLayerEvent(final boolean dummy) {
 
 	}
 

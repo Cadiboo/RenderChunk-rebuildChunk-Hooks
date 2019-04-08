@@ -90,7 +90,8 @@ public class RebuildChunkCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 		this.blockRenderLayer = blockrenderlayer1;
 	}
 
-	RebuildChunkCanFluidRenderInLayerEvent() {
+	// Forge adds their own no-args ctor so we can't have one :(
+	RebuildChunkCanFluidRenderInLayerEvent(final boolean dummy) {
 
 	}
 

@@ -86,7 +86,8 @@ public class RebuildChunkCanBlockRenderTypeBeRenderedEvent extends RebuildChunkE
 		this.iFluidState = ifluidstate;
 	}
 
-	RebuildChunkCanBlockRenderTypeBeRenderedEvent() {
+	// Forge adds their own no-args ctor so we can't have one :(
+	RebuildChunkCanBlockRenderTypeBeRenderedEvent(final boolean dummy) {
 
 	}
 
