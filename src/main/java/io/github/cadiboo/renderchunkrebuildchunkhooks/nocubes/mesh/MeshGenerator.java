@@ -1,0 +1,63 @@
+package io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh;
+
+import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.pooled.FaceList;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.pooled.Vec3b;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockReader;
+
+import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh.generator.*;
+
+import javax.annotation.Nonnull;
+import java.util.HashMap;
+
+/**
+ * @author Cadiboo
+ */
+public enum MeshGenerator {
+
+	SurfaceNets(new SurfaceNets()),
+	MarchingCubes(new MarchingCubes()),
+	MarchingTetrahedra(new MarchingTetrahedra()),
+
+	OldNoCubes(new OldNoCubes());
+
+	private final IMeshGenerator meshGenerator;
+
+	MeshGenerator(IMeshGenerator meshGenerator) {
+		this.meshGenerator = meshGenerator;
+	}
+
+	@Nonnull
+	public HashMap<Vec3b, FaceList> generateChunk(final float[] densityData, final byte meshSizeX, final byte meshSizeY, final byte meshSizeZ) {
+//		try (final ModProfiler ignored = NoCubes.getProfiler().start("generateChunkMesh" + this.name()))
+		{
+			return meshGenerator.generateChunk(densityData, new byte[]{meshSizeX, meshSizeY, meshSizeZ});
+		}
+	}
+
+	@Nonnull
+	public FaceList generateBlock(final float[] densityData, final byte meshSizeX, final byte meshSizeY, final byte meshSizeZ) {
+//		try (final ModProfiler ignored = NoCubes.getProfiler().start("generateBlockMesh" + this.name()))
+		{
+			return meshGenerator.generateBlock(densityData, new byte[]{meshSizeX, meshSizeY, meshSizeZ});
+		}
+	}
+
+	public byte getSizeXExtension() {
+		return meshGenerator.getSizeXExtension();
+	}
+
+	public byte getSizeYExtension() {
+		return meshGenerator.getSizeYExtension();
+	}
+
+	public byte getSizeZExtension() {
+		return meshGenerator.getSizeZExtension();
+	}
+
+	@Nonnull
+	public FaceList generateBlock(@Nonnull final BlockPos pos, @Nonnull final IBlockReader blockAccess) {
+		return meshGenerator.generateBlock(pos, blockAccess);
+	}
+
+}
