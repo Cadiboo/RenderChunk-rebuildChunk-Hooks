@@ -8,6 +8,7 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.pooled.cache.Packe
 import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.pooled.cache.StateCache;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirtSnowy;
+import net.minecraft.block.BlockSand;
 import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.chunk.CompiledChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.ReportedException;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
@@ -29,17 +31,16 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Refs.MOD_ID;
 @EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
 public final class NoCubesTest {
 
+	public static final MeshDispatcher MESH_DISPATCHER = new MeshDispatcher();
+	private static boolean enabled = true;
 	static {
 		HookConfig.enableRebuildChunkPreIterationEvent();
 		HookConfig.enableRebuildChunkCanBlockRenderTypeBeRenderedEvent();
 	}
 
-	public static final MeshDispatcher MESH_DISPATCHER = new MeshDispatcher();
-	private static boolean enabled = true;
-
 	public static boolean isSmoothable(IBlockState state) {
 		final Block block = state.getBlock();
-		return block instanceof BlockStone || block instanceof BlockDirtSnowy;
+		return block instanceof BlockStone || block == Blocks.DIRT || block instanceof BlockDirtSnowy || block instanceof BlockSand;
 	}
 
 	@SubscribeEvent
