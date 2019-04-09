@@ -13,6 +13,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Refs.MOD_ID;
 
 /**
  * @author Cadiboo
+ * @see "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/blob/master/diffs/RenderChunk.class.diff"
  */
 @Mod(MOD_ID)
 public final class RenderChunkRebuildChunkHooks {

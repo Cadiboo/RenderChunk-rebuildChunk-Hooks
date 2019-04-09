@@ -2,6 +2,9 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.hooks;
 
 /**
  * Reduces overhead by not creating or posting events if no mods require them
+ *
+ * @author Cadiboo
+ * @see "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/blob/master/diffs/RenderChunk.class.diff"
  */
 public final class HookConfig {
 

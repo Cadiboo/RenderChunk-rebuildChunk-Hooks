@@ -51,6 +51,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.HookConfig.po
 
 /**
  * @author Cadiboo
+ * @see "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/blob/master/diffs/RenderChunk.class.diff"
  * @deprecated Modders should not touch this, the only thing that should touch this is the injected hooks
  */
 @Beta
