@@ -1,0 +1,125 @@
+diff --git a/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java b/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java
+index a40cd31..94a358a 100644
+--- a/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java
++++ b/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java
+@@ -110,11 +110,23 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 	}
+ 
+ 	public void rebuildChunk(float x, float y, float z, ChunkRenderTask generator) {
++		// START HOOK
++		if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.pre(this, x, y, z, generator)) {
++			return;
++		}
++		// END HOOK
+ 		CompiledChunk compiledchunk = new CompiledChunk();
+ 		int i = 1;
+ 		BlockPos blockpos = this.position.toImmutable();
+ 		BlockPos blockpos1 = blockpos.add(15, 15, 15);
+ 		World world = this.world;
++		// START HOOK
++		final io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference worldRef = new io.github.cadiboo.renderchunkrebuildchunkhooks.util.WorldReference(world);
++		if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.checkWorld(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, worldRef)) {
++			return;
++		}
++		world = worldRef.get();
++		// END HOOK
+ 		if (world != null) {
+ 			generator.getLock().lock();
+ 
+@@ -132,6 +144,11 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 			net.minecraftforge.client.MinecraftForgeClient.onRebuildChunk(this.world, this.position, lvt_10_1_);
+ 			VisGraph lvt_11_1_ = new VisGraph();
+ 			HashSet lvt_12_1_ = Sets.newHashSet();
++			// START HOOK
++			if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.preRender(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_)) {
++				return;
++			}
++			// END HOOK
+ 			if (lvt_10_1_ != null) {
+ 				++renderChunksUpdated;
+ 				boolean[] aboolean = new boolean[BlockRenderLayer.values().length];
+@@ -139,6 +156,11 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 				Random random = new Random();
+ 				BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+ 
++				// START HOOK
++				if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.preIteration(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher)) {
++					return;
++				}
++				// END HOOK
+ 				for(BlockPos.MutableBlockPos blockpos$mutableblockpos : BlockPos.getAllInBoxMutable(blockpos, blockpos1)) {
+ 					IBlockState iblockstate = lvt_10_1_.getBlockState(blockpos$mutableblockpos);
+ 					Block block = iblockstate.getBlock();
+@@ -162,7 +184,10 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 					IFluidState ifluidstate = lvt_10_1_.getFluidState(blockpos$mutableblockpos);
+ 					for(BlockRenderLayer blockrenderlayer1 : BlockRenderLayer.values()) {
+ 						net.minecraftforge.client.ForgeHooksClient.setRenderLayer(blockrenderlayer1);
+-						if (!ifluidstate.isEmpty() && ifluidstate.canRenderInLayer(blockrenderlayer1)) {
++						// START HOOK
++						fluidRenderLabel:
++						if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.canFluidRender(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1)) {
++							// END HOOK
+ 							int j = blockrenderlayer1.ordinal();
+ 							BufferBuilder bufferbuilder = generator.getRegionRenderCacheBuilder().getBuilder(j);
+ 							if (!compiledchunk.isLayerStarted(blockrenderlayer1)) {
+@@ -170,10 +195,18 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 								this.preRenderBlocks(bufferbuilder, blockpos);
+ 							}
+ 
++							// START HOOK
++							if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.preRenderFluid(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1, j, bufferbuilder)) {
++								break fluidRenderLabel;
++							}
++							// END HOOK
+ 							aboolean[j] |= blockrendererdispatcher.renderFluid(blockpos$mutableblockpos, lvt_10_1_, bufferbuilder, ifluidstate);
+ 						}
+ 
+-						if (iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1)) {
++						// START HOOK
++						blockRenderLabel:
++						if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.canBlockRender(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1)) {
++							// END HOOK
+ 							int k = blockrenderlayer1.ordinal();
+ 							BufferBuilder bufferbuilder1 = generator.getRegionRenderCacheBuilder().getBuilder(k);
+ 							if (!compiledchunk.isLayerStarted(blockrenderlayer1)) {
+@@ -181,12 +214,20 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 								this.preRenderBlocks(bufferbuilder1, blockpos);
+ 							}
+ 
++							// START HOOK
++							if (io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.preRenderBlock(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1, k, bufferbuilder1)) {
++								break blockRenderLabel;
++							}
++							// END HOOK
+ 							aboolean[k] |= blockrendererdispatcher.renderBlock(iblockstate, blockpos$mutableblockpos, lvt_10_1_, bufferbuilder1, random);
+ 						}
+ 					}
+ 					net.minecraftforge.client.ForgeHooksClient.setRenderLayer(null);
+ 				}
+ 
++				// START HOOK
++				io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.postIteration(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher);
++				// END HOOK
+ 				for(BlockRenderLayer blockrenderlayer : BlockRenderLayer.values()) {
+ 					if (aboolean[blockrenderlayer.ordinal()]) {
+ 						compiledchunk.setLayerUsed(blockrenderlayer);
+@@ -199,6 +240,9 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 
+ 				BlockModelRenderer.disableCache();
+ 			}
++			// START HOOK
++			io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.postRender(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_);
++			// END HOOK
+ 
+ 			compiledchunk.setVisibility(lvt_11_1_.computeVisibility());
+ 			this.lockCompileTask.lock();
+@@ -216,6 +260,9 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
+ 			}
+ 
+ 		}
++		// START HOOK
++		io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.Hooks.post(this, x, y, z, generator, compiledchunk, blockpos, blockpos1, world);
++		// END HOOK
+ 	}
+ 
+ 	protected void finishCompileTask() {
