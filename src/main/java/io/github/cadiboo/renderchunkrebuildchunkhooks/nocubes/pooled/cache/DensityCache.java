@@ -7,22 +7,15 @@ import javax.annotation.Nonnull;
  */
 public class DensityCache extends XYZCache implements AutoCloseable {
 
+	private static final ThreadLocal<DensityCache> POOL = ThreadLocal.withInitial(() -> new DensityCache(0, 0, 0));
 	private static int instances = 0;
-
 	@Nonnull
 	private float[] cache;
-
-	private static final ThreadLocal<DensityCache> POOL = ThreadLocal.withInitial(() -> new DensityCache(0, 0, 0));
 
 	private DensityCache(final int sizeX, final int sizeY, final int sizeZ) {
 		super(sizeX, sizeY, sizeZ);
 		cache = new float[sizeX * sizeY * sizeZ];
 		++instances;
-	}
-
-	@Nonnull
-	public float[] getDensityCache() {
-		return cache;
 	}
 
 	@Nonnull
@@ -47,12 +40,17 @@ public class DensityCache extends XYZCache implements AutoCloseable {
 		return pooled;
 	}
 
-	@Override
-	public void close() {
-	}
-
 	public static int getInstances() {
 		return instances;
+	}
+
+	@Nonnull
+	public float[] getDensityCache() {
+		return cache;
+	}
+
+	@Override
+	public void close() {
 	}
 
 	@Override

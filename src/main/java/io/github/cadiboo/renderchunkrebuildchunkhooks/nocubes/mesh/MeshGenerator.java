@@ -1,11 +1,13 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh;
 
+import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh.generator.MarchingCubes;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh.generator.MarchingTetrahedra;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh.generator.OldNoCubes;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh.generator.SurfaceNets;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.pooled.FaceList;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.pooled.Vec3b;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
-
-import io.github.cadiboo.renderchunkrebuildchunkhooks.nocubes.mesh.generator.*;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;

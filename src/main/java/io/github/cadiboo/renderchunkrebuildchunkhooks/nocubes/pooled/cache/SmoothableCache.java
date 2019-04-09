@@ -7,22 +7,15 @@ import javax.annotation.Nonnull;
  */
 public class SmoothableCache extends XYZCache implements AutoCloseable {
 
+	private static final ThreadLocal<SmoothableCache> POOL = ThreadLocal.withInitial(() -> new SmoothableCache(0, 0, 0));
 	private static int instances = 0;
-
 	@Nonnull
 	private boolean[] cache;
-
-	private static final ThreadLocal<SmoothableCache> POOL = ThreadLocal.withInitial(() -> new SmoothableCache(0, 0, 0));
 
 	private SmoothableCache(final int sizeX, final int sizeY, final int sizeZ) {
 		super(sizeX, sizeY, sizeZ);
 		cache = new boolean[sizeX * sizeY * sizeZ];
 		++instances;
-	}
-
-	@Nonnull
-	public boolean[] getSmoothableCache() {
-		return cache;
 	}
 
 	@Nonnull
@@ -47,12 +40,17 @@ public class SmoothableCache extends XYZCache implements AutoCloseable {
 		return pooled;
 	}
 
-	@Override
-	public void close() {
-	}
-
 	public static int getInstances() {
 		return instances;
+	}
+
+	@Nonnull
+	public boolean[] getSmoothableCache() {
+		return cache;
+	}
+
+	@Override
+	public void close() {
 	}
 
 	@Override

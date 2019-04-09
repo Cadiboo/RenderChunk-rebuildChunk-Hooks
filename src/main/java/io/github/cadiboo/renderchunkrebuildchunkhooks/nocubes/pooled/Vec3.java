@@ -12,26 +12,18 @@ public class Vec3 implements AutoCloseable {
 
 //	private static int instances = 0;
 
+	private static final ArrayList<Vec3> POOL = new ArrayList<>();
 	public double x;
 	public double y;
-	public double z;
 
 //	private boolean released;
-
-	private static final ArrayList<Vec3> POOL = new ArrayList<>();
+	public double z;
 
 	private Vec3(final double x, final double y, final double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 //		++instances;
-	}
-
-	public Vec3 addOffset(final double x, final double y, final double z) {
-		this.x += x;
-		this.y += y;
-		this.z += z;
-		return this;
 	}
 
 	@Nonnull
@@ -67,6 +59,13 @@ public class Vec3 implements AutoCloseable {
 				vertexAsArray[1],
 				vertexAsArray[2]
 		);
+	}
+
+	public Vec3 addOffset(final double x, final double y, final double z) {
+		this.x += x;
+		this.y += y;
+		this.z += z;
+		return this;
 	}
 
 	public Vec3 copy() {

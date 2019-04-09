@@ -12,13 +12,12 @@ public class Vec3b implements Cloneable, AutoCloseable {
 
 //	private static int instances = 0;
 
+	private static final ArrayList<Vec3b> POOL = new ArrayList<>();
 	public byte x;
 	public byte y;
-	public byte z;
 
 //	private boolean released;
-
-	private static final ArrayList<Vec3b> POOL = new ArrayList<>();
+	public byte z;
 
 	private Vec3b(final byte x, final byte y, final byte z) {
 		this.x = x;
