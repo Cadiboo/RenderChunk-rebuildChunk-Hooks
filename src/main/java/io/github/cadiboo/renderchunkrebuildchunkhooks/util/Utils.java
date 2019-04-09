@@ -16,6 +16,8 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 
+import static cpw.mods.modlauncher.api.INameMappingService.Domain.METHOD;
+
 /**
  * @author Cadiboo
  */
@@ -72,7 +74,7 @@ public final class Utils {
 		Preconditions.checkArgument(!methodName.isEmpty(), "Method name cannot be empty");
 
 		try {
-			Method m = clazz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(methodName), parameterTypes);
+			Method m = clazz.getDeclaredMethod(ObfuscationReflectionHelper.remapName(METHOD, methodName), parameterTypes);
 			m.setAccessible(true);
 			return m;
 		} catch (Exception e) {
