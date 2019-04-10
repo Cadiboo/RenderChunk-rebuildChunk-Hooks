@@ -1,4 +1,4 @@
-package io.github.cadiboo.renderchunkrebuildchunkhooks.debug;
+package io.github.cadiboo.renderchunkrebuildchunkhooks;
 
 import com.google.common.base.Preconditions;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkCanBlockRenderInLayerEvent;
@@ -14,6 +14,7 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreItera
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreRenderEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkRenderBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkRenderFluidEvent;
+import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.HookConfig;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -24,6 +25,9 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Refs.MOD_ID;
 public final class EventTester {
 
 	private static boolean enabled = true;
+	static {
+		HookConfig.enableAll();
+	}
 
 	@SubscribeEvent
 	public static void onRebuildChunkPreEvent(final RebuildChunkPreEvent event) {
@@ -279,7 +283,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getStartPosition(), "blockpos");
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
-		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+//		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 	}
