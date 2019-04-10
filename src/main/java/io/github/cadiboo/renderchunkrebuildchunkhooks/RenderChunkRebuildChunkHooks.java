@@ -9,11 +9,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Refs.MOD_ID;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.ModRefs.MOD_ID;
 
 /**
  * @author Cadiboo
  * @see "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/blob/master/diffs/RenderChunk.class.diff"
+ * @see "https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/blob/master/diffs/RenderChunkOptiFine.class.diff"
  */
 @Mod(MOD_ID)
 public final class RenderChunkRebuildChunkHooks {

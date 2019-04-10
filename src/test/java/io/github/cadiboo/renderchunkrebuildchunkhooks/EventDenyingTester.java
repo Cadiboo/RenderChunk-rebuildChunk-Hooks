@@ -14,18 +14,14 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkPreRende
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkRenderBlockEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.event.RebuildChunkRenderFluidEvent;
 import io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.HookConfig;
-import net.minecraft.client.renderer.chunk.ChunkRenderTask;
-import net.minecraft.client.renderer.chunk.CompiledChunk;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-import java.util.concurrent.locks.ReentrantLock;
-
-import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Refs.MOD_ID;
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.ModRefs.MOD_ID;
+import static net.minecraftforge.api.distmarker.Dist.CLIENT;
 import static net.minecraftforge.eventbus.api.Event.Result.DENY;
 
-@EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MOD_ID, value = CLIENT)
 public final class EventDenyingTester {
 
 	private static boolean enabled = true;
