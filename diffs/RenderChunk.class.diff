@@ -1,5 +1,3 @@
-diff --git a/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java b/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java
-index a40cd31..94a358a 100644
 --- a/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java
 +++ b/src/main/java/net/minecraft/client/renderer/chunk/RenderChunk.java
 @@ -110,11 +110,23 @@ public class RenderChunk implements net.minecraftforge.client.extensions.IForgeR
