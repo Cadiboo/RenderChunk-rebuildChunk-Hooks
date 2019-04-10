@@ -9,8 +9,9 @@ buildscript {
 	}
 }
 apply plugin: 'net.minecraftforge.gradle'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 version = modMinecraftVersion + "-" + modVersion
 group = modGroup
@@ -39,26 +40,43 @@ minecraft {
 	mappings channel: modMcpMappingsChannel, version: modMcpMappingsVersion
 	// makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+	accessTransformer = file('build/resources/main/META-INF/accesstransformer.cfg')
 
-	// default run configurations.
-	// these can be tweaked, removed, or duplicated as needed.
+	// Default run configurations.
+	// These can be tweaked, removed, or duplicated as needed.
 	runs {
-		client = {
-			// recommended logging data for a userdev environment
-			properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-			// recommended logging level for the console
-			properties 'forge.logging.console.level': 'debug'
-			workingDirectory project.file('run').canonicalPath
-			source sourceSets.main
+		client {
+			workingDirectory project.file('run')
+
+			// Recommended logging data for a userdev environment
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+			// Recommended logging level for the console
+			property 'forge.logging.console.level', 'debug'
+
+			mods {
+				examplemod {
+					source sourceSets.main
+					source sourceSets.test
+				}
+			}
 		}
-		server = {
-			// recommended logging data for a userdev environment
-			properties 'forge.logging.markers': 'SCAN,REGISTRIES,REGISTRYDUMP'
-			// recommended logging level for the console
-			properties 'forge.logging.console.level': 'debug'
-			workingDirectory project.file('run').canonicalPath
-			source sourceSets.main
+
+		server {
+			workingDirectory project.file('run')
+
+			// Recommended logging data for a userdev environment
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+			// Recommended logging level for the console
+			property 'forge.logging.console.level', 'debug'
+
+			mods {
+				examplemod {
+					source sourceSets.main
+					source sourceSets.test
+				}
+			}
 		}
 	}
 }
@@ -90,18 +108,8 @@ dependencies {
 
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
+// Get properties into the manifest for reading by the runtime.
 jar {
-
-	// Until I figure out how to use gradle tests in IntelliJ
-	sourceSets {
-		main {
-			java {
-				exclude '**/debug/**'
-			}
-		}
-	}
-
 	manifest {
 		attributes([
 				"Specification-Title"     : modId,
@@ -173,4 +181,26 @@ build.dependsOn sourcesJar
 artifacts {
 	archives sourcesJar
 //	archives javadocJar
+}
+
+// Example configuration to allow publishing using the maven-publish task
+// we define a custom artifact that is sourced from the reobfJar output task
+// and then declare that to be published
+// Note you'll need to add a repository here
+def reobfFile = file("$buildDir/reobfJar/output.jar")
+def reobfArtifact = artifacts.add('default', reobfFile) {
+	type 'jar'
+	builtBy 'reobfJar'
+}
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact reobfArtifact
+		}
+	}
+	repositories {
+		maven {
+			url "file:///${project.projectDir}/mcmodsrepo"
+		}
+	}
 }
