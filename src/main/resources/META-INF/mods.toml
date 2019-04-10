@@ -58,7 +58,7 @@ Note: These events are only enabled if mods require them, to keep overhead at a 
 '''
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.render_chunk-rebuild_chunk-hooks]] #optional
+[[dependencies.renderchunk-rebuildchunk-hooks]] #optional
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
@@ -71,7 +71,7 @@ Note: These events are only enabled if mods require them, to keep overhead at a 
     side="BOTH"
 
 # Here's another dependency
-[[dependencies.render_chunk-rebuild_chunk-hooks]]
+[[dependencies.renderchunk-rebuildchunk-hooks]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.13.2]"
