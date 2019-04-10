@@ -38,7 +38,7 @@ public class RebuildChunkEvent extends Event {
 		this.generator = generator;
 	}
 
-	public RebuildChunkEvent() {
+	RebuildChunkEvent(final boolean dummy) {
 	}
 
 	@Nonnull

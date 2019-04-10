@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
 
@@ -91,8 +92,17 @@ public class RebuildChunkPostIterationEvent extends RebuildChunkEvent {
 		return world;
 	}
 
+	/**
+	 * @deprecated not compatible with OptiFine's dynamic lights, use {@link #getIWorldReader()} instead if possible
+	 */
 	@Nonnull
+	@Deprecated
 	public RenderChunkCache getRenderChunkCache() {
+		return renderChunkCache;
+	}
+
+	@Nonnull
+	public IWorldReader getIWorldReader() {
 		return renderChunkCache;
 	}
 

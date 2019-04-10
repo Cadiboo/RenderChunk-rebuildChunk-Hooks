@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Cadiboo
@@ -22,7 +23,7 @@ public class RebuildChunkCheckWorldEvent extends RebuildChunkEvent {
 	private final BlockPos startPosition;
 	@Nonnull
 	private final BlockPos endPosition;
-	@Nonnull
+	@Nullable
 	private final World originalWorld;
 	@Nonnull
 	private final WorldReference worldReference;
@@ -36,7 +37,7 @@ public class RebuildChunkCheckWorldEvent extends RebuildChunkEvent {
 			@Nonnull final CompiledChunk compiledchunk,
 			@Nonnull final BlockPos blockpos,
 			@Nonnull final BlockPos blockpos1,
-			@Nonnull final World world,
+			@Nullable final World world,
 			@Nonnull final WorldReference worldRef
 	) {
 		super(renderChunk, x, y, z, generator);
@@ -62,18 +63,18 @@ public class RebuildChunkCheckWorldEvent extends RebuildChunkEvent {
 		return endPosition;
 	}
 
-	@Nonnull
+	@Nullable
 	public World getOriginalWorld() {
 		return originalWorld;
 	}
 
-	@Nonnull
+	@Nullable
 	public World getWorld() {
 		return worldReference.get();
 	}
 
-	@Nonnull
-	public World setWorld(@Nonnull final World world) {
+	@Nullable
+	public World setWorld(@Nullable final World world) {
 		return worldReference.set(world);
 	}
 

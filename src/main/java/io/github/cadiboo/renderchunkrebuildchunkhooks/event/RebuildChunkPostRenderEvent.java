@@ -6,10 +6,12 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.HashSet;
 
 /**
@@ -26,7 +28,7 @@ public class RebuildChunkPostRenderEvent extends RebuildChunkEvent {
 	private final BlockPos endPosition;
 	@Nonnull
 	private final World world;
-	@Nonnull
+	@Nullable
 	private final RenderChunkCache renderChunkCache;
 	@Nonnull
 	private final VisGraph visGraph;
@@ -43,7 +45,7 @@ public class RebuildChunkPostRenderEvent extends RebuildChunkEvent {
 			@Nonnull final BlockPos blockpos,
 			@Nonnull final BlockPos blockpos1,
 			@Nonnull final World world,
-			@Nonnull final RenderChunkCache lvt_10_1_,
+			@Nullable final RenderChunkCache lvt_10_1_,
 			@Nonnull final VisGraph lvt_11_1_,
 			@Nonnull final HashSet lvt_12_1_
 	) {
@@ -77,8 +79,17 @@ public class RebuildChunkPostRenderEvent extends RebuildChunkEvent {
 		return world;
 	}
 
-	@Nonnull
+	/**
+	 * @deprecated not compatible with OptiFine's dynamic lights, use {@link #getIWorldReader()} instead if possible
+	 */
+	@Nullable
+	@Deprecated
 	public RenderChunkCache getRenderChunkCache() {
+		return renderChunkCache;
+	}
+
+	@Nullable
+	public IWorldReader getIWorldReader() {
 		return renderChunkCache;
 	}
 

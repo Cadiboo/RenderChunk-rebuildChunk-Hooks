@@ -1,5 +1,7 @@
 package io.github.cadiboo.renderchunkrebuildchunkhooks.hooks;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * Reduces overhead by not creating or posting events if no mods require them
  *
@@ -88,7 +90,8 @@ public final class HookConfig {
 		postRebuildChunkPostEvent = true;
 	}
 
-	private static void disableAll() {
+	@VisibleForTesting
+	public static void disableAll() {
 		postRebuildChunkPreEvent = false;
 		postRebuildChunkCheckWorldEvent = false;
 		postRebuildChunkPreRenderEvent = false;
@@ -104,7 +107,8 @@ public final class HookConfig {
 		postRebuildChunkPostEvent = false;
 	}
 
-	private static void enableAll() {
+	@VisibleForTesting
+	public static void enableAll() {
 		postRebuildChunkPreEvent = true;
 		postRebuildChunkCheckWorldEvent = true;
 		postRebuildChunkPreRenderEvent = true;

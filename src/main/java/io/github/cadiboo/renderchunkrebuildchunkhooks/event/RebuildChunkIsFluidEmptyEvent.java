@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.chunk.RenderChunkCache;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
 
@@ -86,9 +87,9 @@ public class RebuildChunkIsFluidEmptyEvent extends RebuildChunkEvent {
 		this.iFluidState = ifluidstate;
 	}
 
-	// Forge adds their own no-args ctor so we can't have one :(
+	// Forge adds their own public no-args ctor so we can't have a no-args package-private ctor :(
 	RebuildChunkIsFluidEmptyEvent(final boolean dummy) {
-
+		super(dummy);
 	}
 
 	@Nonnull
@@ -111,8 +112,17 @@ public class RebuildChunkIsFluidEmptyEvent extends RebuildChunkEvent {
 		return world;
 	}
 
+	/**
+	 * @deprecated not compatible with OptiFine's dynamic lights, use {@link #getIWorldReader()} instead if possible
+	 */
 	@Nonnull
+	@Deprecated
 	public RenderChunkCache getRenderChunkCache() {
+		return renderChunkCache;
+	}
+
+	@Nonnull
+	public IWorldReader getIWorldReader() {
 		return renderChunkCache;
 	}
 

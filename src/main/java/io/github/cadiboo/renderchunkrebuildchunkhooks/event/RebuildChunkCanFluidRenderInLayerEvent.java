@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
 
@@ -90,9 +91,9 @@ public class RebuildChunkCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 		this.blockRenderLayer = blockrenderlayer1;
 	}
 
-	// Forge adds their own no-args ctor so we can't have one :(
+	// Forge adds their own public no-args ctor so we can't have a no-args package-private ctor :(
 	RebuildChunkCanFluidRenderInLayerEvent(final boolean dummy) {
-
+		super(dummy);
 	}
 
 	@Nonnull
@@ -115,8 +116,17 @@ public class RebuildChunkCanFluidRenderInLayerEvent extends RebuildChunkEvent {
 		return world;
 	}
 
+	/**
+	 * @deprecated not compatible with OptiFine's dynamic lights, use {@link #getIWorldReader()} instead if possible
+	 */
 	@Nonnull
+	@Deprecated
 	public RenderChunkCache getRenderChunkCache() {
+		return renderChunkCache;
+	}
+
+	@Nonnull
+	public IWorldReader getIWorldReader() {
 		return renderChunkCache;
 	}
 
