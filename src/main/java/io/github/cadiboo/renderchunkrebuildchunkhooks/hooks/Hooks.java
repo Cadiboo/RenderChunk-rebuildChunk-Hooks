@@ -48,6 +48,7 @@ import static io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.HookConfig.po
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.HookConfig.postRebuildChunkPreRenderEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.HookConfig.postRebuildChunkRenderBlockEvent;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.hooks.HookConfig.postRebuildChunkRenderFluidEvent;
+import static net.minecraftforge.eventbus.api.Event.Result.DENY;
 
 /**
  * @author Cadiboo
@@ -64,7 +65,7 @@ public final class Hooks {
 		if (postRebuildChunkPreEvent) {
 			final RebuildChunkPreEvent event = new RebuildChunkPreEvent(renderChunk, x, y, z, generator);
 			MinecraftForge.EVENT_BUS.post(event);
-			return event.isCanceled();
+			return event.getResult() != DENY;
 		} else {
 			return false;
 		}
@@ -75,7 +76,7 @@ public final class Hooks {
 		if (postRebuildChunkCheckWorldEvent) {
 			final RebuildChunkCheckWorldEvent event = new RebuildChunkCheckWorldEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, worldRef);
 			MinecraftForge.EVENT_BUS.post(event);
-			return event.isCanceled();
+			return event.getResult() != DENY;
 		} else {
 			return false;
 		}
@@ -86,7 +87,7 @@ public final class Hooks {
 		if (postRebuildChunkPreRenderEvent) {
 			final RebuildChunkPreRenderEvent event = new RebuildChunkPreRenderEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_);
 			MinecraftForge.EVENT_BUS.post(event);
-			return event.isCanceled();
+			return event.getResult() != DENY;
 		} else {
 			return false;
 		}
@@ -97,7 +98,7 @@ public final class Hooks {
 		if (postRebuildChunkPreIterationEvent) {
 			final RebuildChunkPreIterationEvent event = new RebuildChunkPreIterationEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher);
 			MinecraftForge.EVENT_BUS.post(event);
-			return event.isCanceled();
+			return event.getResult() != DENY;
 		} else {
 			return false;
 		}
@@ -113,19 +114,19 @@ public final class Hooks {
 				final RebuildChunkCanFluidRenderInLayerEvent canFluidRenderInLayerEvent = PooledHandler.setupRebuildChunkCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canFluidRenderInLayerEvent);
 				PooledHandler.tearDown(canFluidRenderInLayerEvent);
-				return !isFluidEmptyEvent.isCanceled() && !canFluidRenderInLayerEvent.isCanceled();
+				return isFluidEmptyEvent.getResult() != DENY && canFluidRenderInLayerEvent.getResult() != DENY;
 			} else {
 				final RebuildChunkIsFluidEmptyEvent isFluidEmptyEvent = PooledHandler.setupRebuildChunkIsFluidEmptyEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate);
 				MinecraftForge.EVENT_BUS.post(isFluidEmptyEvent);
 				PooledHandler.tearDown(isFluidEmptyEvent);
-				return !isFluidEmptyEvent.isCanceled() && ifluidstate.canRenderInLayer(blockrenderlayer1);
+				return isFluidEmptyEvent.getResult() != DENY && ifluidstate.canRenderInLayer(blockrenderlayer1);
 			}
 		} else {
 			if (postRebuildChunkCanFluidRenderInLayerEvent) {
 				final RebuildChunkCanFluidRenderInLayerEvent canFluidRenderInLayerEvent = PooledHandler.setupRebuildChunkCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canFluidRenderInLayerEvent);
 				PooledHandler.tearDown(canFluidRenderInLayerEvent);
-				return !ifluidstate.isEmpty() && !canFluidRenderInLayerEvent.isCanceled();
+				return !ifluidstate.isEmpty() && canFluidRenderInLayerEvent.getResult() != DENY;
 			} else {
 				return !ifluidstate.isEmpty() && ifluidstate.canRenderInLayer(blockrenderlayer1);
 			}
@@ -138,7 +139,7 @@ public final class Hooks {
 			final RebuildChunkRenderFluidEvent event = PooledHandler.setupRebuildChunkRenderFluidEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1, j, bufferbuilder);
 			MinecraftForge.EVENT_BUS.post(event);
 			PooledHandler.tearDown(event);
-			return event.isCanceled();
+			return event.getResult() != DENY;
 		} else {
 			return false;
 		}
@@ -154,19 +155,19 @@ public final class Hooks {
 				final RebuildChunkCanBlockRenderInLayerEvent canBlockRenderInLayerEvent = PooledHandler.setupRebuildChunkCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canBlockRenderInLayerEvent);
 				PooledHandler.tearDown(canBlockRenderInLayerEvent);
-				return !canBlockRenderTypeBeRenderedEvent.isCanceled() && !canBlockRenderInLayerEvent.isCanceled();
+				return canBlockRenderTypeBeRenderedEvent.getResult() != DENY && canBlockRenderInLayerEvent.getResult() != DENY;
 			} else {
 				final RebuildChunkCanBlockRenderTypeBeRenderedEvent canBlockRenderTypeBeRenderedEvent = PooledHandler.setupRebuildChunkCanBlockRenderTypeBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate);
 				MinecraftForge.EVENT_BUS.post(canBlockRenderTypeBeRenderedEvent);
 				PooledHandler.tearDown(canBlockRenderTypeBeRenderedEvent);
-				return !canBlockRenderTypeBeRenderedEvent.isCanceled() && iblockstate.canRenderInLayer(blockrenderlayer1);
+				return canBlockRenderTypeBeRenderedEvent.getResult() != DENY && iblockstate.canRenderInLayer(blockrenderlayer1);
 			}
 		} else {
 			if (postRebuildChunkCanBlockRenderInLayerEvent) {
 				final RebuildChunkCanBlockRenderInLayerEvent canBlockRenderInLayerEvent = PooledHandler.setupRebuildChunkCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canBlockRenderInLayerEvent);
 				PooledHandler.tearDown(canBlockRenderInLayerEvent);
-				return iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && !canBlockRenderInLayerEvent.isCanceled();
+				return iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && canBlockRenderInLayerEvent.getResult() != DENY;
 			} else {
 				return iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && iblockstate.canRenderInLayer(blockrenderlayer1);
 			}
@@ -179,7 +180,7 @@ public final class Hooks {
 			final RebuildChunkRenderBlockEvent event = PooledHandler.setupRebuildChunkRenderBlockEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1, k, bufferbuilder1);
 			MinecraftForge.EVENT_BUS.post(event);
 			PooledHandler.tearDown(event);
-			return event.isCanceled();
+			return event.getResult() != DENY;
 		} else {
 			return false;
 		}

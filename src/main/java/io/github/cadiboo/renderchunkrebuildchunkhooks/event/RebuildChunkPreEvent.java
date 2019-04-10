@@ -3,6 +3,8 @@ package io.github.cadiboo.renderchunkrebuildchunkhooks.event;
 import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.Event.HasResult;
 
 import javax.annotation.Nonnull;
 
@@ -10,6 +12,7 @@ import javax.annotation.Nonnull;
  * @author Cadiboo
  */
 @Cancelable
+@HasResult
 public class RebuildChunkPreEvent extends RebuildChunkEvent {
 
 	public RebuildChunkPreEvent(

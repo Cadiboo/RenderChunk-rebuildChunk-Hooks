@@ -22,11 +22,13 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.Refs.MOD_ID;
 
 @EventBusSubscriber(modid = MOD_ID, value = Dist.CLIENT)
-public final class EventTester {
+public final class EventNonNullTester {
 
 	private static boolean enabled = true;
 	static {
-		HookConfig.enableAll();
+		if (enabled) {
+			HookConfig.enableAll();
+		}
 	}
 
 	@SubscribeEvent
@@ -88,6 +90,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");
@@ -109,6 +112,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");
@@ -117,8 +121,6 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getIBlockState(), "iblockstate");
 		Preconditions.checkNotNull(event.getBlock(), "block");
 		Preconditions.checkNotNull(event.getIFluidState(), "ifluidstate");
-
-		event.setCanceled(true);
 	}
 
 	@SubscribeEvent
@@ -135,6 +137,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");
@@ -160,6 +163,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");
@@ -187,6 +191,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");
@@ -211,6 +216,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");
@@ -236,6 +242,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");
@@ -263,6 +270,7 @@ public final class EventTester {
 		Preconditions.checkNotNull(event.getEndPosition(), "blockpos1");
 		Preconditions.checkNotNull(event.getWorld(), "world");
 		Preconditions.checkNotNull(event.getRenderChunkCache(), "lvt_10_1_");
+		Preconditions.checkNotNull(event.getIWorldReader(), "lvt_10_1_");
 		Preconditions.checkNotNull(event.getVisGraph(), "lvt_11_1_");
 		Preconditions.checkNotNull(event.getTileEntitiesWithGlobalRenderers(), "lvt_12_1_");
 		Preconditions.checkNotNull(event.getUsedBlockRenderLayers(), "aboolean");

@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.chunk.ChunkRenderTask;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nonnull;
@@ -14,6 +15,7 @@ import javax.annotation.Nonnull;
  * Called when a {@link RenderChunk#rebuildChunk} is called.
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}
  */
+@Cancelable
 public class RebuildChunkEvent extends Event {
 
 	@Nonnull

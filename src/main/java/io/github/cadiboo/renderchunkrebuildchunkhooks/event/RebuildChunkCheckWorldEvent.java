@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.Event.HasResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +17,7 @@ import javax.annotation.Nullable;
  * @author Cadiboo
  */
 @Cancelable
+@HasResult
 public class RebuildChunkCheckWorldEvent extends RebuildChunkEvent {
 
 	@Nonnull
