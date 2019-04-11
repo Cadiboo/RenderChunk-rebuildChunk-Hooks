@@ -22,6 +22,8 @@ import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Random;
 
+import static io.github.cadiboo.renderchunkrebuildchunkhooks.util.PrivateUtils._null;
+
 /**
  * INTERNAL
  *
@@ -66,7 +68,7 @@ public final class PooledHandler {
 		}
 	}
 
-	public static RebuildChunkIsFluidEmptyEvent setupRebuildChunkIsFluidEmptyEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate) {
+	public static RebuildChunkIsFluidEmptyEvent setupRebuildChunkIsFluidEmptyEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate) {
 		final RebuildChunkIsFluidEmptyEvent event = threadRebuildChunkIsFluidEmptyEvent.get();
 		reset(event);
 		event.renderChunk = renderChunk;
@@ -84,6 +86,7 @@ public final class PooledHandler {
 		event.usedBlockRenderLayers = aboolean;
 		event.random = random;
 		event.blockRendererDispatcher = blockrendererdispatcher;
+		event.blockPos = blockPos;
 		event.iBlockState = iblockstate;
 		event.block = block;
 		event.iFluidState = ifluidstate;
@@ -91,24 +94,25 @@ public final class PooledHandler {
 	}
 
 	public static void tearDown(final RebuildChunkIsFluidEmptyEvent event) {
-		event.renderChunk = null;
-		event.generator = null;
-		event.compiledChunk = null;
-		event.startPosition = null;
-		event.endPosition = null;
-		event.world = null;
-		event.renderChunkCache = null;
-		event.visGraph = null;
-		event.tileEntitiesWithGlobalRenderers = null;
-		event.usedBlockRenderLayers = null;
-		event.random = null;
-		event.blockRendererDispatcher = null;
-		event.iBlockState = null;
-		event.block = null;
-		event.iFluidState = null;
+		event.renderChunk = _null();
+		event.generator = _null();
+		event.compiledChunk = _null();
+		event.startPosition = _null();
+		event.endPosition = _null();
+		event.world = _null();
+		event.renderChunkCache = _null();
+		event.visGraph = _null();
+		event.tileEntitiesWithGlobalRenderers = _null();
+		event.usedBlockRenderLayers = _null();
+		event.random = _null();
+		event.blockRendererDispatcher = _null();
+		event.blockPos = _null();
+		event.iBlockState = _null();
+		event.block = _null();
+		event.iFluidState = _null();
 	}
 
-	public static RebuildChunkCanFluidRenderInLayerEvent setupRebuildChunkCanFluidRenderInLayerEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
+	public static RebuildChunkCanFluidRenderInLayerEvent setupRebuildChunkCanFluidRenderInLayerEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
 		final RebuildChunkCanFluidRenderInLayerEvent event = threadRebuildChunkCanFluidRenderInLayerEvent.get();
 		reset(event);
 		event.renderChunk = renderChunk;
@@ -126,6 +130,7 @@ public final class PooledHandler {
 		event.usedBlockRenderLayers = aboolean;
 		event.random = random;
 		event.blockRendererDispatcher = blockrendererdispatcher;
+		event.blockPos = blockPos;
 		event.iBlockState = iblockstate;
 		event.block = block;
 		event.iFluidState = ifluidstate;
@@ -134,25 +139,26 @@ public final class PooledHandler {
 	}
 
 	public static void tearDown(final RebuildChunkCanFluidRenderInLayerEvent event) {
-		event.renderChunk = null;
-		event.generator = null;
-		event.compiledChunk = null;
-		event.startPosition = null;
-		event.endPosition = null;
-		event.world = null;
-		event.renderChunkCache = null;
-		event.visGraph = null;
-		event.tileEntitiesWithGlobalRenderers = null;
-		event.usedBlockRenderLayers = null;
-		event.random = null;
-		event.blockRendererDispatcher = null;
-		event.iBlockState = null;
-		event.block = null;
-		event.iFluidState = null;
-		event.blockRenderLayer = null;
+		event.renderChunk = _null();
+		event.generator = _null();
+		event.compiledChunk = _null();
+		event.startPosition = _null();
+		event.endPosition = _null();
+		event.world = _null();
+		event.renderChunkCache = _null();
+		event.visGraph = _null();
+		event.tileEntitiesWithGlobalRenderers = _null();
+		event.usedBlockRenderLayers = _null();
+		event.random = _null();
+		event.blockRendererDispatcher = _null();
+		event.blockPos = _null();
+		event.iBlockState = _null();
+		event.block = _null();
+		event.iFluidState = _null();
+		event.blockRenderLayer = _null();
 	}
 
-	public static RebuildChunkRenderFluidEvent setupRebuildChunkRenderFluidEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
+	public static RebuildChunkRenderFluidEvent setupRebuildChunkRenderFluidEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
 		final RebuildChunkRenderFluidEvent event = threadRebuildChunkRenderFluidEvent.get();
 		reset(event);
 		event.renderChunk = renderChunk;
@@ -170,6 +176,7 @@ public final class PooledHandler {
 		event.usedBlockRenderLayers = aboolean;
 		event.random = random;
 		event.blockRendererDispatcher = blockrendererdispatcher;
+		event.blockPos = blockPos;
 		event.iBlockState = iblockstate;
 		event.block = block;
 		event.iFluidState = ifluidstate;
@@ -180,26 +187,27 @@ public final class PooledHandler {
 	}
 
 	public static void tearDown(final RebuildChunkRenderFluidEvent event) {
-		event.renderChunk = null;
-		event.generator = null;
-		event.compiledChunk = null;
-		event.startPosition = null;
-		event.endPosition = null;
-		event.world = null;
-		event.renderChunkCache = null;
-		event.visGraph = null;
-		event.tileEntitiesWithGlobalRenderers = null;
-		event.usedBlockRenderLayers = null;
-		event.random = null;
-		event.blockRendererDispatcher = null;
-		event.iBlockState = null;
-		event.block = null;
-		event.iFluidState = null;
-		event.blockRenderLayer = null;
-		event.bufferBuilder = null;
+		event.renderChunk = _null();
+		event.generator = _null();
+		event.compiledChunk = _null();
+		event.startPosition = _null();
+		event.endPosition = _null();
+		event.world = _null();
+		event.renderChunkCache = _null();
+		event.visGraph = _null();
+		event.tileEntitiesWithGlobalRenderers = _null();
+		event.usedBlockRenderLayers = _null();
+		event.random = _null();
+		event.blockRendererDispatcher = _null();
+		event.blockPos = _null();
+		event.iBlockState = _null();
+		event.block = _null();
+		event.iFluidState = _null();
+		event.blockRenderLayer = _null();
+		event.bufferBuilder = _null();
 	}
 
-	public static RebuildChunkCanBlockRenderTypeBeRenderedEvent setupRebuildChunkCanBlockRenderTypeBeRenderedEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate) {
+	public static RebuildChunkCanBlockRenderTypeBeRenderedEvent setupRebuildChunkCanBlockRenderTypeBeRenderedEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate) {
 		final RebuildChunkCanBlockRenderTypeBeRenderedEvent event = threadRebuildChunkCanBlockRenderTypeBeRenderedEvent.get();
 		reset(event);
 		event.renderChunk = renderChunk;
@@ -217,6 +225,7 @@ public final class PooledHandler {
 		event.usedBlockRenderLayers = aboolean;
 		event.random = random;
 		event.blockRendererDispatcher = blockrendererdispatcher;
+		event.blockPos = blockPos;
 		event.iBlockState = iblockstate;
 		event.block = block;
 		event.iFluidState = ifluidstate;
@@ -224,24 +233,25 @@ public final class PooledHandler {
 	}
 
 	public static void tearDown(final RebuildChunkCanBlockRenderTypeBeRenderedEvent event) {
-		event.renderChunk = null;
-		event.generator = null;
-		event.compiledChunk = null;
-		event.startPosition = null;
-		event.endPosition = null;
-		event.world = null;
-		event.renderChunkCache = null;
-		event.visGraph = null;
-		event.tileEntitiesWithGlobalRenderers = null;
-		event.usedBlockRenderLayers = null;
-		event.random = null;
-		event.blockRendererDispatcher = null;
-		event.iBlockState = null;
-		event.block = null;
-		event.iFluidState = null;
+		event.renderChunk = _null();
+		event.generator = _null();
+		event.compiledChunk = _null();
+		event.startPosition = _null();
+		event.endPosition = _null();
+		event.world = _null();
+		event.renderChunkCache = _null();
+		event.visGraph = _null();
+		event.tileEntitiesWithGlobalRenderers = _null();
+		event.usedBlockRenderLayers = _null();
+		event.random = _null();
+		event.blockRendererDispatcher = _null();
+		event.blockPos = _null();
+		event.iBlockState = _null();
+		event.block = _null();
+		event.iFluidState = _null();
 	}
 
-	public static RebuildChunkCanBlockRenderInLayerEvent setupRebuildChunkCanBlockRenderInLayerEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
+	public static RebuildChunkCanBlockRenderInLayerEvent setupRebuildChunkCanBlockRenderInLayerEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
 		final RebuildChunkCanBlockRenderInLayerEvent event = threadRebuildChunkCanBlockRenderInLayerEvent.get();
 		reset(event);
 		event.renderChunk = renderChunk;
@@ -259,6 +269,7 @@ public final class PooledHandler {
 		event.usedBlockRenderLayers = aboolean;
 		event.random = random;
 		event.blockRendererDispatcher = blockrendererdispatcher;
+		event.blockPos = blockPos;
 		event.iBlockState = iblockstate;
 		event.block = block;
 		event.iFluidState = ifluidstate;
@@ -267,25 +278,26 @@ public final class PooledHandler {
 	}
 
 	public static void tearDown(final RebuildChunkCanBlockRenderInLayerEvent event) {
-		event.renderChunk = null;
-		event.generator = null;
-		event.compiledChunk = null;
-		event.startPosition = null;
-		event.endPosition = null;
-		event.world = null;
-		event.renderChunkCache = null;
-		event.visGraph = null;
-		event.tileEntitiesWithGlobalRenderers = null;
-		event.usedBlockRenderLayers = null;
-		event.random = null;
-		event.blockRendererDispatcher = null;
-		event.iBlockState = null;
-		event.block = null;
-		event.iFluidState = null;
-		event.blockRenderLayer = null;
+		event.renderChunk = _null();
+		event.generator = _null();
+		event.compiledChunk = _null();
+		event.startPosition = _null();
+		event.endPosition = _null();
+		event.world = _null();
+		event.renderChunkCache = _null();
+		event.visGraph = _null();
+		event.tileEntitiesWithGlobalRenderers = _null();
+		event.usedBlockRenderLayers = _null();
+		event.random = _null();
+		event.blockRendererDispatcher = _null();
+		event.blockPos = _null();
+		event.iBlockState = _null();
+		event.block = _null();
+		event.iFluidState = _null();
+		event.blockRenderLayer = _null();
 	}
 
-	public static RebuildChunkRenderBlockEvent setupRebuildChunkRenderBlockEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int k, final BufferBuilder bufferbuilder1) {
+	public static RebuildChunkRenderBlockEvent setupRebuildChunkRenderBlockEvent(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int k, final BufferBuilder bufferbuilder1) {
 		final RebuildChunkRenderBlockEvent event = threadRebuildChunkRenderBlockEvent.get();
 		reset(event);
 		event.renderChunk = renderChunk;
@@ -303,6 +315,7 @@ public final class PooledHandler {
 		event.usedBlockRenderLayers = aboolean;
 		event.random = random;
 		event.blockRendererDispatcher = blockrendererdispatcher;
+		event.blockPos = blockPos;
 		event.iBlockState = iblockstate;
 		event.block = block;
 		event.iFluidState = ifluidstate;
@@ -313,23 +326,24 @@ public final class PooledHandler {
 	}
 
 	public static void tearDown(final RebuildChunkRenderBlockEvent event) {
-		event.renderChunk = null;
-		event.generator = null;
-		event.compiledChunk = null;
-		event.startPosition = null;
-		event.endPosition = null;
-		event.world = null;
-		event.renderChunkCache = null;
-		event.visGraph = null;
-		event.tileEntitiesWithGlobalRenderers = null;
-		event.usedBlockRenderLayers = null;
-		event.random = null;
-		event.blockRendererDispatcher = null;
-		event.iBlockState = null;
-		event.block = null;
-		event.iFluidState = null;
-		event.blockRenderLayer = null;
-		event.bufferBuilder = null;
+		event.renderChunk = _null();
+		event.generator = _null();
+		event.compiledChunk = _null();
+		event.startPosition = _null();
+		event.endPosition = _null();
+		event.world = _null();
+		event.renderChunkCache = _null();
+		event.visGraph = _null();
+		event.tileEntitiesWithGlobalRenderers = _null();
+		event.usedBlockRenderLayers = _null();
+		event.random = _null();
+		event.blockRendererDispatcher = _null();
+		event.blockPos = _null();
+		event.iBlockState = _null();
+		event.block = _null();
+		event.iFluidState = _null();
+		event.blockRenderLayer = _null();
+		event.bufferBuilder = _null();
 	}
 
 }

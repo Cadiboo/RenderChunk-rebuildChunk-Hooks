@@ -105,25 +105,25 @@ public final class Hooks {
 	}
 
 	//return if fluid can render
-	public static boolean canFluidRender(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
+	public static boolean canFluidRender(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
 		if (postRebuildChunkIsFluidEmptyEvent) {
 			if (postRebuildChunkCanFluidRenderInLayerEvent) {
-				final RebuildChunkIsFluidEmptyEvent isFluidEmptyEvent = PooledHandler.setupRebuildChunkIsFluidEmptyEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate);
+				final RebuildChunkIsFluidEmptyEvent isFluidEmptyEvent = PooledHandler.setupRebuildChunkIsFluidEmptyEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate);
 				MinecraftForge.EVENT_BUS.post(isFluidEmptyEvent);
 				PooledHandler.tearDown(isFluidEmptyEvent);
-				final RebuildChunkCanFluidRenderInLayerEvent canFluidRenderInLayerEvent = PooledHandler.setupRebuildChunkCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
+				final RebuildChunkCanFluidRenderInLayerEvent canFluidRenderInLayerEvent = PooledHandler.setupRebuildChunkCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canFluidRenderInLayerEvent);
 				PooledHandler.tearDown(canFluidRenderInLayerEvent);
 				return isFluidEmptyEvent.getResult() != DENY && canFluidRenderInLayerEvent.getResult() != DENY;
 			} else {
-				final RebuildChunkIsFluidEmptyEvent isFluidEmptyEvent = PooledHandler.setupRebuildChunkIsFluidEmptyEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate);
+				final RebuildChunkIsFluidEmptyEvent isFluidEmptyEvent = PooledHandler.setupRebuildChunkIsFluidEmptyEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate);
 				MinecraftForge.EVENT_BUS.post(isFluidEmptyEvent);
 				PooledHandler.tearDown(isFluidEmptyEvent);
 				return isFluidEmptyEvent.getResult() != DENY && ifluidstate.canRenderInLayer(blockrenderlayer1);
 			}
 		} else {
 			if (postRebuildChunkCanFluidRenderInLayerEvent) {
-				final RebuildChunkCanFluidRenderInLayerEvent canFluidRenderInLayerEvent = PooledHandler.setupRebuildChunkCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
+				final RebuildChunkCanFluidRenderInLayerEvent canFluidRenderInLayerEvent = PooledHandler.setupRebuildChunkCanFluidRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canFluidRenderInLayerEvent);
 				PooledHandler.tearDown(canFluidRenderInLayerEvent);
 				return !ifluidstate.isEmpty() && canFluidRenderInLayerEvent.getResult() != DENY;
@@ -134,9 +134,9 @@ public final class Hooks {
 	}
 
 	//return if fluid rendering should be cancelled
-	public static boolean preRenderFluid(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
+	public static boolean preRenderFluid(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int j, final BufferBuilder bufferbuilder) {
 		if (postRebuildChunkRenderFluidEvent) {
-			final RebuildChunkRenderFluidEvent event = PooledHandler.setupRebuildChunkRenderFluidEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1, j, bufferbuilder);
+			final RebuildChunkRenderFluidEvent event = PooledHandler.setupRebuildChunkRenderFluidEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate, blockrenderlayer1, j, bufferbuilder);
 			MinecraftForge.EVENT_BUS.post(event);
 			PooledHandler.tearDown(event);
 			return event.getResult() != DENY;
@@ -146,25 +146,25 @@ public final class Hooks {
 	}
 
 	//return if block can render
-	public static boolean canBlockRender(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
+	public static boolean canBlockRender(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1) {
 		if (postRebuildChunkCanBlockRenderTypeBeRenderedEvent) {
 			if (postRebuildChunkCanBlockRenderInLayerEvent) {
-				final RebuildChunkCanBlockRenderTypeBeRenderedEvent canBlockRenderTypeBeRenderedEvent = PooledHandler.setupRebuildChunkCanBlockRenderTypeBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate);
+				final RebuildChunkCanBlockRenderTypeBeRenderedEvent canBlockRenderTypeBeRenderedEvent = PooledHandler.setupRebuildChunkCanBlockRenderTypeBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate);
 				MinecraftForge.EVENT_BUS.post(canBlockRenderTypeBeRenderedEvent);
 				PooledHandler.tearDown(canBlockRenderTypeBeRenderedEvent);
-				final RebuildChunkCanBlockRenderInLayerEvent canBlockRenderInLayerEvent = PooledHandler.setupRebuildChunkCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
+				final RebuildChunkCanBlockRenderInLayerEvent canBlockRenderInLayerEvent = PooledHandler.setupRebuildChunkCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canBlockRenderInLayerEvent);
 				PooledHandler.tearDown(canBlockRenderInLayerEvent);
 				return canBlockRenderTypeBeRenderedEvent.getResult() != DENY && canBlockRenderInLayerEvent.getResult() != DENY;
 			} else {
-				final RebuildChunkCanBlockRenderTypeBeRenderedEvent canBlockRenderTypeBeRenderedEvent = PooledHandler.setupRebuildChunkCanBlockRenderTypeBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate);
+				final RebuildChunkCanBlockRenderTypeBeRenderedEvent canBlockRenderTypeBeRenderedEvent = PooledHandler.setupRebuildChunkCanBlockRenderTypeBeRenderedEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate);
 				MinecraftForge.EVENT_BUS.post(canBlockRenderTypeBeRenderedEvent);
 				PooledHandler.tearDown(canBlockRenderTypeBeRenderedEvent);
 				return canBlockRenderTypeBeRenderedEvent.getResult() != DENY && iblockstate.canRenderInLayer(blockrenderlayer1);
 			}
 		} else {
 			if (postRebuildChunkCanBlockRenderInLayerEvent) {
-				final RebuildChunkCanBlockRenderInLayerEvent canBlockRenderInLayerEvent = PooledHandler.setupRebuildChunkCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1);
+				final RebuildChunkCanBlockRenderInLayerEvent canBlockRenderInLayerEvent = PooledHandler.setupRebuildChunkCanBlockRenderInLayerEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate, blockrenderlayer1);
 				MinecraftForge.EVENT_BUS.post(canBlockRenderInLayerEvent);
 				PooledHandler.tearDown(canBlockRenderInLayerEvent);
 				return iblockstate.getRenderType() != EnumBlockRenderType.INVISIBLE && canBlockRenderInLayerEvent.getResult() != DENY;
@@ -175,9 +175,9 @@ public final class Hooks {
 	}
 
 	//return if block rendering should be cancelled
-	public static boolean preRenderBlock(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int k, final BufferBuilder bufferbuilder1) {
+	public static boolean preRenderBlock(final RenderChunk renderChunk, final float x, final float y, final float z, final ChunkRenderTask generator, final CompiledChunk compiledchunk, final BlockPos blockpos, final BlockPos blockpos1, final World world, final RenderChunkCache lvt_10_1_, final VisGraph lvt_11_1_, final HashSet lvt_12_1_, final boolean[] aboolean, final Random random, final BlockRendererDispatcher blockrendererdispatcher, final BlockPos blockPos, final IBlockState iblockstate, final Block block, final IFluidState ifluidstate, final BlockRenderLayer blockrenderlayer1, final int k, final BufferBuilder bufferbuilder1) {
 		if (postRebuildChunkRenderBlockEvent) {
-			final RebuildChunkRenderBlockEvent event = PooledHandler.setupRebuildChunkRenderBlockEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, iblockstate, block, ifluidstate, blockrenderlayer1, k, bufferbuilder1);
+			final RebuildChunkRenderBlockEvent event = PooledHandler.setupRebuildChunkRenderBlockEvent(renderChunk, x, y, z, generator, compiledchunk, blockpos, blockpos1, world, lvt_10_1_, lvt_11_1_, lvt_12_1_, aboolean, random, blockrendererdispatcher, blockPos, iblockstate, block, ifluidstate, blockrenderlayer1, k, bufferbuilder1);
 			MinecraftForge.EVENT_BUS.post(event);
 			PooledHandler.tearDown(event);
 			return event.getResult() != DENY;

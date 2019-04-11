@@ -5,6 +5,8 @@ import io.github.cadiboo.renderchunkrebuildchunkhooks.RenderChunkRebuildChunkHoo
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.VersionChecker;
 
+import javax.annotation.Nonnull;
+
 import static net.minecraftforge.fml.VersionChecker.getResult;
 
 /**
@@ -57,6 +59,11 @@ public final class PrivateUtils {
 
 		}, "RenderChunk rebuildChunk Hooks Update Daemon").start();
 
+	}
+
+	@Nonnull
+	public static <T> T _null() {
+		return null;
 	}
 
 }

@@ -19,7 +19,7 @@ issueTrackerURL="https://github.com/Cadiboo/RenderChunk-rebuildChunk-Hooks/issue
 displayURL="https://cadiboo.github.io/projects/renderchunk-rebuildchunk-hooks" #optional
 
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="renderchunk-rebuildchunk-hooks-logo.png" #optional
+logoFile="renderchunk-rebuildchunk-hooks.png" #optional
 
 # A text field displayed in the mod UI
 credits="The Forge and FML guys for Forge and FML and Cadiboo for making the mod" #optional
@@ -41,8 +41,10 @@ displayName="RenderChunk rebuildChunk Hooks" #mandatory
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-A small(ish) Coremod for 1.12.2 to inject hooks into RenderChunk#rebuildChunk to allow Modders to add their own custom chunk rendering logic and other chunk rendering related modifications.
+A coremod for 1.13.2 to inject hooks into RenderChunk#rebuildChunk to allow Modders to add their own custom chunk rendering logic and other chunk rendering related modifications.
 This mod provides configurable events that Modders can use for various chunk/world-related rendering logic
+All events are @Cancellable to stop event subscribers further down the listener list from recieving them
+Many events have results (@HasResult)
  - The RebuildChunkPre is called before any chunk rebuilding is done or the generator's compiledchunk is set. It allows access to, and setting of, the World
  - The RebuildChunkPreRenderSetupEvent is called before any chunk rebuilding is done and allows access to, and setting of, the RenderChunkCache
  - The RebuildChunkPreRenderEvent is called before any chunk rendering is done and allows access to the BlockRendererDispatcher and the usedRenderLayer boolean array

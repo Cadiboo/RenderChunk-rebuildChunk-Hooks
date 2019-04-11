@@ -48,6 +48,8 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 	@Nonnull
 	BlockRendererDispatcher blockRendererDispatcher;
 	@Nonnull
+	BlockPos blockPos;
+	@Nonnull
 	IBlockState iBlockState;
 	@Nonnull
 	Block block;
@@ -72,6 +74,7 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 			@Nonnull final boolean[] aboolean,
 			@Nonnull final Random random,
 			@Nonnull final BlockRendererDispatcher blockrendererdispatcher,
+			@Nonnull final BlockPos blockPos,
 			@Nonnull final IBlockState iblockstate,
 			@Nonnull final Block block,
 			@Nonnull final IFluidState ifluidstate,
@@ -88,6 +91,7 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 		this.usedBlockRenderLayers = aboolean;
 		this.random = random;
 		this.blockRendererDispatcher = blockrendererdispatcher;
+		this.blockPos = blockPos;
 		this.iBlockState = iblockstate;
 		this.block = block;
 		this.iFluidState = ifluidstate;
@@ -156,6 +160,11 @@ public class RebuildChunkCanBlockRenderInLayerEvent extends RebuildChunkEvent {
 	@Nonnull
 	public BlockRendererDispatcher getBlockRendererDispatcher() {
 		return blockRendererDispatcher;
+	}
+
+	@Nonnull
+	public BlockPos getBlockPos() {
+		return blockPos;
 	}
 
 	@Nonnull
